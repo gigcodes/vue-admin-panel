@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Reusable SPA Admin Panel for Laravel",
   "main": "src/index.js",
-  "private": true,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@gigcodes-karthick"
   },
