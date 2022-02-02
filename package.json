@@ -1,5 +1,5 @@
 {
-  "name": "gigcodesadmin",
+  "name": "@gigcodes/gigcodesadmin",
   "version": "1.0.0",
   "description": "Reusable SPA Admin Panel for Laravel",
   "main": "src/index.js",
