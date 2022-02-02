@@ -4,6 +4,9 @@
   "description": "Reusable SPA Admin Panel for Laravel",
   "main": "src/index.js",
   "private": true,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@gigcodes-karthick"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
