@@ -3,7 +3,7 @@ name: Vue 3 Gigcodes Admin Package
 on:
   push:
     branches:
-      - master
+      - main
       
 jobs:
   publish-gpr:
