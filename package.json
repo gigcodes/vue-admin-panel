@@ -1,0 +1,25 @@
+{
+  "name": "gigcodesadmin",
+  "version": "1.0.0",
+  "description": "Reusable SPA Admin Panel for Laravel",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karthickk1996/GigcodesAdmin.git"
+  },
+  "keywords": [
+    "gigocodes",
+    "admin",
+    "panel"
+  ],
+  "author": "Karthick K",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/karthickk1996/GigcodesAdmin/issues"
+  },
+  "homepage": "https://github.com/karthickk1996/GigcodesAdmin#readme"
+}
