@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import {copy} from '../../../index';
-import {Events} from "../../../index";
+import copy from '../../../plugins/copyt-to-clipboard';
+import Events from "../../../modules/events";
 import {createToaster} from "../../../index";
 
 export default {
