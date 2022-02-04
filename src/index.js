@@ -7,7 +7,6 @@ import {default as DossierSortSelector} from './components/dossier/SortSelector.
 import {default as Modal} from './components/modal/Modal.vue';
 import {default as BaseIcon} from './components/BaseIcon.vue';
 
-
 //fieldtypes
 import {default as TextField} from './components/fieldtypes/TextFieldtype.vue';
 import {default as TextAreaField} from './components/fieldtypes/TextAreaFieldtype.vue';
@@ -22,6 +21,8 @@ import {default as RouteMiddleware} from './plugins/route-middleware';
 import {default as Dossier} from './components/dossier/Dossier.vue';
 import {mixin as CAMixin, plugin as CAPlugin, directive as CADirective} from './plugins/click-away';
 import {default as Events} from './modules/events'
+import Validators from './modules/Validators';
+import formValidators from './modules/useFormValidation';
 
 
 const components = {
@@ -35,7 +36,7 @@ const components = {
     TextField,
     TextAreaField,
     SelectField,
-    ToggleField
+    ToggleField,
 }
 
 
@@ -70,7 +71,9 @@ export {
     CAMixin,
     CAPlugin,
     CADirective,
-    Events
+    Events,
+    Validators,
+    formValidators,
 }
 
 export default GigcodesAdmin
