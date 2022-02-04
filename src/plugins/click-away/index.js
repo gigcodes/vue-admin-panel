@@ -1,7 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {value: true});
-
 const clickEventType = document.ontouchstart !== null ? "click" : "touchstart";
 const UNIQUE_ID = "__vue_click_away__";
 
