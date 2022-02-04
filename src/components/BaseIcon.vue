@@ -6,11 +6,14 @@
 </template>
 
 <script>
+import AnalyticsIcon from "./icons/AnalyticsIcon.vue";
+import DashboardIcon from "./icons/DashboardIcon.vue";
+import ListIcon from "./icons/ListIcon.vue";
 
 const icons = {
-  analytics: require('./icons/AnalyticsIcon.vue'),
-  dashboard: require('./icons/DashboardIcon.vue'),
-  list: require('./icons/ListIcon.vue')
+  analytics: AnalyticsIcon,
+  dashboard: DashboardIcon,
+  list: ListIcon
 }
 
 export default {
