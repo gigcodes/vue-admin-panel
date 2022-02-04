@@ -1,6 +1,6 @@
 {
   "name": "@karthickk1996/gigcodesadmin",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Reusable SPA Admin Panel for Laravel",
   "main": "dist/gigcodes-admin.ssr.js",
   "browser": "dist/gigcodes-admin.esm.js",
@@ -8,11 +8,11 @@
   "unpkg": "dist/gigcodes-admin.min.js",
   "files": [
     "dist/*",
-    "src/**/*.vue"
+    "src/*"
   ],
   "sideEffects": false,
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@gigcodes-karthick"
+    "registry": "https://github.com/karthickk1996/GigcodesAdmin.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
