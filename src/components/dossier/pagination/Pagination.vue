@@ -38,7 +38,7 @@
 
 
 <script>
-import Page from "./Page";
+import Page from "./Page.vue";
 
 export default {
 

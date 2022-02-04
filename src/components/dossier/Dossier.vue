@@ -3,7 +3,7 @@
 import Paginates from './support/Paginates';
 import _ from 'underscore';
 import Events from "../../modules/events";
-import {createToaster} from '../../plugins/toaster'
+import {createToaster} from '../../index'
 
 export default {
   mixins: [Paginates],

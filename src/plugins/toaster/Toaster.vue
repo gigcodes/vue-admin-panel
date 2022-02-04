@@ -188,9 +188,10 @@ export default {
 }
 </script>
 
-<style lang="stylus">
-@import './themes/default/index.styl'
-.v--default-css
-    @import './themes/default/colors.styl'
-    @import './themes/default/toast.styl'
+<style lang="scss">
+@import './themes/default/index.scss';
+.v--default-css{
+  @import './themes/default/colors.scss';
+  @import './themes/default/toast.scss';
+}
 </style>

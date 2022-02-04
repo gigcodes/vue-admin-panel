@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white shadow-lg rounded-sm border border-slate-200 relative">
+  <div class="dossier bg-white shadow-lg rounded-sm border border-slate-200 relative">
     <header class="px-5 py-4 border-b border-slate-100">
       <h2 class="font-semibold text-slate-800">{{ title }}
         <span class="text-slate-400 font-medium float-end">{{ pagination.totalItems }}</span>
@@ -101,14 +101,14 @@
 </template>
 
 <script>
-import Cell from "./support/Cell";
-import Actions from "./support/Actions";
+import Cell from "./support/Cell.vue";
+import Actions from "./support/Actions.vue";
 import _ from 'underscore';
-import Pagination from "./pagination/Pagination";
-import Events from "../../modules/events";
-import {Btn} from "../../bootstrap/components";
-import {BtnGroup} from "../../bootstrap/components";
-import {Modal} from "../../bootstrap/components";
+import Pagination from "./pagination/Pagination.vue";
+import {Events} from "../../index";
+import {Btn} from "../../index";
+import {BtnGroup} from "../../index";
+import {Modal} from "../../index";
 
 export default {
 
@@ -261,29 +261,44 @@ export default {
 };
 </script>
 
+
 <style lang="scss">
-table {
-  @apply table-auto w-full;
-  thead {
-    @apply text-xs uppercase text-slate-400 bg-slate-50 rounded-sm;
-    tr {
-      th {
-        @apply p-2 whitespace-nowrap font-semibold;
-        & .checkbox-col {
-          @apply w-px;
+@tailwind preflight;
+@tailwind components;
+@tailwind utilities;
+.dossier {
+  table {
+    @apply table-auto w-full;
+    thead {
+      @apply text-xs uppercase text-slate-400 bg-slate-50 rounded-sm;
+      tr {
+        th {
+          @apply p-2 whitespace-nowrap font-semibold;
+          & .checkbox-col {
+            @apply w-px;
+          }
+        }
+      }
+    }
+
+    tbody {
+      @apply text-sm divide-y divide-slate-100;
+      tr {
+        td {
+          @apply p-1 px-2 whitespace-nowrap;
+          &.column-actions {
+            text-align: end;
+          }
         }
       }
     }
   }
 
-  tbody {
-    @apply text-sm divide-y divide-slate-100;
-    tr {
-      td {
-        @apply p-1 px-2 whitespace-nowrap;
-        &.column-actions {
-          text-align: end;
-        }
+  ul.dropdown-menu {
+    li {
+      @apply text-gray-700 block px-4 py-1 text-sm hover:bg-gray-100 hover:text-gray-900 rounded;
+      &.warning {
+        @apply bg-rose-500 hover:bg-rose-600 text-white;
       }
     }
   }

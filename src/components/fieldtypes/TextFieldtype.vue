@@ -62,7 +62,7 @@
 <script>
 import FieldType from './index';
 import Input from './customInput';
-import Tooltip from "../Tooltip";
+import {Tooltip} from "../../index";
 
 export default {
     name: "TextFieldtype",

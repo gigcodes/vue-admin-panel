@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import {copy} from '../../../bootstrap/plugins';
-import Events from "../../../modules/events";
-import {createToaster} from "../../../bootstrap/plugins";
+import {copy} from '../../../index';
+import {Events} from "../../../index";
+import {createToaster} from "../../../index";
 
 export default {
   name: "Actions",
@@ -41,12 +41,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-li {
-  @apply text-gray-700 block px-4 py-1 text-sm hover:bg-gray-100 hover:text-gray-900 rounded;
-  &.warning {
-    @apply bg-rose-500 hover:bg-rose-600 text-white;
-  }
-}
-</style>

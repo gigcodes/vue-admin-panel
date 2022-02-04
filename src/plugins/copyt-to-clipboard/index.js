@@ -110,4 +110,4 @@ function copy(text, options) {
     return success;
 }
 
-module.exports = copy;
+export default copy;

@@ -1,6 +1,6 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
+Object.defineProperty(exports, '__esModule', {value: true});
 
 const clickEventType = document.ontouchstart !== null ? "click" : "touchstart";
 const UNIQUE_ID = "__vue_click_away__";
@@ -36,22 +36,20 @@ const onUpdated = function (el, binding, vnode) {
     onMounted(el, binding, vnode);
 };
 
-const plugin = {
+export const plugin = {
     install: function (app) {
         app.directive('click-away', directive);
     }
 };
-const directive = {
+export const directive = {
     mounted: onMounted,
     updated: onUpdated,
     unmounted: onUnmounted
 };
-const mixin = {
+export const mixin = {
     directives: {
         ClickAway: directive
     }
 };
 
-exports.default = plugin;
-exports.directive = directive;
-exports.mixin = mixin;
+export default {plugin, directive, mixin}

@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import ModalBlank from "./ModalBlank";
+import ModalBlank from "./ModalBlank.vue";
 export default {
     name: "Modal",
     components: {

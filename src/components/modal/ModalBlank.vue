@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import {ref, onMounted, onUnmounted} from 'vue'
+import {ref} from 'vue'
 
 import {mixin as clickaway} from '../../plugins/click-away';
 

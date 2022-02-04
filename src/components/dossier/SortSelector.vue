@@ -28,8 +28,8 @@
 
 <script>
 import _ from 'underscore';
-import BaseIcon from "../BaseIcon";
-import {Btn} from "../../bootstrap/components";
+import {BaseIcon} from "../../index";
+import {Btn} from "../../index";
 
 export default {
   props: ['sortOrder', 'sortData', 'columns'],

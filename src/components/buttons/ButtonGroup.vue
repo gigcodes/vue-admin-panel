@@ -37,11 +37,11 @@
 import classes from './class';
 import type from './index';
 import sizes from "./sizes";
-import {mixin as clickaway} from '../../plugins/click-away';
-import {Btn} from "../../bootstrap/components";
+import {CAMixin} from '../../index';
+import {Btn} from "../../index";
 
 export default {
-  mixins: [type, clickaway],
+  mixins: [type, CAMixin],
   components: {
     Btn
   },
