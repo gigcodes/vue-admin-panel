@@ -42,6 +42,7 @@ import {Btn} from "../../index";
 
 export default {
   mixins: [type, CAMixin],
+  name:'BtnGroup',
   components: {
     Btn
   },

@@ -32,6 +32,7 @@ import {BaseIcon} from "../../index";
 import {Btn} from "../../index";
 
 export default {
+  name: 'DossierSortSelector',
   props: ['sortOrder', 'sortData', 'columns'],
   components: {
     BaseIcon,

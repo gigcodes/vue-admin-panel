@@ -18,6 +18,7 @@ import {onMounted, ref} from "vue";
 
 export default {
   mixins: [type],
+  name: 'Btn',
   setup(props) {
     const disable = ref(props.disabled);
     onMounted(() => {

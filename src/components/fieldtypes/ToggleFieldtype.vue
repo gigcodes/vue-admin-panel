@@ -20,7 +20,7 @@ import Input from './customInput';
 import {ref} from "vue";
 
 export default {
-    name: "ToggleFieldtype",
+    name: "ToggleField",
     mixins: [FieldType, Input],
     props: ['options'],
     setup(props) {

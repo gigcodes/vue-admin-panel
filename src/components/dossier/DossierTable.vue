@@ -111,7 +111,7 @@ import {BtnGroup} from "../../index";
 import {Modal} from "../../index";
 
 export default {
-
+  name: 'DossierTable',
   components: {
     Cell,
     Actions,

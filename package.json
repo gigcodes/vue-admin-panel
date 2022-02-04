@@ -1,6 +1,6 @@
 {
   "name": "@karthickk1996/gigcodesadmin",
-  "version": "1.0.0-beta.25",
+  "version": "1.0.0-beta.26",
   "description": "Reusable SPA Admin Panel for Laravel",
   "main": "./dist/gigcodes-admin.umd.js",
   "module": "./dist/gigcodes-admin.es.js",
@@ -30,8 +30,8 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/my-lib.es.js",
-      "require": "./dist/my-lib.umd.js"
+      "import": "./dist/gigcodes-admin.es.js",
+      "require": "./dist/gigcodes-admin.umd.js"
     }
   },
   "author": "Karthick K",

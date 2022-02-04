@@ -7,6 +7,7 @@ import {createToaster} from '../../index'
 
 export default {
   mixins: [Paginates],
+  name: 'Dossier',
   props: ['collection'],
   data: function () {
     return {

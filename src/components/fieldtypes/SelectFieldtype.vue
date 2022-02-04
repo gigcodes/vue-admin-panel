@@ -19,7 +19,7 @@ import Input from './customInput';
 import {ref} from "vue";
 
 export default {
-    name: "SelectFieldtype",
+    name: "SelectField",
     mixins: [Fieldtypes, Input],
     setup(props) {
         const options = ref(props.options)

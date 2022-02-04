@@ -65,7 +65,7 @@ import Input from './customInput';
 import {Tooltip} from "../../index";
 
 export default {
-    name: "TextFieldtype",
+    name: "TextField",
     components: {Tooltip},
     emits: ['update:modelValue', 'update:slug', 'keyup', 'blur', 'change', 'focus'],
     mixins: [FieldType, Input],

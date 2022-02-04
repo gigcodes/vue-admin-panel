@@ -37,7 +37,7 @@ import FieldType from './index';
 import Input from './customInput';
 
 export default {
-    name: "TextAreaFieldtype",
+    name: "TextAreaField",
     emits: ['update:modelValue', 'keyup', 'blur', 'change', 'focus'],
     props: ['rows'],
     mixins: [FieldType, Input],
