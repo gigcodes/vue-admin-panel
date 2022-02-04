@@ -6,13 +6,11 @@
   "browser": "dist/gigcodes-admin.esm.js",
   "module": "dist/gigcodes-admin.esm.js",
   "unpkg": "dist/gigcodes-admin.min.js",
-
   "files": [
     "dist/*",
     "src/**/*.vue"
   ],
   "sideEffects": false,
-
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@gigcodes-karthick"
   },
@@ -40,9 +38,6 @@
     "url": "https://github.com/karthickk1996/GigcodesAdmin/issues"
   },
   "homepage": "https://github.com/karthickk1996/GigcodesAdmin#readme",
-  "dependencies": {
-  },
-
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",
@@ -54,6 +49,7 @@
     "@vue/cli-plugin-babel": "^4.5.13",
     "@vue/cli-service": "^4.5.13",
     "@vue/compiler-sfc": "^3.0.11",
+    "@vue/babel-preset-app": "^4.5.15",
     "cross-env": "^7.0.3",
     "minimist": "^1.2.5",
     "postcss": "^8.2.10",
@@ -61,11 +57,14 @@
     "rollup": "^2.52.8",
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-vue": "^6.0.0",
-    "vue": "^3.0.5"
+    "rollup-plugin-vue": "^6.0.0"
   },
   "peerDependencies": {
     "vue": "^3.0.5"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "underscore": "^1.13.2"
   },
   "engines": {
     "node": ">=12"
