@@ -44,13 +44,6 @@
               </label>
             </div>
           </td>
-
-          <td class="checkbox-col" v-if="reordering">
-            <div class="drag-handle">
-              <i class="icon icon-menu"/>
-            </div>
-          </td>
-
           <td v-for="(column,i) in columns" :class="[
                         `cell-${column.value}` + ' text-center', {
                             'extra-col': column.extra,
@@ -64,7 +57,7 @@
 
           <!-- actions -->
           <td class="column-actions" v-if="hasActions">
-            <btn-group type="tertiary">
+            <btn-group type="tertiary" size="sm">
               <actions :item="item" :actions="options.partials.actions"/>
             </btn-group>
           </td>
