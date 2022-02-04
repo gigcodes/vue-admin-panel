@@ -1,6 +1,6 @@
 {
   "name": "@karthickk1996/gigcodesadmin",
-  "version": "1.0.0",
+  "version": "1.0.1-beta",
   "description": "Reusable SPA Admin Panel for Laravel",
   "main": "dist/gigcodes-admin.ssr.js",
   "browser": "dist/gigcodes-admin.esm.js",
