@@ -14,7 +14,7 @@
 import classes from './class';
 import type from './index';
 import sizes from "./sizes";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 
 export default {
   mixins: [type],
