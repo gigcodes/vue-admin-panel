@@ -1,9 +1,9 @@
 {
   "name": "@karthickk1996/gigcodesadmin",
-  "version": "1.0.0-beta.21",
+  "version": "1.0.0-beta.22",
   "description": "Reusable SPA Admin Panel for Laravel",
-  "main": "./dist/my-lib.umd.js",
-  "module": "./dist/my-lib.es.js",
+  "main": "./dist/gigcodes-admin.umd.js",
+  "module": "./dist/gigcodes-admin.es.js",
   "browser": "dist/gigcodes-admin.esm.js",
   "unpkg": "dist/gigcodes-admin.min.js",
   "files": [
@@ -52,6 +52,7 @@
   "dependencies": {
     "@tailwindcss/forms": "^0.4.0",
     "lodash": "^4.17.21",
+    "sass": "^1.49.7",
     "underscore": "^1.13.2",
     "vite": "^2.7.13"
   },
