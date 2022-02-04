@@ -14,7 +14,7 @@
 import classes from './class';
 import type from './index';
 import sizes from "./sizes";
-import {onMounted, ref, watch} from "vue";
+import {onMounted, ref} from "vue";
 
 export default {
   mixins: [type],
@@ -26,12 +26,6 @@ export default {
         disable.value = true;
       }
     })
-
-    watch(props.disabled, () => {
-      if (props.loading) {
-        disable.value = true;
-      }
-    });
 
     return {
       classes,
