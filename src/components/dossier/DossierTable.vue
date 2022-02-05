@@ -276,6 +276,7 @@ export default {
 
     tbody {
       @apply text-sm divide-y divide-slate-100;
+      border-bottom: solid 1px #e0e0e0;
       tr {
         td {
           @apply p-1 px-2 whitespace-nowrap;
