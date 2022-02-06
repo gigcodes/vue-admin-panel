@@ -46,6 +46,7 @@
   "dependencies": {
     "@tailwindcss/forms": "^0.4.0",
     "@vue/compiler-sfc": "^3.2.29",
+    "flatpickr": "^4.6.9",
     "sass": "^1.49.7",
     "underscore": "^1.13.2",
     "vite": "^2.7.13"
