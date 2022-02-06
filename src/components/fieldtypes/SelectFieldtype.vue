@@ -1,6 +1,6 @@
 <template>
   <div :class="classes">
-    <label class="block text-sm font-medium mb-1" :for="id">{{ name }}</label>
+    <label class="block text-sm font-medium" :for="id">{{ name }}</label>
     <select :id="id" class="form-select"
             :autofocus="autofocus" :required="required"
             :aria-readonly="readonly" :disabled="disabled"
