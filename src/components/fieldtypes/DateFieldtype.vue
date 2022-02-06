@@ -2,7 +2,7 @@
   <div :class="classes">
     <div>
       <div class="flex items-center justify-between">
-        <label class="block text-sm font-medium mb-1" :for="id">{{ name }}
+        <label class="block text-sm font-medium" :for="id">{{ name }}
           <span class="text-red-500" v-if="required">*</span></label>
         <tooltip class="ml-2" bg="dark" size="md" v-if="tooltip">
           <div class="text-sm text-gray-200">{{ tooltip }}</div>

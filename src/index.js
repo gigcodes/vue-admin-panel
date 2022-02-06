@@ -12,6 +12,7 @@ import {default as TextField} from './components/fieldtypes/TextFieldtype.vue';
 import {default as TextAreaField} from './components/fieldtypes/TextAreaFieldtype.vue';
 import {default as SelectField} from './components/fieldtypes/SelectFieldtype.vue';
 import {default as ToggleField} from './components/fieldtypes/ToggleFieldtype.vue';
+import {default as DateField} from './components/fieldtypes/DateFieldtype.vue';
 
 
 //plugins
@@ -37,6 +38,7 @@ const components = {
     TextAreaField,
     SelectField,
     ToggleField,
+    DateField,
 }
 
 
@@ -63,6 +65,7 @@ export {
     TextAreaField,
     SelectField,
     ToggleField,
+    DateField,
     Toaster,
     createToaster,
     copy,
