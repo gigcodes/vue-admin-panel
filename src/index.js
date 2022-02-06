@@ -25,6 +25,8 @@ import {default as Events} from './modules/events'
 import Validators from './modules/Validators';
 import formValidators from './modules/useFormValidation';
 
+import 'flatpickr/dist/flatpickr.min.css';
+import './sass/index.scss';
 
 const components = {
     Tooltip,
