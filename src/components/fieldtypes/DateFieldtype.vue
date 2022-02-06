@@ -11,7 +11,8 @@
       <div class="relative">
         <flat-pickr class="form-input pl-9 text-slate-500 hover:text-slate-600 font-medium focus:border-slate-300 w-60"
                     :id="id"
-                    :config="DFconfig" v-model="modelValue"></flat-pickr>
+                    @on-change="changed()"
+                    :config="DFconfig" v-model="date"></flat-pickr>
         <div class="absolute inset-0 right-auto flex items-center pointer-events-none">
           <svg class="w-4 h-4 fill-current text-slate-500 ml-3" viewBox="0 0 16 16">
             <path
@@ -48,6 +49,7 @@ export default {
   mixins: [Fieldtypes, Input],
   data(props) {
     return {
+      date: this.modelValue,
       DFconfig: {
         mode: props.config.mode,
         static: true,
@@ -70,5 +72,10 @@ export default {
   components: {
     flatPickr
   },
+  methods:{
+    changed(){
+      this.updateSelf(this.date);
+    }
+  }
 }
 </script>

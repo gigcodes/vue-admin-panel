@@ -11,11 +11,16 @@
       <select :id="id" class="form-select"
               :autofocus="autofocus" :required="required"
               :aria-readonly="readonly" :disabled="disabled"
-              v-model="modelValue"
-
+              @change="updateSelf($event.target.value)"
+              @keyup="$emit('keyup',$event)"
+              @focus="handleFocus"
+              @blur="handleBlur"
       >
         <option v-if="placeholder" disabled>{{ placeholder }}</option>
-        <option v-for="(option,key) in options" :value="key">{{ option }}</option>
+        <option v-for="(option,key) in options" :value="key"
+                :selected="key===modelValue"
+        >{{ option }}
+        </option>
       </select>
     </div>
     <div class="text-xs mt-1" v-if="help">{{ help }}</div>
@@ -33,10 +38,23 @@ export default {
   name: "SelectField",
   props: ['options'],
   mixins: [Fieldtypes, Input],
-  setup(props) {
+  setup(props, {emit}) {
     const options = ref(props.options)
+    const handleFocus = (event) => {
+      this.focused = true;
+      emit('focus', event)
+    }
+    const handleChange = (event) => {
+      emit('change', event)
+    }
+    const handleBlur = (event) => {
+      emit('blur', event)
+    }
     return {
-      options
+      options,
+      handleFocus,
+      handleChange,
+      handleBlur
     }
   }
 }
