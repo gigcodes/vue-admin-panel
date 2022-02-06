@@ -48,9 +48,8 @@ export default {
   mixins: [Fieldtypes, Input],
   data(props) {
     return {
-      date: null,
       DFconfig: {
-        mode: props.config.range,
+        mode: props.config.mode,
         static: true,
         monthSelectorType: 'static',
         dateFormat: props.config.dateFormat,
