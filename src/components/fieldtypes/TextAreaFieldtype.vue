@@ -47,7 +47,6 @@ export default {
       this.$emit('change', event.target.value);
     },
     handleBlur(event) {
-      this.focused = false;
       this.$emit('blur', event);
     },
   },
