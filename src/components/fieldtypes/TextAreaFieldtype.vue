@@ -46,7 +46,7 @@ export default {
     },
     handleFocus(event) {
       this.focused = true;
-      this.$emit('focus', event);
+      this.$emit('focused', event);
     },
     handleChange(event) {
       this.$emit('change', event.target.value);

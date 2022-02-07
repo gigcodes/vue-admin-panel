@@ -64,7 +64,7 @@ export default {
     const options = ref(props.options)
     const handleFocus = (event) => {
       this.focused = true;
-      emit('focus', event)
+      emit('focused', event)
     }
     const handleChange = (event) => {
       emit('change', event)
