@@ -60,7 +60,6 @@ export default {
     }
   },
   setup(props, {emit}) {
-    const options = ref(props.options)
     const handleChange = (event) => {
       emit('change', event)
     }
@@ -68,7 +67,6 @@ export default {
       emit('blur', event)
     }
     return {
-      options,
       handleChange,
       handleBlur
     }
