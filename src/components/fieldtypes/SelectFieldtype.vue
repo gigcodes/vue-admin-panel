@@ -13,7 +13,6 @@
               :aria-readonly="readonly" :disabled="disabled"
               @change="updateSelf($event.target.value)"
               @keyup="$emit('keyup',$event)"
-              @focus="handleFocus"
               @blur="handleBlur"
               :class="className"
       >
@@ -62,10 +61,6 @@ export default {
   },
   setup(props, {emit}) {
     const options = ref(props.options)
-    const handleFocus = (event) => {
-      this.focused = true;
-      emit('focused', event)
-    }
     const handleChange = (event) => {
       emit('change', event)
     }

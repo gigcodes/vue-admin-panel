@@ -21,7 +21,6 @@
                        :disabled="disabled"
                        :class="className"
                        @keyup="$emit('keyup',$event)"
-                       @focus="handleFocus"
                        @blur="handleBlur"
                        @change="handleChange"
                 />
@@ -47,7 +46,6 @@
                    class="form-input w-full"
                    :class="className"
                    @keyup="$emit('keyup',$event)"
-                   @focus="handleFocus"
                    @blur="handleBlur"
                    @change="handleChange"
             />
@@ -70,15 +68,10 @@ export default {
     emits: ['update:modelValue', 'update:slug', 'keyup', 'blur', 'change', 'focus'],
     mixins: [FieldType, Input],
     methods: {
-        handleFocus(event) {
-            this.focused = true;
-            this.$emit('focused', event);
-        },
         handleChange(event) {
             this.$emit('change', event.target.value);
         },
         handleBlur(event) {
-            this.focused = false;
             this.$emit('blur', event);
         },
     },

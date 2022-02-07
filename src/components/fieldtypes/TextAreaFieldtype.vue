@@ -19,7 +19,6 @@
                 class="form-input w-full"
                 :class="className"
                 @keyup="$emit('keyup',$event)"
-                @focus="handleFocus"
                 @blur="handleBlur"
                 @change="handleChange"
                 :rows="rows"
@@ -43,10 +42,6 @@ export default {
   methods: {
     updateSelf(title) {
       this.$emit('update:modelValue', title)
-    },
-    handleFocus(event) {
-      this.focused = true;
-      this.$emit('focused', event);
     },
     handleChange(event) {
       this.$emit('change', event.target.value);
