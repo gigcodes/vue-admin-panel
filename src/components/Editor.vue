@@ -8,7 +8,7 @@
           <div class="text-sm text-gray-200">{{ tooltip }}</div>
         </tooltip>
       </div>
-      <editor-content :editor="editor" :id="id"/>
+      <editor-content :editor="editor" :id="id" class="form-input w-full"/>
     </div>
     <div class="text-xs mt-1" v-if="help">{{ help }}</div>
     <div class="text-xs mt-1 text-green-500" v-if="hasSuccess">{{ hasSuccess }}</div>
@@ -45,7 +45,7 @@ export default {
         }
       },
       onUpdate: (context) => {
-        emit('update:modelValue', context)
+        emit('update:modelValue', context.editor.getHTML())
       }
     })
 
