@@ -38,6 +38,9 @@ export default {
   name: "SelectField",
   props: ['options'],
   mixins: [Fieldtypes, Input],
+  emits: [
+    'change', 'blur'
+  ],
   computed: {
     className() {
       let classes = '';
