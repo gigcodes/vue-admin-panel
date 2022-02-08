@@ -1,15 +1,14 @@
 <template>
   <ul class="dropdown-menu px-2">
     <li v-for="action in actions" :class="['mb-1',{'warning':action ==='delete'}]">
-      <router-link :href="item.edit_url" v-if="action === 'edit'">Edit</router-link>
+      <a href="#" @click.prevent="goTo(item.edit_url)" v-if="action === 'edit'">Edit</a>
       <a href="#" v-if="action === 'delete'" @click.prevent="showDeleteModal">Delete</a>
-      <a :href="item.edit_password_url" v-if="action === 'update_password'">Change password</a>
-      <a :href="item.invoice_pdf" v-if="action === 'invoice_download'">Download PDF</a>
+      <a @click.prevent="goTo(item.edit_password_url)" href="#" v-if="action === 'update_password'">Change password</a>
+      <a @click.prevent="goTo(item.invoice_pdf)" href="#" v-if="action === 'invoice_download'">Download PDF</a>
       <a href="javascript:void(0)" v-if="action === 'join'" @click.prevent="copyJoinUrl(item.join_url)">Copy
-        Join
-        URL</a>
-      <a :href="item.registrants_url" v-if="action === 'registrants'">Show Registrants</a>
-      <a :href="item.transactions_url" v-if="action === 'transactions'">Show Transactions</a>
+        Join URL</a>
+      <a @click.prevent="goTo(item.registrants_url)" href="#" v-if="action === 'registrants'">Show Registrants</a>
+      <a @click.prevent="goTo(item.transactions_url)" href="#" v-if="action === 'transactions'">Show Transactions</a>
     </li>
   </ul>
 </template>
@@ -28,6 +27,9 @@ export default {
     }
   },
   methods: {
+    goTo(url) {
+      Events.$emit('goTo', url)
+    },
     showDeleteModal() {
       Events.$emit('showModal', {
         type: 'delete',
