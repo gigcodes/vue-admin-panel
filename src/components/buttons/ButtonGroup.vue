@@ -8,7 +8,7 @@
     </Btn>
     <Btn :state="state" :type="type" :size="size" :disabled="disabled"
          :extra-class="text ? 'rounded-none rounded-r-lg p-2' : 'p-0.5'"
-         :loading="loading" @click="toggle" v-click-away="away">
+         @click="toggle" v-click-away="away">
       <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
            aria-hidden="true">
         <path fill-rule="evenodd"

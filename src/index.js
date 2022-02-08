@@ -6,6 +6,7 @@ import {default as DossierTable} from './components/dossier/DossierTable.vue';
 import {default as DossierSortSelector} from './components/dossier/SortSelector.vue';
 import {default as Modal} from './components/modal/Modal.vue';
 import {default as BaseIcon} from './components/BaseIcon.vue';
+import {default as Editor} from './components/Editor.vue';
 
 //fieldtypes
 import {default as TextField} from './components/fieldtypes/TextFieldtype.vue';
@@ -79,6 +80,7 @@ export {
     Events,
     Validators,
     formValidators,
+    Editor,
 }
 
 export default GigcodesAdmin
