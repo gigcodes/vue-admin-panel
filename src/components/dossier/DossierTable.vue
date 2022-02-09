@@ -259,8 +259,16 @@ export default {
 @tailwind preflight;
 @tailwind components;
 @tailwind utilities;
+.dossier-sort-options {
+  position: relative;
+
+  @media all and (min-width: 768px) {
+    display: none;
+  }
+}
 .dossier {
   table {
+
     @apply table-auto w-full;
     thead {
       @apply text-xs uppercase text-slate-400 bg-slate-50 rounded-sm;
@@ -293,6 +301,17 @@ export default {
       @apply text-gray-700 block px-4 py-1 text-sm hover:bg-gray-100 hover:text-gray-900 rounded;
       &.warning {
         @apply bg-rose-500 hover:bg-rose-600 text-white;
+      }
+    }
+  }
+  @media all and (min-width: 768px) {
+    .has-status-icon {
+      display: flex;
+      align-items: center;
+
+      .status {
+        flex-shrink: 0;
+        margin-right: 15px;
       }
     }
   }
