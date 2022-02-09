@@ -18,7 +18,7 @@
       >
         <option v-if="placeholder" disabled>{{ placeholder }}</option>
         <option v-for="(option,key) in options" :value="key"
-                :selected="key===modelValue"
+                :selected="key==modelValue"
         >{{ option }}
         </option>
       </select>
