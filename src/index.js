@@ -19,6 +19,7 @@ import {default as DateField} from './components/fieldtypes/DateFieldtype.vue';
 //plugins
 import {default as Toaster, createToaster} from './plugins/toaster';
 import {default as copy} from './plugins/copyt-to-clipboard';
+import {default as slugify} from './plugins/slugify';
 import {default as RouteMiddleware} from './plugins/route-middleware';
 import {default as Dossier} from './components/dossier/Dossier.vue';
 import {mixin as CAMixin, plugin as CAPlugin, directive as CADirective} from './plugins/click-away';
@@ -81,6 +82,7 @@ export {
     Validators,
     formValidators,
     Editor,
+    slugify
 }
 
 export default GigcodesAdmin
