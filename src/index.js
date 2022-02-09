@@ -25,7 +25,6 @@ import {mixin as CAMixin, plugin as CAPlugin, directive as CADirective} from './
 import {default as Events} from './modules/events'
 import Validators from './modules/Validators';
 import formValidators from './modules/useFormValidation';
-const slugify = require('./plugins/slugify');
 import 'flatpickr/dist/flatpickr.min.css';
 import './sass/index.scss';
 
@@ -81,7 +80,6 @@ export {
     Validators,
     formValidators,
     Editor,
-    slugify
 }
 
 export default GigcodesAdmin
