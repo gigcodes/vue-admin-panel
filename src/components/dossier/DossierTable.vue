@@ -315,5 +315,9 @@ export default {
       }
     }
   }
+  .cell-slug {
+    color: #777;
+    font-family: 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace';
+  }
 }
 </style>
