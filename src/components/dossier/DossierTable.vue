@@ -45,7 +45,7 @@
             </div>
           </td>
           <td v-for="(column,i) in columns" :class="[
-                        `cell-${column.value}` + ' text-center', {
+                        `cell-${column.value}`, {
                             'extra-col': column.extra,
                             'empty-col': !item[column.value],
                             'first-cell': i === 0
@@ -267,10 +267,6 @@ export default {
   }
 }
 .dossier {
-  a {
-    color: #4e5e73;
-    cursor: pointer;
-  }
   table td span.status {
     border-radius: 7px;
     display: inline-block;
@@ -287,7 +283,7 @@ export default {
       @apply text-xs uppercase text-slate-400 bg-slate-50 rounded-sm;
       tr {
         th {
-          @apply p-2 whitespace-nowrap font-semibold;
+          @apply p-2 whitespace-nowrap font-semibold text-left;
           & .checkbox-col {
             @apply w-px;
           }
@@ -304,6 +300,10 @@ export default {
           &.column-actions {
             text-align: end;
           }
+        }
+        a:hover {
+          color: #3aa3e3;
+          text-decoration: none;
         }
       }
     }
