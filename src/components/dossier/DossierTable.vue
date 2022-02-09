@@ -57,7 +57,7 @@
 
           <!-- actions -->
           <td class="column-actions" v-if="hasActions">
-            <btn-group type="tertiary" size="sm">
+            <btn-group type="none" size="none">
               <actions :item="item" :actions="options.partials.actions"/>
             </btn-group>
           </td>

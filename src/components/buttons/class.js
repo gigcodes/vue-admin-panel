@@ -6,4 +6,5 @@ export default {
     danger: 'border-slate-200 hover:border-slate-300 text-rose-500',
     successFill: 'bg-green-500 hover:bg-green-600 text-white',
     success: 'border-slate-200 hover:border-slate-300 text-green-500',
+    none: ''
 }
