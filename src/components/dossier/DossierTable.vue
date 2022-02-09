@@ -57,9 +57,30 @@
 
           <!-- actions -->
           <td class="column-actions" v-if="hasActions">
-            <btn-group type="none" size="none">
+            <button class="text-slate-400 hover:text-slate-500 rounded-full"
+                    @click.prevent="dropdownOpen=!dropdownOpen"
+                    v-click-away="dropdownOpen=false">
+              <span class="sr-only">Menu</span>
+              <svg class="w-8 h-8 fill-current" viewBox="0 0 32 32">
+                <circle cx="16" cy="16" r="2"></circle>
+                <circle cx="10" cy="16" r="2"></circle>
+                <circle cx="22" cy="16" r="2"></circle>
+              </svg>
+            </button>
+            <transition
+                enter-active-class="transition ease-out duration-200 transform"
+                enter-from-class="opacity-0 -translate-y-2"
+                enter-to-class="opacity-100 translate-y-0"
+                leave-active-class="transition ease-out duration-200"
+                leave-from-class="opacity-100"
+                leave-to-class="opacity-0"
+            >
+              <div v-show="dropdownOpen"
+                   class="origin-top-right z-10 absolute top-full min-w-44 bg-white border border-slate-200 py-1.5 rounded shadow-lg overflow-hidden mt-1 right-0">
+                <slot></slot>
+              </div>
               <actions :item="item" :actions="options.partials.actions"/>
-            </btn-group>
+            </transition>
           </td>
         </tr>
         </tbody>
@@ -102,6 +123,7 @@ import {Events} from "../../index";
 import {Btn} from "../../index";
 import {BtnGroup} from "../../index";
 import {Modal} from "../../index";
+import {mixin} from "../../plugins/click-away";
 
 export default {
   name: 'DossierTable',
@@ -114,6 +136,8 @@ export default {
     BtnGroup
   },
 
+  mixins: [mixin],
+
   props: ['options', 'items', 'isSearching', 'hasItems', 'title'],
 
   data: function () {
@@ -123,6 +147,7 @@ export default {
       sortable: true,
       deleteModal: false,
       selectedItem: null,
+      dropdownOpen: false
     }
   },
 
@@ -266,6 +291,7 @@ export default {
     display: none;
   }
 }
+
 .dossier {
   table {
 
@@ -285,6 +311,7 @@ export default {
     tbody {
       @apply text-sm divide-y divide-slate-100;
       border-bottom: solid 1px #e0e0e0;
+
       tr {
         td {
           @apply p-1 px-2 whitespace-nowrap;
@@ -304,6 +331,7 @@ export default {
       }
     }
   }
+
   @media all and (min-width: 768px) {
     .has-status-icon {
       display: flex;
@@ -315,6 +343,7 @@ export default {
       }
     }
   }
+
   .cell-slug {
     color: #777;
     font-family: 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace';
