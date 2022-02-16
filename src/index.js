@@ -25,8 +25,14 @@ import {mixin as CAMixin, plugin as CAPlugin, directive as CADirective} from './
 import {default as Events} from './modules/events'
 import Validators from './modules/Validators';
 import formValidators from './modules/useFormValidation';
+import './plugins/mousetrap/mousetrap';
 import 'flatpickr/dist/flatpickr.min.css';
 import './sass/index.scss';
+
+import {default as hasErrorMixin} from './mixins/hasError'
+import {default as publishMixin} from './mixins/publish'
+
+const mousetrap = window.Mousetrap;
 
 const components = {
     Tooltip,
@@ -55,6 +61,10 @@ const GigcodesAdmin = {
     }
 }
 
+mousetrap.bind(['/', 'mod+k'], function (e) {
+    Events.$emit('openSearch');
+}, 'keyup');
+
 export {
     Tooltip,
     Btn,
@@ -80,6 +90,9 @@ export {
     Validators,
     formValidators,
     Editor,
+    hasErrorMixin,
+    publishMixin,
+    mousetrap
 }
 
 export default GigcodesAdmin

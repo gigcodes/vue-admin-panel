@@ -1,6 +1,6 @@
 {
-  "name": "@karthickk1996/gigcodesadmin",
-  "version": "1.0.0-beta.66",
+  "name": "@gigcodes/vue-admin-panel",
+  "version": "1.0.0-beta.01",
   "description": "Reusable SPA Admin Panel for Laravel",
   "main": "./dist/gigcodes-admin.umd.js",
   "module": "./dist/gigcodes-admin.es.js",
@@ -12,7 +12,7 @@
   ],
   "sideEffects": false,
   "publishConfig": {
-    "registry": "https://github.com/karthickk1996/GigcodesAdmin.git"
+    "registry": "https://github.com/gigcodes/vue-admin-panel.git"
   },
   "scripts": {
     "dev": "vite",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/karthickk1996/GigcodesAdmin.git"
+    "url": "git+https://github.com/gigcodes/vue-admin-panel.git"
   },
   "keywords": [
     "gigocodes",
@@ -31,9 +31,9 @@
   "author": "Karthick K",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/karthickk1996/GigcodesAdmin/issues"
+    "url": "https://github.com/gigcodes/vue-admin-panel/issues"
   },
-  "homepage": "https://github.com/karthickk1996/GigcodesAdmin#readme",
+  "homepage": "https://github.com/gigcodes/vue-admin-panel.git#readme",
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.1",
     "@vitejs/plugin-vue": "^1.9.3",

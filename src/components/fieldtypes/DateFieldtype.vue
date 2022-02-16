@@ -44,12 +44,14 @@ export default {
         }
       },
       type: Object
-    }
+    },
+    modelValue: String
   },
-  mixins: [Fieldtypes, Input],
+  emits: ['update:modelValue'],
+  mixins: [Fieldtypes],
   data(props) {
     return {
-      date: this.modelValue,
+      date: props.modelValue,
       DFconfig: {
         mode: props.config.mode,
         static: true,
@@ -75,6 +77,9 @@ export default {
   methods:{
     changed(){
       this.updateSelf(this.date);
+    },
+    updateSelf(title) {
+      this.$emit('update:modelValue', title)
     }
   }
 }
