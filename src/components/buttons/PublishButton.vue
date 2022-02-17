@@ -1,17 +1,17 @@
 <template>
   <div class="relative inline-flex publish">
     <Btn type="primary" v-if="publishType === 'save'"
-         @click="$emit('publishWithoutContinuing')"
+         @click="publishWithoutContinuing()"
          ref="trigger"
          :disabled="loading">{{ saveText }}
     </Btn>
     <Btn v-if="publishType === 'continue'" type="primary"
          ref="trigger"
-         @click="$emit('publishAndContinue')" :disabled="loading">{{ saveText }} and continue
+         @click="publishAndContinue()" :disabled="loading">{{ saveText }} and continue
     </Btn>
     <Btn v-if="allowSaveAndAddAnother && publishType === 'another'" type="primary"
          ref="trigger"
-         @click="$emit('publishAndAnother')" :disabled="loading">{{ saveText }}
+         @click="publishAndAnother()" :disabled="loading">{{ saveText }}
       and add another
     </Btn>
     <Btn :state="state" :type="type" :size="size" :disabled="loading"
@@ -42,15 +42,15 @@
         >
           <li v-if="publishType !== 'continue'">
             <a class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
-               href="javascript:void(0)" @click="$emit('publishAndContinue')">{{ saveText }} and continue</a>
+               href="javascript:void(0)" @click="publishAndContinue()">{{ saveText }} and continue</a>
           </li>
           <li v-if="publishType !== 'save'">
             <a class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
-               href="javascript:void(0)" @click="$emit('publishWithoutContinuing')">{{ saveText }}</a>
+               href="javascript:void(0)" @click="publishWithoutContinuing()">{{ saveText }}</a>
           </li>
           <li v-if="allowSaveAndAddAnother && publishType !== 'another'">
             <a class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
-               href="javascript:void(0)" @click="$emit('publishAndAnother')">{{ saveText }} and add another</a>
+               href="javascript:void(0)" @click="publishAndAnother()">{{ saveText }} and add another</a>
           </li>
         </ul>
       </div>
@@ -61,30 +61,26 @@
 import classes from './class';
 import type from './index';
 import sizes from "./sizes";
-import {Btn} from "../../index";
+import {Btn, Events} from "../../index";
 import {mixin} from "../../plugins/click-away";
 
 export default {
   mixins: [type, mixin],
   name: 'PublishButton',
   emits: [
-    'publishWithoutContinuing', 'publishAndContinue', 'publishAndAnother'
+    'update:type',
   ],
   components: {
     Btn
   },
   props: {
-    publishType: {
+    type: {
       type: String,
-      default: null
+      default: 'save'
     },
-    allowSaveAndAddAnother: {
-      type: Boolean,
-      default: false
-    },
-    text: {
+    collection: {
       type: String,
-      default: null
+      default: 'gigcodes'
     },
     saveText: {
       type: String,
@@ -101,7 +97,25 @@ export default {
       classes,
       disable: this.disabled,
       dropdownOpen: false,
+      allowSaveAndAddAnother: true,
+      publishType: 'save',
+      saving: false
     }
+  },
+  computed: {
+    saveBehaviorScope() {
+      return `gigcodes.publish.${this.collection}.type`
+    },
+    getInitialPublishType() {
+      let type = localStorage.getItem(this.saveBehaviorScope) || 'save';
+      if (!this.allowSaveAndAddAnother && type === 'another') {
+        type = 'save';
+      }
+      return type;
+    }
+  },
+  mounted() {
+    this.publishType = this.getInitialPublishType;
   },
   methods: {
     toggle() {
@@ -109,6 +123,27 @@ export default {
     },
     away() {
       this.dropdownOpen = false;
+    },
+    publishWithoutContinuing() {
+      this.publishType = 'save'
+      this.saving = true;
+      localStorage.setItem(this.saveBehaviorScope, 'save');
+      this.$emit('update:type', 'save')
+      Events.$emit('publish')
+    },
+    publishAndContinue() {
+      this.publishType = 'continue';
+      this.saving = true;
+      this.$emit('update:type', 'continue')
+      localStorage.setItem(this.saveBehaviorScope, 'continue');
+      Events.$emit('publish')
+    },
+    publishAndAnother() {
+      this.publishType = 'another';
+      this.saving = true;
+      this.$emit('update:type', 'another')
+      localStorage.setItem(this.saveBehaviorScope, 'another');
+      Events.$emit('publish')
     }
   }
 }

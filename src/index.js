@@ -32,7 +32,6 @@ import 'flatpickr/dist/flatpickr.min.css';
 import './sass/index.scss';
 
 import {default as hasErrorMixin} from './mixins/hasError'
-import {default as publishMixin} from './mixins/publish'
 
 const mousetrap = window.Mousetrap;
 
@@ -94,7 +93,6 @@ export {
     formValidators,
     Editor,
     hasErrorMixin,
-    publishMixin,
     mousetrap,
     slugify
 }
