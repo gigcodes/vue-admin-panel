@@ -70,6 +70,9 @@ import {mixin} from "../../plugins/click-away";
 export default {
   mixins: [type, mixin],
   name: 'PublishButton',
+  emits: [
+    'publishWithoutContinuing', 'publishAndContinue', 'publishAndAnother'
+  ],
   components: {
     Btn
   },
