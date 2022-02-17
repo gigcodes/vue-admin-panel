@@ -121,11 +121,11 @@ export default {
 
 .publish {
   button {
-    @apply rounded-none rounded-l-lg !important;
+    @apply rounded-none rounded-l-lg;
   }
 
   .dropdown {
-    @apply rounded-none rounded-r-lg p-2 px-0.5 !important;
+    @apply rounded-none rounded-r-lg p-2 px-0.5;
   }
 }
 
