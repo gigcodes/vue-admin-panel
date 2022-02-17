@@ -4,17 +4,17 @@
          @click="$emit('publishWithoutContinuing')"
          ref="trigger"
          extra-class="rounded-none rounded-l-lg"
-         :disabled="loading">@{{ saveText }}
+         :disabled="loading">{{ saveText }}
     </Btn>
     <Btn v-if="publishType === 'continue'" type="primary"
          ref="trigger"
          extra-class="rounded-none rounded-l-lg"
-         @click="$emit('publishAndContinue')" :disabled="loading">@{{ saveText }} and continue
+         @click="$emit('publishAndContinue')" :disabled="loading">{{ saveText }} and continue
     </Btn>
     <Btn v-if="allowSaveAndAddAnother && publishType === 'another'" type="primary"
          ref="trigger"
          extra-class="rounded-none rounded-l-lg"
-         @click="$emit('publishAndAnother')" :disabled="loading">@{{ saveText }}
+         @click="$emit('publishAndAnother')" :disabled="loading">{{ saveText }}
       and add another
     </Btn>
     <Btn :state="state" :type="type" :size="size" :disabled="disabled"
@@ -45,15 +45,15 @@
         >
           <li v-if="publishType !== 'continue'">
             <a class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
-               href="javascript:void(0)" @click="$emit('publishAndContinue')">@{{ saveText }} and continue</a>
+               href="javascript:void(0)" @click="$emit('publishAndContinue')">{{ saveText }} and continue</a>
           </li>
           <li v-if="publishType !== 'save'">
             <a class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
-               href="javascript:void(0)" @click="$emit('publishWithoutContinuing')">@{{ saveText }}</a>
+               href="javascript:void(0)" @click="$emit('publishWithoutContinuing')">{{ saveText }}</a>
           </li>
           <li v-if="allowSaveAndAddAnother && publishType !== 'another'">
             <a class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
-               href="javascript:void(0)" @click="$emit('publishAndAnother')">@{{ saveText }} and add another</a>
+               href="javascript:void(0)" @click="$emit('publishAndAnother')">{{ saveText }} and add another</a>
           </li>
         </ul>
       </div>
