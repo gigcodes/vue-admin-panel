@@ -8,17 +8,17 @@
     </Btn>
     <Btn v-if="publishType === 'continue'" type="primary"
          ref="trigger"
-         extra-class="rounded-none rounded-l-lg"
+         class="rounded-none rounded-l-lg"
          @click="$emit('publishAndContinue')" :disabled="loading">{{ saveText }} and continue
     </Btn>
     <Btn v-if="allowSaveAndAddAnother && publishType === 'another'" type="primary"
          ref="trigger"
-         extra-class="rounded-none rounded-l-lg"
+         class="rounded-none rounded-l-lg"
          @click="$emit('publishAndAnother')" :disabled="loading">{{ saveText }}
       and add another
     </Btn>
-    <Btn :state="state" :type="type" :size="size" :disabled="disabled"
-         :extra-class="text ? 'rounded-none rounded-r-lg p-2' : 'p-0.5'"
+    <Btn :state="state" :type="type" :size="size" :disabled="loading"
+         class="rounded-none rounded-r-lg p-2 px-0.5"
          @click="toggle" v-click-away="away">
       <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
            aria-hidden="true">
