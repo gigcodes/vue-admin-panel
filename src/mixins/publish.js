@@ -50,7 +50,6 @@ export default {
     saving,
     publishType,
     allowSaveAndAddAnother,
-    publish,
     saveBehaviorScope,
     publishWithoutContinuing,
     publishAndContinue,
