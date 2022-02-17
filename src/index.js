@@ -7,6 +7,7 @@ import {default as DossierSortSelector} from './components/dossier/SortSelector.
 import {default as Modal} from './components/modal/Modal.vue';
 import {default as BaseIcon} from './components/BaseIcon.vue';
 import {default as Editor} from './components/Editor.vue';
+import {default as PublishButton} from './components/buttons/PublishButton.vue'
 
 //fieldtypes
 import {default as TextField} from './components/fieldtypes/TextFieldtype.vue';
@@ -48,6 +49,7 @@ const components = {
     SelectField,
     ToggleField,
     DateField,
+    PublishButton
 }
 
 
