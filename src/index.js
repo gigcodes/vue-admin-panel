@@ -21,6 +21,7 @@ import {default as Toaster, createToaster} from './plugins/toaster';
 import {default as copy} from './plugins/copyt-to-clipboard';
 import {default as RouteMiddleware} from './plugins/route-middleware';
 import {default as Dossier} from './components/dossier/Dossier.vue';
+import slugify from './plugins/slugify'
 import {mixin as CAMixin, plugin as CAPlugin, directive as CADirective} from './plugins/click-away';
 import {default as Events} from './modules/events'
 import Validators from './modules/Validators';
@@ -92,7 +93,8 @@ export {
     Editor,
     hasErrorMixin,
     publishMixin,
-    mousetrap
+    mousetrap,
+    slugify
 }
 
 export default GigcodesAdmin

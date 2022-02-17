@@ -1,6 +1,6 @@
 {
   "name": "@gigcodes/vue-admin-panel",
-  "version": "1.0.0-beta.01",
+  "version": "1.0.0-beta.02",
   "description": "Reusable SPA Admin Panel for Laravel",
   "main": "./dist/gigcodes-admin.umd.js",
   "module": "./dist/gigcodes-admin.es.js",
@@ -51,6 +51,7 @@
     "@vue/compiler-sfc": "^3.2.29",
     "flatpickr": "^4.6.9",
     "sass": "^1.49.7",
+    "speakingurl": "^14.0.1",
     "underscore": "^1.13.2",
     "vite": "^2.7.13"
   },
