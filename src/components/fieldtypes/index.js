@@ -49,7 +49,6 @@ export default {
             default: null
         },
         hasError: {
-            type: String,
             default: null,
         },
         hasSuccess: {
