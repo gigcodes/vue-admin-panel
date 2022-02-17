@@ -2,8 +2,8 @@ import {ref} from "vue";
 
 const errors = ref({});
 const checkError = (field) => {
-    if (errors[field]) {
-        return errors[field]
+    if (errors.value[field]) {
+        return errors.value[field]
     } else {
         return false;
     }
