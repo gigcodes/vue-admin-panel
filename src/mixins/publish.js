@@ -1,14 +1,11 @@
 import {onMounted, ref, computed} from "vue";
-
+import {Events} from '../index'
 
 const collection = ref('gigcodes')
 const loading = ref(false);
 const saving = ref(false);
 const publishType = ref('save');
 const allowSaveAndAddAnother = ref(true);
-const publish = () => {
-
-}
 
 const saveBehaviorScope = computed(() => `gigcodes.publish.${collection.value}.type`)
 
@@ -25,7 +22,7 @@ const publishWithoutContinuing = () => {
     saving.value = true;
     loading.value = true;
     localStorage.setItem(saveBehaviorScope.value, 'save');
-    publish();
+    Events.$emit('publish')
 }
 
 const publishAndContinue = () => {
@@ -33,7 +30,7 @@ const publishAndContinue = () => {
     saving.value = true;
     loading.value = true;
     localStorage.setItem(saveBehaviorScope.value, 'continue');
-    publish();
+    Events.$emit('publish')
 }
 
 const publishAndAnother = () => {
@@ -41,7 +38,7 @@ const publishAndAnother = () => {
     saving.value = true;
     loading.value = true;
     localStorage.setItem(saveBehaviorScope.value, 'another');
-    publish();
+    Events.$emit('publish')
 }
 
 onMounted(() => {
