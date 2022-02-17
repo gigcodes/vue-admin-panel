@@ -14,7 +14,7 @@
          @click="publishAndAnother()" :disabled="loading">{{ saveText }}
       and add another
     </Btn>
-    <Btn :state="state" :type="type" :size="size" :disabled="loading"
+    <Btn :state="state" type="primary" :size="size" :disabled="loading"
          class="dropdown"
          @click="toggle" v-click-away="away">
       <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
