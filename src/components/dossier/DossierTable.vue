@@ -243,6 +243,7 @@ export default {
     },
     deleteItem() {
       Events.$emit('deleteItem', this.selectedItem.id)
+      this.deleteModal = false
     }
   },
   created() {

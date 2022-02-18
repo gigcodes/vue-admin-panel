@@ -152,15 +152,15 @@ export default {
               _.each(self.checkedItems, function (id) {
                 self.removeItemFromList(id);
               });
-              this.toaster.default(response.data.message)
+              this.toaster.show(response.data.message)
             }).catch(error => {
               this.toaster.error(error.response.data.message);
             });
           } else {
-            console.log('Delete service is not setup')
+            this.toaster.error('Delete service is not setup')
           }
         } else {
-          swal("Delete cancelled");
+          this.toaster.show('Delete cancelled');
         }
       });
     },
@@ -170,7 +170,7 @@ export default {
           _.each(self.checkedItems, function (id) {
             self.removeItemFromList(id);
           });
-          this.toaster.default(response.data.message)
+          this.toaster.show(response.data.message)
         }).catch(error => {
           this.toaster.error(error.response.data.message);
         });
