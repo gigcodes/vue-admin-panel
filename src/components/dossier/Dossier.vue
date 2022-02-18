@@ -165,8 +165,8 @@ export default {
       });
     },
     deleteItem(id) {
-      if (this.deleteService({ids: [id]})) {
-        this.deleteService({ids: [id]}).then(response => {
+      try {
+        this.deleteService(id).then(response => {
           _.each(self.checkedItems, function (id) {
             self.removeItemFromList(id);
           });
@@ -174,8 +174,8 @@ export default {
         }).catch(error => {
           this.toaster.error(error.response.data.message);
         });
-      } else {
-        console.log('Delete service is not setup')
+      } catch (e) {
+        this.toaster.error('Delete service is not setup')
       }
     },
     parseColumns(columns) {
