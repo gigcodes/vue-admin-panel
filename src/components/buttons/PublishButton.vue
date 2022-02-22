@@ -5,11 +5,11 @@
          ref="trigger"
          :disabled="loading">{{ saveText }}
     </Btn>
-    <Btn v-if="publishType === 'continue'" type="primary"
+    <Btn v-if="publishType === 'continue' && hasContinue" type="primary"
          ref="trigger"
          @click="publishAndContinue()" :disabled="loading">{{ saveText }} and continue
     </Btn>
-    <Btn v-if="allowSaveAndAddAnother && publishType === 'another'" type="primary"
+    <Btn v-if="allowSaveAndAddAnother && publishType === 'another' && hasAddAnother" type="primary"
          ref="trigger"
          @click="publishAndAnother()" :disabled="loading">{{ saveText }}
       and add another
@@ -40,7 +40,7 @@
             @focusin="dropdownOpen = true"
             @focusout="dropdownOpen = false"
         >
-          <li v-if="publishType !== 'continue'">
+          <li v-if="publishType !== 'continue' && hasContinue">
             <a class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
                href="javascript:void(0)" @click="publishAndContinue()">{{ saveText }} and continue</a>
           </li>
@@ -48,7 +48,7 @@
             <a class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
                href="javascript:void(0)" @click="publishWithoutContinuing()">{{ saveText }}</a>
           </li>
-          <li v-if="allowSaveAndAddAnother && publishType !== 'another'">
+          <li v-if="allowSaveAndAddAnother && publishType !== 'another' && hasAddAnother">
             <a class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
                href="javascript:void(0)" @click="publishAndAnother()">{{ saveText }} and add another</a>
           </li>
@@ -74,6 +74,14 @@ export default {
     Btn
   },
   props: {
+    hasContinue: {
+      type: Boolean,
+      default: true
+    },
+    hasAddAnother: {
+      type: Boolean,
+      default: true
+    },
     type: {
       type: String,
       default: 'save'

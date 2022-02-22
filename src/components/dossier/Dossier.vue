@@ -16,6 +16,7 @@ export default {
       columns: [],
       reordering: false,
       searchTerm: null,
+      tableOptions: []
     }
   },
 
@@ -91,11 +92,11 @@ export default {
           this.loading = false;
           this.pagination = response.data.pagination;
         }).catch((error) => {
-          console.log(error);
+          dd(error);
           this.toaster.error('Error Fetching Data');
         });
       } else {
-        console.error('Get service not registered')
+        dd('Get service not registered')
       }
     },
 
@@ -113,7 +114,7 @@ export default {
           this.toaster.error('Error Fetching Data');
         });
       } else {
-        console.error('Get service not registered')
+        dd('Get service not registered')
       }
     },
 
@@ -167,8 +168,8 @@ export default {
     deleteItem(id) {
       try {
         this.deleteService(id).then(response => {
-          _.each(self.checkedItems, function (id) {
-            self.removeItemFromList(id);
+          _.each(this.checkedItems, function (id) {
+            this.removeItemFromList(id);
           });
           this.toaster.show(response.data.message)
         }).catch(error => {

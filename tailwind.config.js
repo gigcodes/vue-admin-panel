@@ -18,6 +18,7 @@ module.exports = {
                 gray: colors.slate,
                 'light-blue': colors.sky,
                 red: colors.rose,
+                green: colors.green,
             },
             outline: {
                 blue: '2px solid rgba(0, 112, 244, 0.5)',
