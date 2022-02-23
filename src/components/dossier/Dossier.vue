@@ -217,11 +217,8 @@ export default {
   created() {
     Events.$on('deleteItem', (data) => {
       this.deleteItem(data);
+      Events.$off('deleteItem');
     })
   },
-  beforeDestroy(){
-    Events.$off('deleteItem', this.deleteItem)
-  }
-
 };
 </script>
