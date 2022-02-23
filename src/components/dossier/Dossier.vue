@@ -16,7 +16,8 @@ export default {
       columns: [],
       reordering: false,
       searchTerm: null,
-      tableOptions: []
+      tableOptions: [],
+      eventCalled: 0
     }
   },
 
@@ -216,6 +217,7 @@ export default {
   },
   created() {
     Events.$on('deleteItem', (data) => {
+      this.eventCalled++;
       this.deleteItem(data);
       Events.$off('deleteItem');
     })
