@@ -218,6 +218,9 @@ export default {
     Events.$on('deleteItem', (data) => {
       this.deleteItem(data);
     })
+  },
+  beforeDestroy(){
+    Events.$off('deleteItem', this.deleteItem)
   }
 
 };
