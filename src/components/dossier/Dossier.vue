@@ -166,20 +166,6 @@ export default {
         }
       });
     },
-    deleteItem(id) {
-      try {
-        this.deleteService(id).then((response) => {
-          this.removeItemFromList(id);
-          this.toaster.show(response.data.message);
-        }).catch((error) => {
-          console.log(error);
-          this.toaster.error(error.response.data.message);
-        });
-      } catch (e) {
-        console.log(e);
-        this.toaster.error("Delete service is not setup");
-      }
-    },
     parseColumns(columns) {
       // If a link column hasn't been explicitly defined, we'll make the first column the link.
       const linkColumnUndefined = _.findWhere(columns, {link: true}) === undefined;
@@ -214,13 +200,6 @@ export default {
         };
       });
     },
-  },
-  created() {
-    Events.$on('deleteItem', (data) => {
-      this.eventCalled++;
-      this.deleteItem(data);
-      Events.$off('deleteItem');
-    })
   },
 };
 </script>
