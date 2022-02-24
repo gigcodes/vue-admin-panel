@@ -1,7 +1,7 @@
 <template>
 
     <li :class="[{'first': number===1},{ 'active': isCurrent },{'last':last}]">
-        <a :href="isCurrent ? '#' : ''" @click.prevent="select">
+        <a :href="isCurrent ? '#' : ''" @click.prevent="$emit('select',number)">
             {{ number }}
         </a>
     </li>
@@ -10,37 +10,17 @@
 
 
 <script>
+import {computed} from "vue";
+
 export default {
 
-    props: ['number', 'last'],
-
-
-    computed: {
-
-        /**
-         * Determine if this page is the current page.
-         *
-         * The "current" property should be a prop, but hey, this is a little cleaner.
-         */
-        isCurrent() {
-            return this.number === this.$parent.current;
-        }
-
-    },
-
-
-    methods: {
-
-        /**
-         * Select this page.
-         *
-         * This should probably emit an event and have the Pagination component
-         * listen for it, but again, this is cleaner and still works in Vue 1.
-         */
-        select() {
-            this.$parent.select(this.number);
-        }
-
+    props: ['number', 'last', 'current'],
+    emits:['select'],
+    setup(props) {
+        const isCurrent = computed(() => {
+            return props.number === props.current;
+        })
+        return {isCurrent}
     }
 
 }

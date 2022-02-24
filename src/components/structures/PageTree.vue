@@ -49,7 +49,6 @@ import {
 import TreeBranch from './Branch.vue';
 import _ from 'underscore';
 import {mousetrap} from "../../index";
-import axios from "axios";
 
 export default {
 

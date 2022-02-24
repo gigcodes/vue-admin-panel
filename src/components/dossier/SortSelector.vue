@@ -30,6 +30,7 @@
 import _ from 'underscore';
 import {BaseIcon} from "../../index";
 import {Btn} from "../../index";
+import {computed, ref} from "vue";
 
 export default {
   name: 'DossierSortSelector',
@@ -38,42 +39,39 @@ export default {
     BaseIcon,
     Btn
   },
+  setup(props, {emit}) {
+    const order = ref(props.sortOrder)
+    const sort = computed(() => {
+      return props.sortData
+    })
 
-  data() {
-    return {
-      order: this.sortOrder
-    }
-  },
-  computed: {
-
-    sort() {
-      return this.sortData
-    },
-
-    sortLabel() {
-      let data = _.where(this.columns, {value: this.sort})[0];
+    const sortLabel = computed(() => {
+      let data = _.where(props.columns, {value: sort.value})[0];
       if (data)
         return data.header;
       else
         return undefined;
-    }
+    })
 
-  },
-
-  methods: {
-
-    changeSortColumn(sort) {
-      this.$emit('sort', {
+    const changeSortColumn = (sort) => {
+      emit('sort', {
         sort,
-        order: this.order
+        order: order.value
       })
-    },
-
-    changeSortOrder(order) {
-      this.$emit('sortBy', {
-        sort,
+    }
+    const changeSortOrder = (order) => {
+      emit('sortBy', {
+        sort: sort.value,
         order
       })
+    }
+
+    return {
+      order,
+      sort,
+      sortLabel,
+      changeSortColumn,
+      changeSortOrder
     }
   }
 };

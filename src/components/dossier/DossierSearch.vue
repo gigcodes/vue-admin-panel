@@ -10,22 +10,25 @@
 </template>
 
 <script>
-    export default {
-        props: ['keyword'],
-        data() {
-            return {
-                text: this.keyword
-            }
-        },
-        methods: {
-            reset: function () {
-                this.keyword = '';
-            }
-        },
-        watch: {
-            text() {
-                this.$emit('update:keyword', this.text);
-            }
+import {ref, watch} from "vue";
+
+export default {
+    props: ['keyword'],
+    emits: ['update:keyword'],
+    setup(props, {emit}) {
+        const text = ref(props.keyword)
+        const reset = () => {
+            text.value = '';
         }
-    };
+        watch(text, (val) => {
+            emit('update:keyword', val)
+        })
+
+        return {
+            text,
+            reset
+        }
+    },
+
+};
 </script>

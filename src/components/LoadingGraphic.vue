@@ -1,5 +1,5 @@
 <template>
-  <div class="loading card">
+  <div class="loading">
     <span class="icon icon-circular-graph animation-spin"></span> {{ text ? text : 'Loading' }}
   </div>
 </template>

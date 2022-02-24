@@ -1,5 +1,5 @@
 <template>
-  <div class="dossier bg-white shadow-lg rounded-sm border border-slate-200 relative">
+  <div class="dossier bg-white shadow-lg rounded-sm border border-slate-200 relative" v-if="!loading">
     <header class="px-5 py-4 border-b border-slate-100">
       <h2 class="font-semibold text-slate-800">{{ title }}
         <span class="text-slate-400 font-medium float-end">{{ pagination.totalItems }}</span>
@@ -26,7 +26,7 @@
           >
             {{ column.header }}
             <i v-if="isColumnActive(column)"
-               :class="sortOrder === 'asc' ? 'icon icon-chevron-up' : 'icon icon-chevron-down' "/>
+               :class="tableOptions.sortOrder === 'asc' ? 'icon icon-chevron-up' : 'icon icon-chevron-down' "/>
           </th>
           <th class="column-actions" v-if="hasActions"/>
         </tr>
@@ -58,7 +58,7 @@
           <!-- actions -->
           <td class="column-actions" v-if="hasActions">
             <btn-group type="none" size="none">
-              <actions :item="item" :actions="options.partials.actions"/>
+              <actions :item="item" :actions="tableOptions.partials.actions"/>
             </btn-group>
           </td>
         </tr>
@@ -70,13 +70,29 @@
           Delete item ?
         </template>
         <template #body>
-          On clicking confirm the selected item will be deleted. If you don't wish to do it then please press cancel.
+          On clicking confirm the selected item will be deleted. If you don't wish to do it then please press
+          cancel.
         </template>
       </modal>
+
+      <modal :open="deleteModalMulti"
+             @cancelled="deleteModalMulti = false" @confirmed="deleteMultiple()">
+        <template #header>
+          Delete {{ checkedItems.length }} {{ checkedItems.length === 1 ? 'item' : 'items' }} ?
+        </template>
+        <template #body>
+          On clicking confirm the selected item will be deleted. If you don't wish to do it then please press
+          cancel.
+        </template>
+      </modal>
+
+
       <div v-if="showBulkActions"
            :class="['pl-1 my-2',{ 'bulk-actions': true, 'no-checkboxes': !hasCheckboxes }]">
         <btn @clicked="uncheckAllItems" type="dangerFill">Uncheck All</btn>
-        <btn @clicked="call('deleteMultiple')" type="danger" extra-class="ml-2">Delete {{ checkedItems.length }}
+        <btn @clicked="deleteModalMulti = true" type="danger" extra-class="ml-2">Delete {{
+            checkedItems.length
+          }}
           {{ checkedItems.length === 1 ? 'item' : 'items' }}
         </btn>
       </div>
@@ -95,138 +111,85 @@
 
 <script>
 import Cell from "./support/Cell.vue";
-import Actions from "./support/Actions.vue";
 import _ from 'underscore';
 import Pagination from "./pagination/Pagination.vue";
 import {Events} from "../../index";
 import {Btn} from "../../index";
 import {BtnGroup} from "../../index";
 import {Modal} from "../../index";
+import {computed, inject, onMounted, ref, watch} from "vue";
+import Actions from "./support/Actions.vue";
+import {createToaster} from "../../index";
 
 export default {
   name: 'DossierTable',
   components: {
     Cell,
-    Actions,
     Pagination,
     Btn,
     Modal,
-    BtnGroup
+    BtnGroup,
+    Actions
   },
 
-  props: ['options', 'items', 'isSearching', 'hasItems', 'title'],
+  props: ['hasItems', 'title', 'tableOptions', 'searchTerm'],
+  emits: ['update:loading', 'update:hasItems', 'update:tableOptions', 'update:columns', 'update:searching'],
 
-  data: function () {
-    return {
-      columns: this.$parent.columns,
-      reordering: false,
-      sortable: true,
-      deleteModal: false,
-      selectedItem: null,
-    }
-  },
+  setup(props, {emit}) {
 
-  computed: {
-    hasCheckboxes: function () {
-      return this.options.checkboxes !== false;
-    },
+    const getService = inject('getService')
+    const deleteService = inject('deleteService')
+    const deleteMultiService = inject('deleteMultiService')
+    const selectedPage = ref(1);
+    const pagination = ref({});
+    const columns = ref([])
+    const items = ref([])
+    const reordering = ref(false)
+    const sortable = ref(true)
+    const loading = ref(true)
+    const isSearching = ref(false)
+    const searchStarted = ref(false)
+    const deleteModal = ref(false)
+    const deleteModalMulti = ref(false)
+    const selectedItem = ref(null)
+    const toast = createToaster()
 
-    itemsAreChecked: function () {
-      return this.checkedItems.length > 0;
-    },
+    Events.$on('showModal', (data) => {
+      deleteModal.value = true
+      selectedItem.value = data.item;
+    })
 
-    hasHeaders: function () {
-      return this.options.headers !== false;
-    },
-
-    hasActions: function () {
-      return this.options.partials.actions !== undefined
-          && this.options.partials.actions !== '';
-    },
-
-    showBulkActions() {
-      return (this.hasItems && this.hasCheckboxes && this.itemsAreChecked && !this.reordering);
-    },
-
-
-    checkedItems: function () {
-      return this.items.filter(function (item) {
-        return item.checked;
-      }).map(function (item) {
-        return item.id;
-      });
-    },
-
-    allItemsChecked: function () {
-      return this.items.length === this.checkedItems.length;
-    },
-
-    pagination() {
-      return this.$parent.pagination;
-    },
-
-    sortOrder() {
-      return this.$parent.sortOrderData;
-    }
-  },
-
-  methods: {
-    sortBy: function (col) {
-      if (!this.sortable) return;
-      if (this.isSearching) return;
-      if (!col.sort) return;
-      let sort = col.value;
-      let sortOrder = 'desc';
-
-      // If the current sort order was clicked again, change the direction.
-      if (this.$parent.sortData === sort) {
-        sortOrder = (this.$parent.sortOrderData === 'asc') ? 'desc' : 'asc';
+    const deleteItem = async () => {
+      try {
+        await deleteService(selectedItem.value.id).then(response => {
+          removeItemFromList(selectedItem.value.id);
+          toast.show(response.data.message)
+        }).catch(error => {
+          toast.error(error.response.data.message);
+        });
+      } catch (e) {
+        console.log('Delete service is not setup')
       }
+      deleteModal.value = false
+    }
 
-      this.$parent.sortBy(sort, sortOrder);
-    },
-    checkAllItems: function () {
-      const status = !this.allItemsChecked;
-      _.each(this.items, function (item) {
-        item.checked = status;
-      });
-    },
-    uncheckAllItems: function () {
-      _.each(this.items, function (item) {
-        item.checked = false;
-      });
-    },
-    toggle: function (item) {
-      item.checked = !item.checked;
-    },
-    /**
-     * Dynamically call a method on the parent component
-     *
-     * Eg. `call('foo', 'bar', 'baz')` would be the equivalent
-     * of doing `this.$parent.foo('bar', 'baz')`
-     */
-    call: function (method) {
-      const args = Array.prototype.slice.call(arguments, 1);
-      this.$parent[method].apply(this, args);
-    },
-    /**
-     * When a page was selected in the pagination.
-     */
-    paginationPageSelected(page) {
-      this.$parent.selectedPage = page;
-      this.$parent.getItems();
-    },
-    isColumnActive(col) {
-      if (this.isSearching) return false;
+    const deleteMultiple = async () => {
+      try {
+        await deleteMultiService({items: checkedItems.value}).then(response => {
+          _.each(checkedItems.value, id => {
+            removeItemFromList(id);
+          });
+          toast.show(response.data.message)
+        }).catch(error => {
+          toast.error(error.response.data.message);
+        });
+      } catch (e) {
+        console.log('Delete service is not setup')
+      }
+      deleteModalMulti.value = false
+    }
 
-      return col.value === this.$parent.sortData;
-    },
-    tableColWidth: function (width) {
-      if (!width || width === 100) return;
-      if (typeof width === 'string' && width.endsWith('px')) return width;
-      return `${width}%`;
-    },
-    formatValue(value) {
+    const formatValue = (value) => {
       if (value && typeof value === 'object' && !Array.isArray() && value.thumbnail) {
         let html = `<span class="img"><img src="${value.thumbnail}" alt="${value.value}" />`;
         if (value.value) html += `<span>${value.value}</span>`;
@@ -240,17 +203,257 @@ export default {
       }
 
       return Array.isArray(value) ? value.map(v => htmlEntities(v)).join(', ') : htmlEntities(value);
-    },
-    deleteItem() {
-      Events.$emit('deleteItem', this.selectedItem.id)
+    }
+
+    const tableColWidth = (width) => {
+      if (!width || width === 100) return;
+      if (typeof width === 'string' && width.endsWith('px')) return width;
+      return `${width}%`;
+    }
+
+    const allItemsChecked = computed(() => {
+      return items.value.length === checkedItems.value.length;
+    })
+
+    const checkedItems = computed(() => {
+      return items.value.filter(function (item) {
+        return item.checked;
+      }).map(function (item) {
+        return item.id;
+      });
+    })
+
+    const hasItems = computed(() => {
+      return !loading.value && items.value && items.value.length;
+    })
+
+    const hasCheckboxes = computed(() => {
+      return props.tableOptions.checkboxes !== false;
+    })
+
+    const showBulkActions = computed(() => {
+      return (hasItems.value && hasCheckboxes.value && itemsAreChecked.value && !reordering.value);
+    })
+
+    const itemsAreChecked = computed(() => {
+      return checkedItems.value.length > 0;
+    })
+
+    const hasHeaders = computed(() => {
+      return props.tableOptions.headers !== false;
+    })
+
+    const hasActions = computed(() => {
+      return props.tableOptions.partials.actions !== undefined
+          && props.tableOptions.partials.actions !== '';
+    })
+
+    const getParameters = computed(() => {
+      return {
+        sort: props.tableOptions.sort,
+        order: props.tableOptions.sortOrder,
+        page: selectedPage.value
+      };
+    })
+
+    const isColumnActive = (col) => {
+      if (isSearching.value) return false;
+      return col.value === props.tableOptions.sort;
+    }
+
+    const removeItemFromList = (id) => {
+      const item = _.findWhere(items.value, {id: id});
+      const index = _.indexOf(items.value, item);
+      items.value.splice(index, 1);
+    }
+
+    const getItems = () => {
+      loading.value = true;
+      emit('update:loading', true)
+      try {
+        const results = getService(getParameters.value)
+        if (results) {
+          results.then(response => {
+            items.value = response.data.items;
+            columns.value = parseColumns(response.data.columns);
+            loading.value = false;
+            emit('update:loading', false)
+            pagination.value = response.data.pagination;
+          }).catch((error) => {
+            console.log(error);
+            emit('update:loading', false)
+            toast.error('Error Fetching Data');
+          });
+        }
+      } catch (e) {
+        console.error('Get service not registered')
+        emit('update:loading', false)
+      }
+
+    }
+
+    const paginationPageSelected = (page) => {
+      emit('update:selectedPage', page)
+      getItems()
+    }
+
+    const toggle = (item) => {
+      item.checked = !item.checked;
+    }
+
+
+    const uncheckAllItems = () => {
+      _.each(items.value, function (item) {
+        item.checked = false;
+      });
+    }
+
+    const checkAllItems = () => {
+      const status = !allItemsChecked.value;
+      _.each(items.value, function (item) {
+        item.checked = status;
+      });
+    }
+
+    const parseColumns = (columns) => {
+      // If a link column hasn't been explicitly defined, we'll make the first column the link.
+      const linkColumnUndefined = _.findWhere(columns, {link: true}) === undefined;
+
+      return _.map(columns, function (column, i) {
+        if (typeof column === 'string') {
+          column = {value: column};
+        }
+
+        let sort, custom_link;
+        //for sorting
+        if (column.sort === undefined)
+          sort = true;
+        else
+          sort = column.sort;
+        //for custom link
+        if (column.custom_link === undefined) {
+          custom_link = false
+        } else {
+          custom_link = column.custom_link
+        }
+        return {
+          value: column.value,
+          header: column.header,
+          extra: column.extra,
+          width: column.width,
+          sort: sort,
+          link: column.link || (linkColumnUndefined && i === 0),
+          custom_link: custom_link,
+        };
+      });
+    }
+
+    const sortBy = (col) => {
+      if (!sortable.value) return;
+      if (isSearching.value) return;
+      if (!col.sort) return;
+      let sort = col.value;
+      let sortOrder = 'desc';
+
+      // If the current sort order was clicked again, change the direction.
+      if (props.tableOptions.sort === sort) {
+        sortOrder = (props.tableOptions.sortOrder === 'asc') ? 'desc' : 'asc';
+      }
+      parentSortBy(sort, sortOrder);
+    }
+
+    const parentSortBy = (sort, sortOrder) => {
+      let options = props.tableOptions
+      options['sort'] = sort
+      options['sortOrder'] = sortOrder
+      emit('update:tableOptions', options)
+      getItems()
+    }
+
+    const performSearch = () => {
+      isSearching.value = true;
+      emit('update:searching', true)
+      loading.value = true;
+      emit('update:loading', true)
+      try {
+        const results = getService({q: props.searchTerm})
+        if (results) {
+          results.then(response => {
+            items.value = response.data.items;
+            columns.value = parseColumns(response.data.columns);
+            loading.value = false;
+            emit('update:loading', false)
+            pagination.value = response.data.pagination;
+          }).catch((error) => {
+            console.log(error);
+            loading.value = false;
+            emit('update:loading', false)
+            toast.error('Error Fetching Data');
+          });
+        }
+      } catch (e) {
+        console.error('Get service not registered')
+      }
+      isSearching.value = false;
+      emit('update:searching', false)
       this.deleteModal = false
     }
-  },
-  created() {
-    Events.$on('showModal', (data) => {
-      this.deleteModal = true
-      this.selectedItem = data.item;
+
+    watch(hasItems, (val) => {
+      emit('update:hasItems', val)
     })
+
+    watch(columns, (val) => {
+      emit('update:columns', val)
+    })
+
+    watch(() => props.searchTerm, (term) => {
+      if (term.length > 3) {
+        searchStarted.value = true
+        performSearch();
+      } else {
+        if (searchStarted.value) {
+          getItems();
+          searchStarted.value = false
+        }
+      }
+    });
+
+    onMounted(() => [
+      getItems()
+    ])
+
+    return {
+      isSearching,
+      items,
+      deleteItem,
+      formatValue,
+      tableColWidth,
+      selectedItem,
+      deleteModal,
+      sortable,
+      reordering,
+      columns,
+      isColumnActive,
+      paginationPageSelected,
+      toggle,
+      checkAllItems,
+      uncheckAllItems,
+      deleteMultiple,
+      selectedPage,
+      pagination,
+      showBulkActions,
+      getParameters,
+      hasHeaders,
+      itemsAreChecked,
+      hasActions,
+      hasCheckboxes,
+      allItemsChecked,
+      checkedItems,
+      loading,
+      sortBy,
+      deleteModalMulti,
+    }
   }
 };
 </script>
@@ -267,6 +470,7 @@ export default {
     display: none;
   }
 }
+
 .dossier {
   table td span.status {
     border-radius: 7px;
@@ -274,9 +478,11 @@ export default {
     height: 7px;
     width: 7px;
   }
+
   table td span.status-live {
     background: #479967;
   }
+
   table {
 
     @apply table-auto w-full;
@@ -301,6 +507,7 @@ export default {
             text-align: end;
           }
         }
+
         a:hover {
           color: #3aa3e3;
           text-decoration: none;
@@ -317,6 +524,7 @@ export default {
       }
     }
   }
+
   @media all and (min-width: 768px) {
     .has-status-icon {
       display: flex;
@@ -328,6 +536,7 @@ export default {
       }
     }
   }
+
   .cell-slug {
     color: #777;
     font-family: 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace';
