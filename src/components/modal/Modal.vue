@@ -29,8 +29,8 @@
                     <button class="btn-sm border-slate-200 hover:border-slate-300 text-slate-600"
                             @click.stop="$emit('cancelled')">Cancel
                     </button>
-                    <button class="btn-sm bg-rose-500 hover:bg-rose-600 text-white" @click="$emit('confirmed')">Yes,
-                        Delete it
+                    <button class="btn-sm bg-rose-500 hover:bg-rose-600 text-white" @click="$emit('confirmed')">
+                        {{ confirmText ?? 'Do it !' }}
                     </button>
                 </div>
             </div>
@@ -40,13 +40,14 @@
 
 <script>
 import ModalBlank from "./ModalBlank.vue";
+
 export default {
     name: "Modal",
     components: {
         ModalBlank
     },
     emits: ['cancelled', 'confirmed', 'closed'],
-    props: ['open'],
+    props: ['open','confirmText'],
 }
 </script>
 
