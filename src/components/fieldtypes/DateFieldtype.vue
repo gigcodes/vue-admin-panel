@@ -9,7 +9,7 @@
         </tooltip>
       </div>
       <div class="relative">
-        <flat-pickr class="form-input pl-9 text-slate-500 hover:text-slate-600 font-medium focus:border-slate-300 w-60"
+        <flat-pickr class="form-input pl-9 text-slate-500 hover:text-slate-600 font-medium focus:border-slate-300 w-full"
                     :id="id"
                     @on-change="changed()"
                     :config="DFconfig" v-model="date"></flat-pickr>
