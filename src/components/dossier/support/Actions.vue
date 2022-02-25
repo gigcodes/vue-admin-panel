@@ -22,7 +22,7 @@ import {ref} from "vue";
 export default {
     name: "Actions",
     props: ['item', 'actions'],
-    setup() {
+    setup(props) {
         const deleteModal = ref(false);
         const goTo = url => {
             Events.$emit('goTo', url)
@@ -30,7 +30,7 @@ export default {
         const showDeleteModal = () => {
             Events.$emit('showModal', {
                 type: 'delete',
-                item: this.item,
+                item: props.item,
             })
         }
         const copyJoinUrl = (url) => {
