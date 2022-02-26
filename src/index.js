@@ -101,7 +101,6 @@ export {
     mousetrap,
     slugify,
     ProgressBar,
-    progress
 }
 
 export default GigcodesAdmin
