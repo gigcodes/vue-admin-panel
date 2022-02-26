@@ -22,6 +22,7 @@ import {default as DateField} from './components/fieldtypes/DateFieldtype.vue';
 
 //plugins
 import {default as Toaster, createToaster} from './plugins/toaster';
+import {ProgressBar, progress} from "./plugins/progressbar";
 import {default as copy} from './plugins/copyt-to-clipboard';
 import {default as RouteMiddleware} from './plugins/route-middleware';
 import slugify from './plugins/slugify'
@@ -98,7 +99,9 @@ export {
     Editor,
     hasErrorMixin,
     mousetrap,
-    slugify
+    slugify,
+    ProgressBar,
+    progress
 }
 
 export default GigcodesAdmin
