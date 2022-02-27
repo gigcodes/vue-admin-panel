@@ -42,7 +42,7 @@ const RADON_LOADING_BAR = reactive({
     options: defaultOptions
 });
 
-const progress = (globalOptions) => {
+const api = (globalOptions) => {
     return {
         state: {
             tFailColor: '',
@@ -221,6 +221,6 @@ const progress = (globalOptions) => {
     }
 }
 
-export default progress
+export default api
 
-export {progress, defaultOptions}
+export {api, defaultOptions}
