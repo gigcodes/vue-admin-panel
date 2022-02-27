@@ -100,8 +100,7 @@ export {
     hasErrorMixin,
     mousetrap,
     slugify,
-    ProgressBar,
-    progress
+    ProgressBar
 }
 
 export default GigcodesAdmin
