@@ -37,12 +37,12 @@ const defaultOptions = (globalOptions) => {
 }
 
 
-const RADON_LOADING_BAR = reactive({
-    percent: 0,
-    options: defaultOptions
-});
+const api = (globalOptions = {}) => {
+    const RADON_LOADING_BAR = reactive({
+        percent: 0,
+        options: defaultOptions(globalOptions)
+    });
 
-const api = (globalOptions) => {
     return {
         state: {
             tFailColor: '',
