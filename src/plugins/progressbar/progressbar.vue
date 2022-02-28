@@ -3,32 +3,14 @@
 </template>
 
 <script>
-import { inject, computed } from 'vue';
+import {inject, computed, reactive} from 'vue';
+import {RADON_LOADING_BAR} from './progress';
 const inBrowser = typeof window !== 'undefined';
 export default {
     name: 'VueProgress',
     serverCacheKey: () => 'Progress',
     setup() {
-        const progress = inBrowser
-            ? inject('RADON_LOADING_BAR')
-            : {
-                percent: 0,
-                options: {
-                    canSuccess: true,
-                    show: false,
-                    color: 'rgb(19, 91, 55)',
-                    failedColor: 'red',
-                    thickness: '2px',
-                    transition: {
-                        speed: '0.2s',
-                        opacity: '0.6s',
-                        termination: 300
-                    },
-                    location: 'top',
-                    autoRevert: true,
-                    inverse: false
-                }
-            };
+        const progress = RADON_LOADING_BAR
         const finalStyle = computed(() => {
             const options = progress.options;
             const isShow = !!options.show;

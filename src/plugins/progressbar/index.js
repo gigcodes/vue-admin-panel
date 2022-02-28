@@ -1,21 +1,13 @@
-import {reactive} from 'vue';
 import View from './progressbar.vue';
 
-import {api as progress, defaultOptions} from './progress';
+import {api as progress} from './progress.js'
 
-// eslint-disable-next-line no-unused-vars
 const ProgressBar = {
-    install: (app, options) => {
-        const RADON_LOADING_BAR = reactive({
-            percent: 0,
-            options: defaultOptions(options)
-        });
-        app.provide('RADON_LOADING_BAR', RADON_LOADING_BAR);
+    install: (app) => {
         app.component('vue-progress-bar', View);
-        app.config.globalProperties.$progress = progress(options);
+        app.config.globalProperties.$progress = progress;
     }
-}
+};
 
 export default ProgressBar;
-
-export {progress, ProgressBar}
+export {ProgressBar, progress}
