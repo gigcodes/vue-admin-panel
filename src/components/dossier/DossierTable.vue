@@ -456,6 +456,7 @@ export default {
             loading,
             sortBy,
             deleteModalMulti,
+            getItems,
         }
     }
 };
