@@ -11,10 +11,6 @@ import {default as Editor} from './components/Editor.vue';
 import {default as PublishButton} from './components/buttons/PublishButton.vue';
 import {default as LoadingGraphic} from './components/LoadingGraphic.vue';
 import {default as PageTree} from './components/structures/PageTree.vue';
-import AssetManager from "./components/assets/AssetManager.vue";
-import AssetBrowser from "./components/assets/Browser/Browser.vue";
-import FileIcon from "./components/FileIcon.vue";
-import SvgIcon from "./components/SvgIcon.vue";
 import './utils/globals';
 
 //fieldTypes
@@ -60,10 +56,6 @@ const components = {
     PublishButton,
     LoadingGraphic,
     PageTree,
-    AssetManager,
-    AssetBrowser,
-    SvgIcon,
-    FileIcon
 }
 
 
