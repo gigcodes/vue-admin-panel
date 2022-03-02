@@ -1,5 +1,5 @@
 const path = require('path');
-const { defineConfig } = require('vite');
+const {defineConfig} = require('vite');
 const vue = require('@vitejs/plugin-vue');
 
 // https://vitejs.dev/config/
