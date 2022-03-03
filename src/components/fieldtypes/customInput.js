@@ -1,7 +1,9 @@
 export default {
     emits: ['update:modelValue', 'update:slug'],
     props: {
-        modelValue: String
+        modelValue: {
+            type: [Number, String]
+        }
     },
     methods: {
         updateSelf(title) {
