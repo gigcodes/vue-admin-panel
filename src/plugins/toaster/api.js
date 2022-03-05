@@ -1,5 +1,6 @@
 import Toaster from './Toaster.vue'
 import mount from './helpers/mount-component'
+import {Events} from "../../index";
 
 const Api = (globalOptions = {}) => {
     return {
@@ -10,7 +11,7 @@ const Api = (globalOptions = {}) => {
             })
         },
         clear() {
-            this.$emit('toast-clear')
+            Events.$emit('toast-clear')
         },
         success(message, options = {}) {
             options.type = 'success'
