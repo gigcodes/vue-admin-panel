@@ -12,9 +12,11 @@ const deselectCurrent = () => {
         ranges.push(selection.getRangeAt(i));
     }
 
-    switch (active.tagName.toUpperCase()) { // .toUpperCase handles XHTML
-        case 'INPUT':
-        case 'TEXTAREA':
+    switch (
+        active.tagName.toUpperCase() // .toUpperCase handles XHTML
+    ) {
+        case "INPUT":
+        case "TEXTAREA":
             active.blur();
             break;
 
@@ -25,30 +27,29 @@ const deselectCurrent = () => {
 
     selection.removeAllRanges();
     return function () {
-        selection.type === 'Caret' &&
-        selection.removeAllRanges();
+        selection.type === "Caret" && selection.removeAllRanges();
 
         if (!selection.rangeCount) {
-            ranges.forEach(function(range) {
+            ranges.forEach(function (range) {
                 selection.addRange(range);
             });
         }
 
-        active &&
-        active.focus();
+        active && active.focus();
     };
 };
 
 var clipboardToIE11Formatting = {
     "text/plain": "Text",
     "text/html": "Url",
-    "default": "Text"
-}
+    default: "Text",
+};
 
 var defaultMessage = "Copy to clipboard: #{key}, Enter";
 
 function format(message) {
-    const copyKey = (/mac os x/i.test(navigator.userAgent) ? "⌘" : "Ctrl") + "+C";
+    const copyKey =
+        (/mac os x/i.test(navigator.userAgent) ? "⌘" : "Ctrl") + "+C";
     return message.replace(/#{\s*key\s*}/g, copyKey);
 }
 
@@ -85,17 +86,21 @@ function copy(text, options) {
         mark.style.MozUserSelect = "text";
         mark.style.msUserSelect = "text";
         mark.style.userSelect = "text";
-        mark.addEventListener("copy", function(e) {
+        mark.addEventListener("copy", function (e) {
             e.stopPropagation();
             if (options.format) {
                 e.preventDefault();
-                if (typeof e.clipboardData === "undefined") { // IE 11
+                if (typeof e.clipboardData === "undefined") {
+                    // IE 11
                     debug && console.warn("unable to use e.clipboardData");
                     debug && console.warn("trying IE specific stuff");
                     window.clipboardData.clearData();
-                    var format = clipboardToIE11Formatting[options.format] || clipboardToIE11Formatting["default"]
+                    var format =
+                        clipboardToIE11Formatting[options.format] ||
+                        clipboardToIE11Formatting["default"];
                     window.clipboardData.setData(format, text);
-                } else { // all other browsers
+                } else {
+                    // all other browsers
                     e.clipboardData.clearData();
                     e.clipboardData.setData(options.format, text);
                 }
@@ -126,7 +131,9 @@ function copy(text, options) {
         } catch (err) {
             debug && console.error("unable to copy using clipboardData: ", err);
             debug && console.error("falling back to prompt");
-            message = format("message" in options ? options.message : defaultMessage);
+            message = format(
+                "message" in options ? options.message : defaultMessage
+            );
             window.prompt(message, text);
         }
     } finally {

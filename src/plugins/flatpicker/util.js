@@ -1,5 +1,5 @@
 const camelToKebab = (string) => {
-    return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    return string.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 };
 
 const arrayify = (obj) => {
@@ -7,11 +7,11 @@ const arrayify = (obj) => {
 };
 
 const nullify = (value) => {
-    return (value && value.length) ? value : null;
-}
+    return value && value.length ? value : null;
+};
 
 const cloneObject = (obj) => {
     return Object.assign({}, obj);
 };
 
-export {camelToKebab, arrayify, nullify, cloneObject}
+export { camelToKebab, arrayify, nullify, cloneObject };

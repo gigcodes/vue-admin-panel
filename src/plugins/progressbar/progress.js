@@ -1,24 +1,24 @@
-import {nextTick, reactive} from "vue";
+import { nextTick, reactive } from "vue";
 
 const DEFAULT_OPTION = {
     canSuccess: true,
     show: false,
-    color: '#73ccec',
-    position: 'fixed',
-    failedColor: 'red',
-    thickness: '2px',
+    color: "#73ccec",
+    position: "fixed",
+    failedColor: "red",
+    thickness: "2px",
     transition: {
-        speed: '0.2s',
-        opacity: '0.6s',
-        termination: 300
+        speed: "0.2s",
+        opacity: "0.6s",
+        termination: 300,
     },
     autoRevert: true,
-    location: 'top',
+    location: "top",
     inverse: false,
-    autoFinish: true
-}
+    autoFinish: true,
+};
 
-function assign(target, source) {
+function assign(target) {
     for (var index = 1, key, src; index < arguments.length; ++index) {
         src = arguments[index];
 
@@ -34,20 +34,19 @@ function assign(target, source) {
 
 const defaultOptions = (globalOptions) => {
     return assign(DEFAULT_OPTION, globalOptions);
-}
+};
 
 const RADON_LOADING_BAR = reactive({
     percent: 0,
-    options: DEFAULT_OPTION
+    options: DEFAULT_OPTION,
 });
 
 const api = {
-
     state: {
-        tFailColor: '',
-        tColor: '',
+        tFailColor: "",
+        tColor: "",
         timer: null,
-        cut: 0
+        cut: 0,
     },
     start(time) {
         if (!time) time = 3000;
@@ -58,7 +57,10 @@ const api = {
         clearInterval(this.state.timer);
         this.state.timer = setInterval(() => {
             this.increase(this.state.cut * Math.random());
-            if (RADON_LOADING_BAR.percent > 95 && RADON_LOADING_BAR.options.autoFinish) {
+            if (
+                RADON_LOADING_BAR.percent > 95 &&
+                RADON_LOADING_BAR.options.autoFinish
+            ) {
                 this.finish();
             }
         }, 100);
@@ -72,7 +74,10 @@ const api = {
         return Math.floor(RADON_LOADING_BAR.percent);
     },
     increase(num) {
-        RADON_LOADING_BAR.percent = Math.min(99, RADON_LOADING_BAR.percent + Math.floor(num));
+        RADON_LOADING_BAR.percent = Math.min(
+            99,
+            RADON_LOADING_BAR.percent + Math.floor(num)
+        );
     },
     decrease(num) {
         RADON_LOADING_BAR.percent = RADON_LOADING_BAR.percent - Math.floor(num);
@@ -136,15 +141,15 @@ const api = {
     },
     revertColor() {
         RADON_LOADING_BAR.options.color = this.state.tColor;
-        this.state.tColor = '';
+        this.state.tColor = "";
     },
     revertFailColor() {
         RADON_LOADING_BAR.options.failedColor = this.state.tFailColor;
-        this.state.tFailColor = '';
+        this.state.tFailColor = "";
     },
     revertLocation() {
         RADON_LOADING_BAR.options.location = this.state.tLocation;
-        this.state.tLocation = '';
+        this.state.tLocation = "";
     },
     revertTransition() {
         RADON_LOADING_BAR.options.transition = this.state.tTransition;
@@ -174,51 +179,51 @@ const api = {
         for (var x in meta.func) {
             let func = meta.func[x];
             switch (func.call) {
-                case 'color':
+                case "color":
                     switch (func.modifier) {
-                        case 'set':
+                        case "set":
                             this.setColor(func.argument);
                             break;
-                        case 'temp':
+                        case "temp":
                             this.tempColor(func.argument);
                             break;
                     }
                     break;
-                case 'fail':
+                case "fail":
                     switch (func.modifier) {
-                        case 'set':
+                        case "set":
                             this.setFailColor(func.argument);
                             break;
-                        case 'temp':
+                        case "temp":
                             this.tempFailColor(func.argument);
                             break;
                     }
                     break;
-                case 'location':
+                case "location":
                     switch (func.modifier) {
-                        case 'set':
+                        case "set":
                             this.setLocation(func.argument);
                             break;
-                        case 'temp':
+                        case "temp":
                             this.tempLocation(func.argument);
                             break;
                     }
                     break;
-                case 'transition':
+                case "transition":
                     switch (func.modifier) {
-                        case 'set':
+                        case "set":
                             this.setTransition(func.argument);
                             break;
-                        case 'temp':
+                        case "temp":
                             this.tempTransition(func.argument);
                             break;
                     }
                     break;
             }
         }
-    }
-}
+    },
+};
 
-export default api
+export default api;
 
-export {api, defaultOptions, RADON_LOADING_BAR}
+export { api, defaultOptions, RADON_LOADING_BAR };

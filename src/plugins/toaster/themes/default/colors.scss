@@ -1,5 +1,5 @@
 @each $key, $color in $toast-colors {
-  .c-toast--#{$key} {
-    background-color: #{$color};
-  }
+    .c-toast--#{$key} {
+        background-color: #{$color};
+    }
 }

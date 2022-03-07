@@ -1,16 +1,20 @@
 <template>
-  <div class="loading">
-    <span class="icon icon-circular-graph animation-spin"></span> {{ text ? text : 'Loading' }}
-  </div>
+    <div class="loading">
+        <span class="icon icon-circular-graph animation-spin"></span>
+        {{ text }}
+    </div>
 </template>
 
 <script>
 export default {
-  name: "LoadingGraphic",
-  props: ['text']
-}
+    name: "LoadingGraphic",
+    props: {
+        text: {
+            type: String,
+            default: 'Loading'
+        }
+    },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

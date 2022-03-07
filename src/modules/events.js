@@ -1,5 +1,5 @@
-class Event{
-    constructor(){
+class Event {
+    constructor() {
         this.events = {};
     }
 
@@ -21,7 +21,7 @@ class Event{
 
     $emit(eventName, data) {
         if (this.events[eventName]) {
-            this.events[eventName].forEach(function(fn) {
+            this.events[eventName].forEach(function (fn) {
                 fn(data);
             });
         }

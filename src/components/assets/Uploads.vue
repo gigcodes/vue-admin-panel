@@ -1,47 +1,47 @@
 <template>
-
     <div class="asset-upload-listing">
         <div class="asset-upload-listing-header">
             <h6>Upload</h6>
         </div>
         <table>
             <tbody>
-            <tr is="upload"
-                v-for="(upload,i) in uploads"
-                :basename="upload.basename"
+            <Upload
+                v-for="(upload, i) in items"
                 :key="i"
+                :basename="upload.basename"
                 :extension="upload.extension"
                 :percent="upload.percent"
                 :error="upload.errorMessage"
-                @clear="clearUpload(i)">
-            </tr>
+                @clear="clearUpload(i)"
+            ></Upload>
             </tbody>
         </table>
     </div>
-
 </template>
 
-
 <script>
-    import Upload from "./Upload.vue";
+import Upload from "./Upload.vue";
+import {ref} from "vue";
 
-    export default {
-
-        props: ['uploads'],
-
-
-        components: {
-            Upload
-        },
-
-
-        methods: {
-
-            clearUpload(i) {
-                this.uploads.splice(i, 1);
-            }
-
+export default {
+    components: {
+        Upload,
+    },
+    props: {
+        uploads: {
+            type: Array,
+            default: () => ([])
         }
-
+    },
+    setup(props) {
+        const items = ref(props.uploads)
+        const clearUpload = (i) => {
+            return items.value.splice(i, 1)
+        }
+        return {
+            items,
+            clearUpload
+        }
     }
+};
 </script>

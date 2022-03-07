@@ -1,35 +1,36 @@
 <template>
-
-    <div class="asset-browser card"
-         @dragover="dragOver"
-         @dragleave="dragStop"
-         @drop="dragStop">
-
+    <div
+        class="asset-browser card"
+        @dragover="dragOver"
+        @dragleave="dragStop"
+        @drop="dragStop"
+    >
         <div v-if="!initialized" class="asset-browser-loading loading">
             <span class="icon icon-circular-graph animation-spin"/> Loading
         </div>
 
-        <div class="drag-notification" v-show="canEdit && draggingFile">
+        <div v-show="canEdit && draggingFile" class="drag-notification">
             <i class="icon icon-download"/>
             <h3>Drop to Upload</h3>
         </div>
 
         <div v-if="showSidebar" class="asset-browser-sidebar">
             <h4>Containers</h4>
-            <div v-for="c in containers" class="sidebar-item" :class="{ 'active': container.id === c.id }">
+            <div
+v-for="(c,i) in containers" :key="i"
+                 class="sidebar-item"
+                 :class="{ active: container.id === c.id }"
+            >
                 <a @click="selectContainer(c.id)">
                     {{ c.title }}
                 </a>
             </div>
         </div>
 
-        <div class="asset-browser-main" v-if="initialized">
-
+        <div v-if="initialized" class="asset-browser-main">
             <div class="asset-browser-header">
                 <h1 class="mb-3">
-                    <template v-if="isSearching">
-                        Search Results
-                    </template>
+                    <template v-if="isSearching"> Search Results</template>
                     <template v-else>
                         <template v-if="restrictNavigation">
                             {{ folder.title || folder.path }}
@@ -39,51 +40,68 @@
                         </template>
                     </template>
 
-                    <div class="loading-indicator" v-show="loadingAssets">
+                    <div v-show="loadingAssets" class="loading-indicator">
                         <span class="icon icon-circular-graph animation-spin"/>
                     </div>
                 </h1>
 
-                <input type="text"
-                       class="search filter-control mb-3"
-                       placeholder="Search..."
-                       v-model="searchTerm"
-                       debounce="500"/>
+                <input
+                    v-model="searchTerm"
+                    type="text"
+                    class="search filter-control mb-3"
+                    placeholder="Search..."
+                    debounce="500"
+                />
 
                 <div class="asset-browser-actions flexy wrap">
-
                     <template v-if="assetsSelected.length">
-                        <button class="btn btn-danger ml-16 mr-2 mb-3" @click="deleteAsset(assetsSelected)">
+                        <button
+                            class="btn btn-danger ml-16 mr-2 mb-3"
+                            @click="deleteAsset(assetsSelected)"
+                        >
                             Delete
                         </button>
                         <div class="btn-group mb-3">
-                            <button class="btn" @click="assetsSelected = []">Uncheck All</button>
+                            <button class="btn" @click="assetsSelected = []">
+                                Uncheck All
+                            </button>
                         </div>
                     </template>
 
                     <div class="btn-group action mb-3">
-                        <button type="button"
-                                class="btn btn-icon"
-                                :class="{'depressed': displayMode === 'grid'}"
-                                @click="setDisplayMode('grid')">
+                        <button
+                            type="button"
+                            class="btn btn-icon"
+                            :class="{ depressed: displayMode === 'grid' }"
+                            @click="setDisplayMode('grid')"
+                        >
                             <span class="icon icon-grid"/>
                         </button>
-                        <button type="button"
-                                class="btn btn-icon"
-                                :class="{'depressed': displayMode === 'table'}"
-                                @click="setDisplayMode('table')">
+                        <button
+                            type="button"
+                            class="btn btn-icon"
+                            :class="{ depressed: displayMode === 'table' }"
+                            @click="setDisplayMode('table')"
+                        >
                             <span class="icon icon-list"/>
                         </button>
                     </div>
 
                     <div class="btn-group action mb-3">
-                        <button type="button"
-                                class="btn"
-                                v-if="!restrictNavigation && !isSearching"
-                                @click.prevent="createFolder">
+                        <button
+                            v-if="!restrictNavigation && !isSearching"
+                            type="button"
+                            class="btn"
+                            @click.prevent="createFolder"
+                        >
                             New Folder
                         </button>
-                        <button type="button" class="btn" @click.prevent="uploadFile" v-if="!isSearching">
+                        <button
+                            v-if="!isSearching"
+                            type="button"
+                            class="btn"
+                            @click.prevent="uploadFile"
+                        >
                             Upload
                         </button>
                     </div>
@@ -91,7 +109,6 @@
             </div>
 
             <div class="asset-browser-content">
-
                 <uploader
                     v-if="initialized"
                     ref="uploader"
@@ -99,13 +116,11 @@
                     :dom-element="uploadElement"
                     :path="path"
                     @updated="uploadsUpdated"
-                    @upload-complete="loadAssets">
+                    @upload-complete="loadAssets"
+                >
                 </uploader>
 
-                <uploads
-                    v-if="uploads.length"
-                    :uploads="uploads">
-                </uploads>
+                <uploads v-if="uploads.length" :uploads="uploads"></uploads>
 
                 <component
                     :is="listingComponent"
@@ -126,11 +141,12 @@
                     @asset-deleting="deleteAsset"
                     @assets-dragged-to-folder="assetsDraggedToFolder"
                     @asset-doubleclicked="assetDoubleClicked"
-                    @sorted="sortBy">
+                    @sorted="sortBy"
+                >
                 </component>
 
-                <div class="no-results" v-if="isSearching && isEmpty">
-<!--                    <svg-icon name="folder-search-empty" class="h-16 w-16 mx-auto"/>-->
+                <div v-if="isSearching && isEmpty" class="no-results">
+                    <!--                    <svg-icon name="folder-search-empty" class="h-16 w-16 mx-auto"/>-->
                     <h2>No Search Results</h2>
                 </div>
 
@@ -139,25 +155,27 @@
                     :total="pagination.totalPages"
                     :current="pagination.currentPage"
                     :segments="pagination.segments"
-                    @selected="paginationPageSelected">
+                    @selected="paginationPageSelected"
+                >
                 </pagination>
-
             </div>
 
             <breadcrumbs
                 v-if="!restrictNavigation && !isSearching"
                 :path="path"
-                @navigated="folderSelected">
+                @navigated="folderSelected"
+            >
             </breadcrumbs>
 
             <asset-editor
                 v-if="showAssetEditor"
                 :id="editedAssetId"
-                :has-child.sync="editorHasChild"
+                v-model:has-child="editorHasChild"
                 @closed="closeAssetEditor"
                 @saved="assetSaved"
                 @deleted="assetDeleted"
-                @moved="assetMoved">
+                @moved="assetMoved"
+            >
             </asset-editor>
 
             <folder-editor
@@ -166,7 +184,8 @@
                 :container="container.id"
                 :path="path"
                 @closed="folderCreatorClosed"
-                @created="folderCreated">
+                @created="folderCreated"
+            >
             </folder-editor>
 
             <folder-editor
@@ -175,11 +194,11 @@
                 :container="container.id"
                 :path="editedFolderPath"
                 @closed="folderEditorClosed"
-                @updated="loadAssets">
+                @updated="loadAssets"
+            >
             </folder-editor>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -192,23 +211,44 @@ import FolderEditor from "./FolderEditor.vue";
 import Breadcrumbs from "./Breadcrumbs.vue";
 import Pagination from "../../dossier/pagination/Pagination.vue";
 import {Events} from "../../../index";
-import _ from "underscore"
+import _ from "underscore";
+import axios from "axios";
+
 export default {
-    name: 'AssetBrowser',
+    name: "AssetBrowser",
+    emits:["selections-updated","asset-doubleclicked","navigated"],
     components: {
         Pagination,
-        GridListing, TableListing, Uploader, Uploads,
-        AssetEditor, FolderEditor, Breadcrumbs
+        GridListing,
+        TableListing,
+        Uploader,
+        Uploads,
+        AssetEditor,
+        FolderEditor,
+        Breadcrumbs,
     },
-    props: [
-        'selectedContainer',   // The ID of the container to display, determined by a parent component.
-        'selectedPath',        // The path to display, determined by a parent component.
-        'restrictNavigation',  // Whether to restrict to a single folder and prevent navigation.
-        'selectedAssets',
-        'maxFiles'
-    ],
-
-
+    props: {
+        selectedContainer: {// The ID of the container to display, determined by a parent component.
+            type: String,
+            default: null,
+        },
+        selectedPath: { // The path to display, determined by a parent component.
+            type: String,
+            default: null
+        },
+        restrictNavigation: {
+            type: Boolean,
+            default: false
+        },
+        selectedAssets: {
+            type: Array,
+            default: () => ([])
+        },
+        maxFiles: {
+            type: Number,
+            default: 10
+        }
+    },
     data() {
         return {
             loadingAssets: true,
@@ -220,7 +260,7 @@ export default {
             assets: [],
             folders: [],
             folder: {},
-            displayMode: 'table',
+            displayMode: "table",
             uploads: [],
             draggingFile: false,
             pagination: {},
@@ -230,16 +270,13 @@ export default {
             editedFolderPath: null,
             editorHasChild: false,
             isSearching: false,
-            sort: 'title',
-            sortOrder: 'asc',
-            searchTerm: '',
+            sort: "title",
+            sortOrder: "asc",
+            searchTerm: "",
             assetsSelected: this.selectedAssets,
-        }
+        };
     },
-
-
     computed: {
-
         initialized() {
             return this.initializedAssets && !this.loadingContainers;
         },
@@ -278,7 +315,7 @@ export default {
         },
 
         listingComponent() {
-            return (this.displayMode === 'grid') ? 'GridListing' : 'TableListing';
+            return this.displayMode === "grid" ? "GridListing" : "TableListing";
         },
 
         fullPath() {
@@ -286,8 +323,8 @@ export default {
 
             let fullPath = this.container.id;
 
-            if (this.path !== '/') {
-                fullPath += '/' + this.path;
+            if (this.path !== "/") {
+                fullPath += "/" + this.path;
             }
 
             return fullPath;
@@ -312,8 +349,7 @@ export default {
         },
 
         maxFilesReached() {
-            return this.maxFiles
-                && this.selectedAssets.length >= this.maxFiles
+            return this.maxFiles && this.selectedAssets.length >= this.maxFiles;
         },
         /**
          * When the dragover event is triggered.
@@ -322,32 +358,23 @@ export default {
          * If the thing being dragged is not a file, we want to prevent anything
          * from happening. We're only interested in files.
          */
+        /*eslint-disable */
         dragOver() {
             if (!this.$root.draggingNonFile) {
-                this.draggingFile = true;
+                return this.draggingFile = true;
             }
+            return false;
         },
 
         /**
          * When the dragging has ended.
          */
-        dragStop() {
-            this.draggingFile = false;
-        }
-
-    },
-
-
-    mounted() {
-        this.path = this.selectedPath;
-        // We need all the containers since they'll be displayed in the sidebar. This will also load
-        // up the current container object using the initial container id. Setting the container
-        // property will trigger loading of assets since there's a watcher reacting to it.
-        this.loadContainers();
-        this.displayMode = 'table';
+        dragStop () {
+            return this.draggingFile = false;
+        },
+        /*eslint-enable */
     },
     watch: {
-
         /**
          * Whenever the fullPath computed property is changed, it means
          * that either the path or the container has been modified,
@@ -373,12 +400,11 @@ export default {
             this.path = path;
         },
 
-
         /**
          * When selected assets are updated/modified, the parent component should be notified.
          */
         assetsSelected(selections) {
-            this.$emit('selections-updated', selections);
+            this.$emit("selections-updated", selections);
         },
 
         searchTerm(term) {
@@ -387,23 +413,58 @@ export default {
             } else {
                 this.loadAssets();
             }
-        }
-
+        },
     },
+    mounted() {
+        this.path = this.selectedPath;
+        // We need all the containers since they'll be displayed in the sidebar. This will also load
+        // up the current container object using the initial container id. Setting the container
+        // property will trigger loading of assets since there's a watcher reacting to it.
+        this.loadContainers();
+        this.displayMode = "table";
+    },
+    created() {
+        Events.$on("close-editor", () => {
+            if (this.editorHasChild) {
+                return Events.$emit("close-child-editor");
+            }
 
+            this.showFolderCreator = false;
+            this.editedAssetId = null;
+            this.editedFolderPath = null;
+        });
+
+        Events.$on("refresh-assets", () => {
+            this.loadAssets();
+        });
+
+        Events.$on("delete-assets", (ids) => {
+            this.deleteAsset(ids);
+        });
+    },
+    beforeUnmount() {
+        Events.$off("asset-doubleclicked");
+        Events.$off("close-child-editor");
+        Events.$off("refresh-assets");
+        Events.$off("delete-assets");
+        Events.$off("close-editor");
+    },
 
     methods: {
         /**
          * Load asset container data
          */
         loadContainers() {
-            this.$axios.get('/admin/media/browse').then((response) => {
+            axios.get("/admin/media/browse").then((response) => {
                 // Set the containers property to a collection of the items in the response.
                 // We are only interested in certain keys, and we want them indexed by
                 // ID to make retrieving container values simpler down the road.
-                this.containers = _.chain(response.data.items).map((container) => {
-                    return _.pick(container, 'id', 'title');
-                }).indexBy('id').value();
+                this.containers = _.chain(response.data.items)
+                    .map((container) => {
+                        return _.pick(container, "id", "title");
+                    })
+                    .indexBy("id")
+                    .value();
 
                 // We need the container property to be the retrieved data object.
                 this.container = this.containers[this.selectedContainer];
@@ -415,42 +476,44 @@ export default {
         /**
          * Load assets from the container and folder specified
          */
-        loadAssets(page) {
+        loadAssets() {
             this.loadingAssets = true;
 
-            this.$axios.post('/admin/media/get-files', {
+            axios.post("/admin/media/get-files", {
                 container: this.container.id,
                 path: this.path,
                 page: this.selectedPage,
                 sort: this.sort,
-                dir: this.sortOrder
-            }).then((response) => {
-                this.assets = response.data.assets;
-                this.folders = response.data.folders;
-                this.folder = response.data.folder;
-                this.pagination = response.data.pagination;
-                this.selectedPage = response.data.pagination.currentPage;
-                this.loadingAssets = false;
-                this.initializedAssets = true;
-                this.isSearching = false;
-            });
+                dir: this.sortOrder,
+            })
+                .then((response) => {
+                    this.assets = response.data.assets;
+                    this.folders = response.data.folders;
+                    this.folder = response.data.folder;
+                    this.pagination = response.data.pagination;
+                    this.selectedPage = response.data.pagination.currentPage;
+                    this.loadingAssets = false;
+                    this.initializedAssets = true;
+                    this.isSearching = false;
+                });
         },
 
         search() {
             this.loadingAssets = true;
 
-            this.$axios.post('/admin/media/search', {
+            axios.post("/admin/media/search", {
                 term: this.searchTerm,
                 container: this.container.id,
                 folder: this.folder.path,
-                restrictNavigation: this.restrictNavigation
-            }).then((response) => {
-                this.isSearching = true;
-                this.assets = response.data.assets;
-                this.folders = [];
-                this.loadingAssets = false;
-                this.initializedAssets = true;
-            });
+                restrictNavigation: this.restrictNavigation,
+            })
+                .then((response) => {
+                    this.isSearching = true;
+                    this.assets = response.data.assets;
+                    this.folders = [];
+                    this.loadingAssets = false;
+                    this.initializedAssets = true;
+                });
         },
 
         /**
@@ -463,7 +526,7 @@ export default {
 
             // Trigger an event so the parent can do something.
             // eg. The asset manager would want to change the browser URL.
-            this.$emit('navigated', this.container.id, this.path);
+            this.$emit("navigated", this.container.id, this.path);
         },
 
         /**
@@ -472,11 +535,11 @@ export default {
         selectContainer(container) {
             // Trigger re-loading of assets in the selected container.
             this.container = this.containers[container];
-            this.path = '/';
+            this.path = "/";
 
             // Trigger an event so the parent can do something.
             // eg. The asset manager would want to change the browser URL.
-            this.$emit('navigated', this.container.id, this.path);
+            this.$emit("navigated", this.container.id, this.path);
         },
 
         /**
@@ -503,7 +566,7 @@ export default {
             // For some reason, Vue wasn't reacting to new item.
             // It would show up in the data, but wouldn't adjust the view.
             // Mapping over itself fixes this. ¯\_(ツ)_/¯
-            this.assetsSelected = _.map(this.assetsSelected, val => val);
+            this.assetsSelected = _.map(this.assetsSelected, (val) => val);
         },
 
         /**
@@ -527,24 +590,36 @@ export default {
          */
         deleteAsset(ids) {
             ids = Array.isArray(ids) ? ids : [ids];
-            let message = ids.length > 1 ? 'The selected items will be deleted' : 'This item will be deleted';
-            swal({
-                icon: 'warning',
-                title: 'Are you sure',
-                text: message,
-                buttons: {
-                    cancel: 'Cancel',
-                    confirm: 'Yes I am sure'
-                },
-            }).then((willDelete) => {
-                if (willDelete) {
-                    const url = ('/admin/media/delete');
-                    this.$axios.delete(url, {params: {ids: ids}}).then((response) => {
-                        this.loadAssets();
-                        this.assetsSelected = _.difference(this.assetsSelected, ids);
-                    });
-                }
-            });
+            let message =
+                ids.length > 1
+                    ? "The selected items will be deleted"
+                    : "This item will be deleted";
+            console.log(message);
+
+            //@todo add delete modal
+
+            // swal({
+            //     icon: "warning",
+            //     title: "Are you sure",
+            //     text: message,
+            //     buttons: {
+            //         cancel: "Cancel",
+            //         confirm: "Yes I am sure",
+            //     },
+            // }).then((willDelete) => {
+            //     if (willDelete) {
+            //         const url = "/admin/media/delete";
+            //         this.$axios
+            //             .delete(url, {params: {ids: ids}})
+            //             .then((response) => {
+            //                 this.loadAssets();
+            //                 this.assetsSelected = _.difference(
+            //                     this.assetsSelected,
+            //                     ids
+            //                 );
+            //             });
+            //     }
+            // });
         },
 
         /**
@@ -587,7 +662,7 @@ export default {
          */
         assetDoubleClicked(id) {
             this.assetSelected(id);
-            Events.$emit('asset-doubleclicked');
+            Events.$emit("asset-doubleclicked");
         },
 
         /**
@@ -614,7 +689,7 @@ export default {
         },
 
         folderCreated(path) {
-            this.folderSelected(path)
+            this.folderSelected(path);
         },
 
         editFolder(folder) {
@@ -625,14 +700,13 @@ export default {
             this.editedFolderPath = null;
         },
 
-        folderDeleted(folder) {
+        folderDeleted() {
             this.loadAssets();
         },
 
         uploadsUpdated(uploads) {
             this.uploads = uploads;
         },
-
 
         /**
          * Set the display mode and remember it in a cookie
@@ -643,61 +717,34 @@ export default {
         },
 
         assetsDraggedToFolder(folder) {
-            const url = ('/admin/assets/move');
+            const url = "/admin/assets/move";
             const payload = {
                 assets: this.selectedAssets,
                 folder: folder,
-                container: this.container.id
+                container: this.container.id,
             };
 
-            this.$axios.post(url, payload).then((response) => {
+            axios.post(url, payload).then(() => {
                 this.loadAssets();
-                this.selectedAssets = [];
+                //@todo change needed
+                //this.selectedAssets = [];
             });
         },
 
         sortBy(sort) {
             if (this.isSearching) return;
 
-            let sortOrder = 'asc';
+            let sortOrder = "asc";
 
             // If the current sort order was clicked again, change the direction.
             if (this.sort === sort) {
-                sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+                sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
             }
 
             this.sort = sort;
             this.sortOrder = sortOrder;
             this.loadAssets();
         },
-
     },
-    created() {
-        Events.$on('close-editor', () => {
-            if (this.editorHasChild) {
-                return Events.$emit('close-child-editor');
-            }
-
-            this.showFolderCreator = false;
-            this.editedAssetId = null;
-            this.editedFolderPath = null;
-        });
-
-        Events.$on('refresh-assets', () => {
-            this.loadAssets();
-        });
-
-        Events.$on('delete-assets', (ids) => {
-            this.deleteAsset(ids);
-        })
-    },
-    beforeUnmount() {
-        Events.$off('asset-doubleclicked');
-        Events.$off('close-child-editor');
-        Events.$off('refresh-assets');
-        Events.$off('delete-assets');
-        Events.$off('close-editor');
-    }
-
 };
 </script>

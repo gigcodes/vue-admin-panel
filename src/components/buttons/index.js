@@ -6,15 +6,15 @@ export default {
         },
         type: {
             type: String,
-            default: 'primary',
+            default: "primary",
         },
         size: {
             type: String,
-            default: 'normal',
+            default: "normal",
         },
         disabled: {
             type: Boolean,
-            default: false
+            default: false,
         },
         loading: {
             type: Boolean,
@@ -22,7 +22,7 @@ export default {
         },
         extraClass: {
             type: String,
-            default: null
-        }
-    }
-}
+            default: null,
+        },
+    },
+};

@@ -1,70 +1,78 @@
 <template>
-
-    <tr @click="toggle" @dblclick="doubleClicked" :class="{ 'selected': isSelected }">
-
+    <tr
+        :class="{ selected: isSelected }"
+        @click="toggle"
+        @dblclick="doubleClicked"
+    >
         <td class="thumbnail-col" @dragstart="assetDragStart">
-            <div v-if="canShowSvg"
-                 class="img svg-img"
-                 :style="svgBackgroundStyle">
-            </div>
-            <div class="img" v-else>
-                <img v-if="asset.is_image" :src="asset.thumbnail"/>
-                <file-icon v-else :extension="asset.extension"/>
+            <div
+                v-if="canShowSvg"
+                class="img svg-img"
+                :style="svgBackgroundStyle"
+            ></div>
+            <div v-else class="img">
+                <img v-if="asset.is_image" :src="asset.thumbnail" />
+                <file-icon v-else :extension="asset.extension" />
             </div>
         </td>
 
         <td class="title-col">{{ asset.title || asset.basename }}</td>
         <td class="size-col extra-col">{{ asset.size_formatted }}</td>
-        <td class="modifed-col extra-col">{{ asset.last_modified_formatted }}</td>
+        <td class="modifed-col extra-col">
+            {{ asset.last_modified_formatted }}
+        </td>
 
         <td class="column-actions">
-
-            <div class="btn-group action-more" :class="{ open: showActionsDropdown }" v-if="canEdit"
-                 v-on-clickaway="away">
-                <button type="button" class="btn-more dropdown-toggle" @click.prevent.stop="toggleActions">
-                    <i class="icon icon-dots-three-vertical"/>
+            <div
+                v-if="canEdit"
+                v-on-clickaway="away"
+                class="btn-group action-more"
+                :class="{ open: showActionsDropdown }"
+            >
+                <button
+                    type="button"
+                    class="btn-more dropdown-toggle"
+                    @click.prevent.stop="toggleActions"
+                >
+                    <i class="icon icon-dots-three-vertical" />
                 </button>
                 <ul class="dropdown-menu">
                     <li><a @click="closeDropdownAndEditAsset">Edit</a></li>
-                    <li class="divider"/>
-                    <li class="warning"><a href="" @click.prevent="closeDropdownAndDeleteAsset">Delete</a></li>
+                    <li class="divider" />
+                    <li class="warning">
+                        <a href="" @click.prevent="closeDropdownAndDeleteAsset"
+                            >Delete</a
+                        >
+                    </li>
                 </ul>
             </div>
-
         </td>
-
     </tr>
-
 </template>
 
-
 <script>
-    import Asset from './Asset';
-    import Row from './Row';
+import Asset from "./Asset";
+import Row from "./Row";
 
-    export default {
+export default {
+    mixins: [Asset, Row],
 
-        mixins: [Asset, Row],
+    computed: {
+        canEdit: function () {
+            return true;
+        },
+    },
 
-        computed: {
-            canEdit: function () {
-                return true
-            }
+    methods: {
+        closeDropdownAndEditAsset() {
+            this.showActionsDropdown = false;
+            this.editAsset();
         },
 
-        methods: {
-
-            closeDropdownAndEditAsset() {
-                this.showActionsDropdown = false;
-                this.editAsset();
-            },
-
-            closeDropdownAndDeleteAsset() {
-                this.showActionsDropdown = false;
-                this.deleteAsset();
-            }
-
-        }
-
-    }
+        closeDropdownAndDeleteAsset() {
+            this.showActionsDropdown = false;
+            this.deleteAsset();
+        },
+    },
+};
 </script>

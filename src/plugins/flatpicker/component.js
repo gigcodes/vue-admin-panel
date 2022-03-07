@@ -1,30 +1,27 @@
-import Flatpickr from 'flatpickr';
-import {excludedEvents, includedEvents} from './events.js';
-import {arrayify, camelToKebab, cloneObject, nullify} from './util.js';
+import Flatpickr from "flatpickr";
+import { excludedEvents, includedEvents } from "./events.js";
+import { arrayify, camelToKebab, cloneObject, nullify } from "./util.js";
 // You have to import css yourself
-import {h, nextTick} from 'vue';
+import { h, nextTick } from "vue";
 
 // Keep a copy of all events for later use
 const allEvents = includedEvents.concat(excludedEvents);
 
 // Passing these properties in `set()` method will cause flatpickr to trigger some callbacks
-const configCallbacks = ['locale', 'showMonths'];
+const configCallbacks = ["locale", "showMonths"];
 
 export default {
-    name: 'flat-pickr',
+    name: "flat-pickr",
     render() {
-        return h('input', {
-            type: 'text',
-            'data-input': true,
+        return h("input", {
+            type: "text",
+            "data-input": true,
             disabled: this.disabled,
             onInput: this.onInput,
-            ref: 'root'
+            ref: "root",
         });
     },
-    emits: [
-        'blur',
-        'update:modelValue',
-    ].concat(allEvents.map(camelToKebab)),
+    emits: ["blur", "update:modelValue"].concat(allEvents.map(camelToKebab)),
     props: {
         modelValue: {
             default: null,
@@ -33,36 +30,36 @@ export default {
                 return (
                     value === null ||
                     value instanceof Date ||
-                    typeof value === 'string' ||
+                    typeof value === "string" ||
                     value instanceof String ||
                     value instanceof Array ||
-                    typeof value === 'number'
+                    typeof value === "number"
                 );
-            }
+            },
         },
         // https://chmln.github.io/flatpickr/options/
         config: {
             type: Object,
             default: () => ({
                 wrap: false,
-                defaultDate: null
-            })
+                defaultDate: null,
+            }),
         },
         events: {
             type: Array,
-            default: () => includedEvents
+            default: () => includedEvents,
         },
         disabled: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     data() {
         return {
             /**
              * The flatpickr instance
              */
-            fp: null
+            fp: null,
         };
     },
     mounted() {
@@ -90,9 +87,11 @@ export default {
         });
 
         const onCloseCb = (...args) => {
-            this.onClose(...args)
+            this.onClose(...args);
         };
-        safeConfig['onClose'] = arrayify(safeConfig['onClose'] || []).concat(onCloseCb)
+        safeConfig["onClose"] = arrayify(safeConfig["onClose"] || []).concat(
+            onCloseCb
+        );
 
         // Set initial date without emitting any event
         safeConfig.defaultDate = this.modelValue || safeConfig.defaultDate;
@@ -101,11 +100,11 @@ export default {
         this.fp = new Flatpickr(this.getElem(), safeConfig);
 
         // Attach blur event
-        this.fpInput().addEventListener('blur', this.onBlur);
+        this.fpInput().addEventListener("blur", this.onBlur);
 
         // Immediate watch will fail before fp is set,
         // so need to start watching after mount
-        this.$watch('disabled', this.watchDisabled, {immediate: true});
+        this.$watch("disabled", this.watchDisabled, { immediate: true });
     },
     methods: {
         /**
@@ -113,7 +112,9 @@ export default {
          * Bind on parent element if wrap is true
          */
         getElem() {
-            return this.config.wrap ? this.$refs.root.parentNode : this.$refs.root;
+            return this.config.wrap
+                ? this.$refs.root.parentNode
+                : this.$refs.root;
         },
 
         /**
@@ -125,7 +126,7 @@ export default {
             const input = event.target;
             // Lets wait for DOM to be updated
             nextTick().then(() => {
-                this.$emit('update:modelValue', nullify(input.value));
+                this.$emit("update:modelValue", nullify(input.value));
             });
         },
 
@@ -142,14 +143,14 @@ export default {
          * @param event
          */
         onBlur(event) {
-            this.$emit('blur', nullify(event.target.value));
+            this.$emit("blur", nullify(event.target.value));
         },
 
         /**
          * Flatpickr does not emit input event in some cases
          */
         onClose(selectedDates, dateStr) {
-            this.$emit('update:modelValue', dateStr);
+            this.$emit("update:modelValue", dateStr);
         },
 
         /**
@@ -159,11 +160,11 @@ export default {
          */
         watchDisabled(newState) {
             if (newState) {
-                this.fpInput().setAttribute('disabled', newState);
+                this.fpInput().setAttribute("disabled", newState);
             } else {
-                this.fpInput().removeAttribute('disabled');
+                this.fpInput().removeAttribute("disabled");
             }
-        }
+        },
     },
     watch: {
         /**
@@ -190,11 +191,11 @@ export default {
 
                 // Workaround: Allow to change locale dynamically
                 configCallbacks.forEach((name) => {
-                    if (typeof safeConfig[name] !== 'undefined') {
+                    if (typeof safeConfig[name] !== "undefined") {
                         this.fp.set(name, safeConfig[name]);
                     }
                 });
-            }
+            },
         },
 
         /**
@@ -207,9 +208,9 @@ export default {
             if (newValue === nullify(this.$refs.root.value)) return;
             // Make sure we have a flatpickr instance
             this.fp &&
-            // Notify flatpickr instance that there is a change in value
-            this.fp.setDate(newValue, true);
-        }
+                // Notify flatpickr instance that there is a change in value
+                this.fp.setDate(newValue, true);
+        },
     },
     /**
      * Free up memory
@@ -217,9 +218,9 @@ export default {
     beforeUnmount() {
         /* istanbul ignore else */
         if (this.fp) {
-            this.fpInput().removeEventListener('blur', this.onBlur);
+            this.fpInput().removeEventListener("blur", this.onBlur);
             this.fp.destroy();
             this.fp = null;
         }
-    }
+    },
 };

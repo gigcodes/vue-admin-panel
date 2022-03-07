@@ -1,27 +1,27 @@
-import { render, h } from 'vue'
+import { render, h } from "vue";
 
 const createElement = () =>
-    typeof document !== 'undefined' && document.createElement('div')
+    typeof document !== "undefined" && document.createElement("div");
 
 const mount = (component, { props, children, element, app } = {}) => {
-    let el = element ? element : createElement()
+    let el = element ? element : createElement();
 
-    let vNode = h(component, props, children)
+    let vNode = h(component, props, children);
     if (app && app._context) {
-        vNode.appContext = app._context
+        vNode.appContext = app._context;
     }
 
-    render(vNode, el)
+    render(vNode, el);
 
     const destroy = () => {
         if (el) {
-            render(null, el)
+            render(null, el);
         }
-        el = null
-        vNode = null
-    }
+        el = null;
+        vNode = null;
+    };
 
-    return { vNode, destroy, el }
-}
+    return { vNode, destroy, el };
+};
 
-export default mount
+export default mount;

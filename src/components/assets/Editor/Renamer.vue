@@ -1,99 +1,104 @@
 <template>
+    <modal v-model:show="show" :saving="saving" class="modal-small">
+        <template #header> Rename File</template>
 
-    <modal :show.sync="show" :saving="saving" class="modal-small">
-        <template slot="header">
-            Rename File
-        </template>
+        <template #body>
+            <div class="alert alert-warning">{{ warningText }}</div>
 
-        <template slot="body">
-            <div class="alert alert-warning">{{ warningText | markdown }}</div>
-
-            <div class="alert alert-danger" v-if="errors">
-                <p v-for="error in errors">{{ error }}</p>
+            <div v-if="errors" class="alert alert-danger">
+                <p v-for="(error,index) in errors" :key="index">{{ error }}</p>
             </div>
 
             <div class="form-group">
-                <input type="text" autofocus
-                       class="form-control"
-                       v-model="filename"
-                       @keyup.esc="cancel"
-                       @keyup.enter="save"/>
+                <input
+                    ref="input"
+                    v-model="filename"
+                    type="text"
+                    autofocus
+                    class="form-control"
+                    @keyup.esc="cancel"
+                    @keyup.enter="save"
+                />
             </div>
         </template>
 
-        <template slot="footer">
-            <button class="btn btn-primary" :disabled="!hasChanged" @click="save">Save</button>
-            <button type="button" class="btn" @click="cancel">{{ translate('cp.cancel') }}</button>
+        <template #footer>
+            <button
+                class="btn btn-primary"
+                :disabled="!hasChanged"
+                @click="save"
+            >
+                Save
+            </button>
+            <button type="button" class="btn" @click="cancel">
+                Cancel
+            </button>
         </template>
     </modal>
-
 </template>
 
-
 <script>
-    export default {
+import axios from "axios";
 
-        props: ['asset'],
+export default {
+    props: {
+        asset: {
+            type: Object,
+            default: () => ({})
+        }
+    },
 
+    emits: ["saved", "closed"],
 
-        data() {
-            return {
-                show: true,
-                filename: null,
-                saving: false,
-                errors: null,
-                warningText: translate('cp.rename_file_warning')
-            }
+    data() {
+        return {
+            show: true,
+            filename: null,
+            saving: false,
+            errors: null,
+            warningText: "Are you sure to rename file",
+        };
+    },
+
+    computed: {
+        hasChanged() {
+            return this.asset.filename !== this.filename;
         },
+    },
 
+    mounted() {
+        this.filename = this.asset.filename;
+    },
 
-        computed: {
-
-            hasChanged() {
-                return this.asset.filename !== this.filename;
-            }
-
+    watch: {
+        show(val) {
+            if (!val) this.cancel();
         },
+    },
 
+    methods: {
+        save() {
+            if (!this.hasChanged) return;
 
-        ready() {
-            this.filename = this.asset.filename;
-        },
+            this.saving = true;
 
+            const url = "/assets/rename/" + this.asset.id.replace("::", "/");
 
-        watch: {
-
-            show(val) {
-                if (!val) this.cancel();
-            }
-
-        },
-
-
-        methods: {
-
-            save() {
-                if (!this.hasChanged) return;
-
-                this.saving = true;
-
-                const url = cp_url('/assets/rename/' + this.asset.id.replace('::', '/'));
-
-                this.$http.post(url, {filename: this.filename}).success((response) => {
-                    this.$emit('saved', response);
+            axios.post(url, {filename: this.filename})
+                .then((response) => {
+                    this.$emit("saved", response);
                     this.cancel();
-                }).error((response) => {
+                })
+                .catch((response) => {
                     this.saving = false;
                     this.errors = response;
-                    this.$els.input.focus();
-                })
-            },
+                    this.$refs.input.focus();
+                });
+        },
 
-            cancel() {
-                this.$emit('closed');
-            }
-
-        }
-
-    }
+        cancel() {
+            this.$emit("closed");
+        },
+    },
+};
 </script>

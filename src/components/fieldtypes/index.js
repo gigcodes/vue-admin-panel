@@ -2,51 +2,51 @@ export default {
     props: {
         id: {
             type: String,
-            default: null
+            default: null,
         },
         name: {
             type: String,
-            default: null
+            default: null,
         },
         tooltip: {
             type: String,
-            default: null
+            default: null,
         },
         type: {
             type: String,
-            default: 'text',
+            default: "text",
         },
         classes: {
             type: String,
-            default: null
+            default: null,
         },
         inputClass: {
             type: String,
-            default: null
+            default: null,
         },
         autofocus: {
             type: Boolean,
-            default: false
+            default: false,
         },
         required: {
             type: Boolean,
-            default: false
+            default: false,
         },
         readonly: {
             type: Boolean,
-            default: false
+            default: false,
         },
         disabled: {
             type: Boolean,
-            default: false
+            default: false,
         },
         placeholder: {
             type: String,
-            default: null
+            default: null,
         },
         help: {
             type: String,
-            default: null
+            default: null,
         },
         hasError: {
             default: null,
@@ -66,6 +66,6 @@ export default {
         hasIcon: {
             type: String,
             default: null,
-        }
-    }
-}
+        },
+    },
+};

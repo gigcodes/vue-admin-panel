@@ -1,10 +1,9 @@
-import Luminous from 'luminous-lightbox';
-import AssetEditor from '../../assets/Editor/Editor.vue';
+import Luminous from "luminous-lightbox";
+import AssetEditor from "../../assets/Editor/Editor.vue";
 
 export default {
-
     components: {
-        AssetEditor
+        AssetEditor,
     },
 
     props: {
@@ -12,29 +11,27 @@ export default {
         readOnly: Boolean,
         showFilename: {
             type: Boolean,
-            default: true
-        }
+            default: true,
+        },
     },
 
     data() {
         return {
-            editing: false
-        }
+            editing: false,
+        };
     },
 
-
     computed: {
-
         isImage() {
             return this.asset.isImage;
         },
 
         canShowSvg() {
-            return this.asset.extension === 'svg';
+            return this.asset.extension === "svg";
         },
 
         canBeTransparent() {
-            return ['png', 'svg'].includes(this.asset.extension)
+            return ["png", "svg"].includes(this.asset.extension);
         },
 
         thumbnail() {
@@ -43,12 +40,10 @@ export default {
 
         label() {
             return this.asset.basename;
-        }
+        },
     },
 
-
     methods: {
-
         edit() {
             if (this.readOnly) return;
 
@@ -58,17 +53,19 @@ export default {
         remove() {
             if (this.readOnly) return;
 
-            this.$emit('removed', this.asset);
+            this.$emit("removed", this.asset);
         },
 
         makeZoomable() {
-            const el = $(this.$el).find('a.zoom')[0];
+            //@todo need to convert it to vanilla js
+            //const el = $(this.$el).find("a.zoom")[0];
+            const el = 'asd';
 
-            if (! el || ! this.isImage) return;
+            if (!el || !this.isImage) return;
 
             new Luminous(el, {
                 closeOnScroll: true,
-                captionAttribute: 'title'
+                captionAttribute: "title",
             });
         },
 
@@ -77,15 +74,12 @@ export default {
         },
 
         assetSaved(asset) {
-            this.$emit('updated', asset);
+            this.$emit("updated", asset);
             this.closeEditor();
-        }
-
+        },
     },
-
 
     mounted() {
         this.makeZoomable();
-    }
-
-}
+    },
+};

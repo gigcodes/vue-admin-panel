@@ -1,27 +1,44 @@
 <template>
-
-    <li :class="[{'first': number===1},{ 'active': isCurrent },{'last':last}]">
-        <a :href="isCurrent ? '#' : ''" @click.prevent="$emit('select',number)">
+    <li
+        :class="[
+            { first: number === 1 },
+            { active: isCurrent },
+            { last: last },
+        ]"
+    >
+        <a
+            :href="isCurrent ? '#' : ''"
+            @click.prevent="$emit('select', number)"
+        >
             {{ number }}
         </a>
     </li>
-
 </template>
-
 
 <script>
 import {computed} from "vue";
 
 export default {
-
-    props: ['number', 'last', 'current'],
-    emits:['select'],
+    props: {
+        number: {
+            type: Number,
+            required: true
+        },
+        last: {
+            type: Boolean,
+            default: false
+        },
+        current: {
+            type: Number,
+            required: true
+        }
+    },
+    emits: ["select"],
     setup(props) {
         const isCurrent = computed(() => {
             return props.number === props.current;
-        })
-        return {isCurrent}
-    }
-
-}
+        });
+        return {isCurrent};
+    },
+};
 </script>

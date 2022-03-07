@@ -1,155 +1,181 @@
 <template>
-
-    <modal :show="true" class="asset-modal asset-folder-editor" :saving="saving" :loading="loading">
-        <template slot="close">
-            <button type="button" tabindex="-1" class="close" slot="close" aria-label="Close" @click="close"><span
-                aria-hidden="true">&times;</span>
+    <modal
+        :show="true"
+        class="asset-modal asset-folder-editor"
+        :saving="saving"
+        :loading="loading"
+    >
+        <template #close>
+            <button
+                type="button"
+                tabindex="-1"
+                class="close"
+                aria-label="Close"
+                @click="close">
+                <span aria-hidden="true">&times;</span>
             </button>
         </template>
 
-        <template slot="header">
+        <template #header>
             <h1 v-if="create">Create Folder</h1>
             <h1 v-if="!create">Edit Folder</h1>
         </template>
 
-        <template slot="body">
-
-            <div class="alert alert-danger" v-if="hasErrors">
-                <p v-for="error in errors">{{ error }}</p>
+        <template #body>
+            <div v-if="hasErrors" class="alert alert-danger">
+                <p v-for="(error,i) in errors" :key="i">{{ error }}</p>
             </div>
 
-            <div class="form-group" v-if="create">
+            <div v-if="create" class="form-group">
                 <label class="block">Name</label>
                 <small class="help-block">The filesystem directory name</small>
-                <input type="text" class="form-control" v-model="form.basename" @keyup.esc="close" v-focus="create">
+                <input
+                    v-model="form.basename"
+                    v-focus="create"
+                    type="text"
+                    class="form-control"
+                    @keyup.esc="close"
+                />
             </div>
-
         </template>
 
-        <template slot="footer">
+        <template #footer>
             <button type="button" class="btn" @click="close">Close</button>
-            <button type="button" class="btn btn-primary" @click="save">Save</button>
+            <button type="button" class="btn btn-primary" @click="save">
+                Save
+            </button>
         </template>
     </modal>
-
 </template>
 
 <script>
-    export default {
+import axios from "axios";
 
-        props: {
-            container: String,
-            path: String,
-            create: Boolean
+export default {
+    emits: ["created", "updated", "closed"],
+    props: {
+        container: {
+            type: String,
+            default: null
+        },
+        path: {
+            type: String,
+            default: null
+        },
+        create: {
+            type: Boolean,
+            default: false
+        },
+    },
+
+    data: function () {
+        return {
+            form: {},
+            folder: {},
+            loading: true,
+            saving: false,
+            errors: [],
+            basenameModified: false,
+        };
+    },
+
+    computed: {
+        hasErrors() {
+            return Object.keys(this.errors).length > 0 && !this.saving;
+        },
+    },
+
+    mounted: function () {
+        this.getFolder();
+    },
+
+    methods: {
+        reset: function () {
+            //@todo change needed
+            //this.path = "";
+            this.folder = {};
+            this.form = {};
+            this.loading = true;
         },
 
-        data: function () {
-            return {
-                form: {},
-                folder: {},
-                loading: true,
-                saving: false,
-                errors: [],
-                basenameModified: false
+        getFolder: function () {
+            if (this.create) {
+                this.getBlankFolder();
+            } else {
+                this.getExistingFolder();
             }
         },
 
-        computed: {
-
-            hasErrors() {
-                return Object.keys(this.errors).length > 0 && !this.saving;
-            }
-
+        getBlankFolder: function () {
+            this.folder = {};
+            this.form = {
+                container: this.container,
+                parent: this.path,
+                title: "",
+                basename: "",
+            };
+            this.loading = false;
         },
 
-        methods: {
+        getExistingFolder: function () {
+            let url =
+                "/admin/media/folders/" + this.container + "/" + this.path;
 
-            reset: function () {
-                this.path = '';
-                this.folder = {};
-                this.form = {};
-                this.loading = true;
-            },
-
-            getFolder: function () {
-                if (this.create) {
-                    this.getBlankFolder();
-                } else {
-                    this.getExistingFolder();
-                }
-            },
-
-            getBlankFolder: function () {
-                this.folder = {};
+            axios.get(url).then((response) => {
+                this.folder = response.data;
                 this.form = {
-                    container: this.container,
-                    parent: this.path,
-                    title: '',
-                    basename: ''
+                    title: response.data.title,
                 };
                 this.loading = false;
-            },
+            });
+        },
 
-            getExistingFolder: function () {
-                let url = '/admin/media/folders/' + this.container + '/' + this.path;
+        save: function () {
+            this.saving = true;
 
-                this.$axios.get(url).then(response => {
-                    this.folder = response.data;
-                    this.form = {
-                        title: response.data.title
-                    };
-                    this.loading = false;
-                });
-            },
+            if (this.create) {
+                this.saveNewFolder();
+            } else {
+                this.saveExistingFolder();
+            }
+        },
 
-            save: function () {
-                this.saving = true;
+        saveNewFolder: function () {
+            let url = "/admin/media/folder";
 
-                if (this.create) {
-                    this.saveNewFolder();
-                } else {
-                    this.saveExistingFolder();
-                }
-            },
-
-            saveNewFolder: function () {
-                let url = '/admin/media/folder';
-
-                this.$axios.post(url, {
-                    form: this.form,
-                    folder: this.folder,
-                }).then(response => {
-                    this.$emit('created', response.data.folder.path);
+            axios.post(url, {
+                form: this.form,
+                folder: this.folder,
+            })
+                .then((response) => {
+                    this.$emit("created", response.data.folder.path);
                     this.saving = false;
                     this.close();
-                }).catch(error => {
+                })
+                .catch((error) => {
                     this.errors = error.response.data.errors;
                     this.saving = false;
                 });
-            },
-
-            saveExistingFolder: function () {
-                let url = '/admin/media/folders/' + this.container + '/' + this.path;
-
-                this.$axios.post(url, {
-                    form: this.form,
-                    folder: this.folder,
-                }).then(response => {
-                    this.$emit('updated');
-                    this.saving = false
-                    this.close();
-                });
-            },
-
-            close: function () {
-                this.$emit('closed');
-            }
-
         },
 
-        mounted: function () {
-            this.getFolder();
-        }
+        saveExistingFolder: function () {
+            let url =
+                "/admin/media/folders/" + this.container + "/" + this.path;
 
-    }
+            axios.post(url, {
+                form: this.form,
+                folder: this.folder,
+            })
+                .then(() => {
+                    this.$emit("updated");
+                    this.saving = false;
+                    this.close();
+                });
+        },
+
+        close: function () {
+            this.$emit("closed");
+        },
+    },
+};
 </script>

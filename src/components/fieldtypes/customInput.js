@@ -1,13 +1,13 @@
 export default {
-    emits: ['update:modelValue', 'update:slug'],
+    emits: ["update:modelValue", "update:slug"],
     props: {
         modelValue: {
-            type: [Number, String]
-        }
+            type: [Number, String],
+        },
     },
     methods: {
         updateSelf(title) {
-            this.$emit('update:modelValue', title)
-        }
-    }
-}
+            this.$emit("update:modelValue", title);
+        },
+    },
+};

@@ -1,5 +1,4 @@
 class VueRouteMiddleware {
-
     /**
      * Set instance properties and call defined
      * middlewares on matching routes
@@ -13,21 +12,23 @@ class VueRouteMiddleware {
      * @var {boolean} nextHasCalled // if next was called in the middlewares
      * @var {array} toMiddleware // arguments passed to middleware function
      */
-    constructor(definedMiddlewares, to, from, next){
-        if(this._isObject(definedMiddlewares)){
+    constructor(definedMiddlewares, to, from, next) {
+        if (this._isObject(definedMiddlewares)) {
             this.middlewares = definedMiddlewares;
         } else {
-            this._error('Defined middlewares must be of type Object!');
+            this._error("Defined middlewares must be of type Object!");
             this.middlewares = {};
         }
         this.to = to;
         this.from = from;
         this.next = next;
         this.nextHasCalled = false;
-        if(this.to && this.to.matched){ // Apply middleware if anu route matched
-            to.matched.every(route => this.applyRouteMiddlewares(route));
+        if (this.to && this.to.matched) {
+            // Apply middleware if anu route matched
+            to.matched.every((route) => this.applyRouteMiddlewares(route));
         }
-        if(this.next && !this.nextHasCalled){ // call next if user didnt call it
+        if (this.next && !this.nextHasCalled) {
+            // call next if user didnt call it
             this.callNext();
         }
     }
@@ -37,12 +38,11 @@ class VueRouteMiddleware {
      *
      * @return {array}
      */
-    toMiddleware(){
+    toMiddleware() {
         return [
             this.to,
             this.from,
-            this._isFunction(this.next) ?
-                this.callNext.bind(this) : undefined
+            this._isFunction(this.next) ? this.callNext.bind(this) : undefined,
         ];
     }
 
@@ -52,10 +52,10 @@ class VueRouteMiddleware {
      *
      * @param  {...any} args
      */
-    callNext(...args){
-        if(!this.nextHasCalled) this.nextHasCalled = true;
+    callNext(...args) {
+        if (!this.nextHasCalled) this.nextHasCalled = true;
         return this.next(...args);
-    };
+    }
 
     /**
      * Fuction applying middlewares of a single route and deciding
@@ -65,11 +65,13 @@ class VueRouteMiddleware {
      *
      * @return {boolean}
      */
-    applyRouteMiddlewares(route){
-        if(route.meta && route.meta.middleware){
+    applyRouteMiddlewares(route) {
+        if (route.meta && route.meta.middleware) {
             let middlewareKeys = route.meta.middleware;
-            if(this._isArray(middlewareKeys)){
-                return middlewareKeys.every(middleware => this.applyMiddleware(middleware));
+            if (this._isArray(middlewareKeys)) {
+                return middlewareKeys.every((middleware) =>
+                    this.applyMiddleware(middleware)
+                );
             } else {
                 return this.applyMiddleware(middlewareKeys);
             }
@@ -85,7 +87,7 @@ class VueRouteMiddleware {
      *
      * @return {boolean}
      */
-    applyMiddleware(middleware){
+    applyMiddleware(middleware) {
         const result = this.getMiddleware(middleware)(...this.toMiddleware());
         return result === undefined ? true : result;
     }
@@ -99,19 +101,19 @@ class VueRouteMiddleware {
      *
      * @return {function}
      */
-    getMiddleware(middleware){
-        if(this._isString(middleware)){
-            if(this.middlewares.hasOwnProperty(middleware)){
-                if(this._isFunction(this.middlewares[middleware])){
+    getMiddleware(middleware) {
+        if (this._isString(middleware)) {
+            if (Object.prototype.hasOwnProperty.call(this.middlewares,middleware)) {
+                if (this._isFunction(this.middlewares[middleware])) {
                     return this.middlewares[middleware];
                 } else {
-                    this._error(middleware+' is not a function!');
+                    this._error(middleware + " is not a function!");
                 }
             }
-        } else if(this._isFunction(middleware)) {
+        } else if (this._isFunction(middleware)) {
             return middleware;
         } else {
-            this._error('All middlewares must be functions!');
+            this._error("All middlewares must be functions!");
         }
         return () => true;
     }
@@ -121,8 +123,8 @@ class VueRouteMiddleware {
      *
      * @return {boolean}
      */
-    _error(text){
-        console.error(this.constructor.name + ': '+text);
+    _error(text) {
+        console.error(this.constructor.name + ": " + text);
     }
 
     /**
@@ -130,7 +132,7 @@ class VueRouteMiddleware {
      *
      * @return {boolean}
      */
-    _isString(toCheck){
+    _isString(toCheck) {
         return typeof toCheck === "string" || toCheck instanceof String;
     }
 
@@ -139,7 +141,7 @@ class VueRouteMiddleware {
      *
      * @return {boolean}
      */
-    _isArray(toCheck){
+    _isArray(toCheck) {
         return Array.isArray(toCheck);
     }
 
@@ -148,7 +150,7 @@ class VueRouteMiddleware {
      *
      * @return {boolean}
      */
-    _isFunction(toCheck){
+    _isFunction(toCheck) {
         return typeof toCheck === "function";
     }
 
@@ -157,11 +159,12 @@ class VueRouteMiddleware {
      *
      * @return {boolean}
      */
-    _isObject(toCheck){
+    _isObject(toCheck) {
         return typeof toCheck === "object" && toCheck !== null;
     }
-};
+}
 
 export default (definedGroups = {}) => {
-    return (...toMiddleware) => new VueRouteMiddleware(definedGroups, ...toMiddleware);
+    return (...toMiddleware) =>
+        new VueRouteMiddleware(definedGroups, ...toMiddleware);
 };

@@ -1,67 +1,79 @@
 {
-  "name": "@gigcodes/vue-admin-panel",
-  "version": "1.0.0-beta.39",
-  "description": "Reusable SPA Admin Panel for Laravel",
-  "main": "./dist/gigcodes-admin.umd.js",
-  "module": "./dist/gigcodes-admin.es.js",
-  "browser": "dist/gigcodes-admin.esm.js",
-  "unpkg": "dist/gigcodes-admin.min.js",
-  "files": [
-    "dist/*",
-    "src/*"
-  ],
-  "sideEffects": false,
-  "publishConfig": {
-    "registry": "https://github.com/gigcodes/vue-admin-panel.git"
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gigcodes/vue-admin-panel.git"
-  },
-  "keywords": [
-    "gigocodes",
-    "admin",
-    "panel"
-  ],
-  "author": "Karthick K",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/gigcodes/vue-admin-panel/issues"
-  },
-  "homepage": "https://github.com/gigcodes/vue-admin-panel.git#readme",
-  "devDependencies": {
-    "@popperjs/core": "^2.11.2",
-    "@tailwindcss/typography": "^0.5.1",
-    "@vitejs/plugin-vue": "^1.9.3",
-    "autoprefixer": "^10.3.7",
-    "luminous-lightbox": "^2.4.0",
-    "postcss": "^8.3.11",
-    "tailwindcss": "^3.0.18",
-    "tree-helper": "^1.4.14",
-    "vite-plugin-require-transform": "^1.0.0"
-  },
-  "peerDependencies": {
-    "vue": "^3.2.29"
-  },
-  "dependencies": {
-    "@tailwindcss/forms": "^0.4.0",
-    "@tiptap/starter-kit": "^2.0.0-beta.183",
-    "@tiptap/vue-3": "^2.0.0-beta.90",
-    "@vue/compiler-sfc": "^3.2.29",
-    "flatpickr": "^4.6.9",
-    "he-tree-vue": "^3.0.3",
-    "sass": "^1.49.7",
-    "speakingurl": "^14.0.1",
-    "underscore": "^1.13.2",
-    "vite": "^2.7.13",
-    "vue-draggable-nested-tree": "^3.0.0-beta2"
-  },
-  "engines": {
-    "node": ">=12"
-  }
+    "name": "@gigcodes/vue-admin-panel",
+    "version": "1.0.0-beta.40",
+    "description": "Reusable SPA Admin Panel for Laravel",
+    "main": "./dist/gigcodes-admin.umd.js",
+    "module": "./dist/gigcodes-admin.es.js",
+    "browser": "dist/gigcodes-admin.esm.js",
+    "unpkg": "dist/gigcodes-admin.min.js",
+    "files": [
+        "dist/*",
+        "src/*"
+    ],
+    "sideEffects": false,
+    "publishConfig": {
+        "registry": "https://github.com/gigcodes/vue-admin-panel.git"
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "serve": "vite preview",
+        "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+        "format": "prettier --write \"src/**/*.{js,vue}\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gigcodes/vue-admin-panel.git"
+    },
+    "keywords": [
+        "gigocodes",
+        "admin",
+        "panel"
+    ],
+    "author": "Karthick K",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/gigcodes/vue-admin-panel/issues"
+    },
+    "homepage": "https://github.com/gigcodes/vue-admin-panel.git#readme",
+    "devDependencies": {
+        "@popperjs/core": "^2.11.2",
+        "@tailwindcss/typography": "^0.5.1",
+        "@vitejs/plugin-vue": "^1.9.3",
+        "autoprefixer": "^10.3.7",
+        "eslint": "^8.10.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-vue": "^8.5.0",
+        "luminous-lightbox": "^2.4.0",
+        "postcss": "^8.3.11",
+        "prettier": "2.5.1",
+        "tailwindcss": "^3.0.18",
+        "tree-helper": "^1.4.14",
+        "vite-plugin-require-transform": "^1.0.0"
+    },
+    "peerDependencies": {
+        "vue": "^3.2.29"
+    },
+    "dependencies": {
+        "@shopify/draggable": "^1.0.0-beta.8",
+        "@tailwindcss/forms": "^0.4.0",
+        "@tiptap/starter-kit": "^2.0.0-beta.183",
+        "@tiptap/vue-3": "^2.0.0-beta.90",
+        "@vue/compiler-sfc": "^3.2.29",
+        "axios": "^0.26.0",
+        "cookies-js": "^1.2.3",
+        "flatpickr": "^4.6.9",
+        "he-tree-vue": "^3.0.3",
+        "sass": "^1.49.7",
+        "speakingurl": "^14.0.1",
+        "underscore": "^1.13.2",
+        "uniqid": "^5.4.0",
+        "vite": "^2.7.13",
+        "vite-plugin-eslint": "^1.3.0",
+        "vite-plugin-require": "^0.0.8",
+        "vue-draggable-nested-tree": "^3.0.0-beta2"
+    },
+    "engines": {
+        "node": ">=12"
+    }
 }

@@ -1,13 +1,13 @@
-import View from './progressbar.vue';
+import View from "./progressbar.vue";
 
-import {api as progress} from './progress.js'
+import { api as progress } from "./progress.js";
 
 const ProgressBar = {
     install: (app) => {
-        app.component('vue-progress-bar', View);
+        app.component("VueProgressBar", View);
         app.config.globalProperties.$progress = progress;
-    }
+    },
 };
 
 export default ProgressBar;
-export {ProgressBar, progress}
+export { ProgressBar, progress };

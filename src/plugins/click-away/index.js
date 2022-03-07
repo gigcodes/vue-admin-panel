@@ -11,7 +11,12 @@ const onMounted = function (el, binding, vnode) {
     }, 0);
 
     el[UNIQUE_ID] = function (event) {
-        if ((!el || !el.contains(event.target)) && callback && nextTick && typeof callback === "function") {
+        if (
+            (!el || !el.contains(event.target)) &&
+            callback &&
+            nextTick &&
+            typeof callback === "function"
+        ) {
             return callback.call(vm, event);
         }
     };
@@ -34,19 +39,19 @@ const onUpdated = function (el, binding, vnode) {
 
 const plugin = {
     install: function (app) {
-        app.directive('click-away', directive);
-    }
+        app.directive("click-away", directive);
+    },
 };
 const directive = {
     mounted: onMounted,
     updated: onUpdated,
-    unmounted: onUnmounted
+    unmounted: onUnmounted,
 };
 const mixin = {
     directives: {
-        ClickAway: directive
-    }
+        ClickAway: directive,
+    },
 };
 
 export default plugin;
-export {mixin,plugin,directive};
+export { mixin, plugin, directive };
