@@ -39,24 +39,3 @@ export default {
     },
 };
 </script>
-<style lang="scss" scoped>
-.loading {
-    text-align: center;
-    padding: 20px 0;
-
-    .icon {
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    &.loading-basic {
-        text-align: left;
-        padding: 0;
-
-        .icon {
-            display: inline-block;
-            margin: -2px 5px 0 0;
-        }
-    }
-}
-</style>

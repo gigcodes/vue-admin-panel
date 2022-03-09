@@ -1,8 +1,12 @@
-import { createApp } from "vue";
+import {createApp} from "vue";
 import App from "./App.vue";
+import {GigcodesAdmin} from './index';
 
-import { ProgressBar } from "../dist/gigcodes-admin.es";
+import './index.css'
+import './sass/index.scss'
 
 const gigcodes = createApp(App);
-gigcodes.use(ProgressBar);
-gigcodes.mount("#app");
+
+gigcodes.use(GigcodesAdmin);
+
+gigcodes.mount('#app')

@@ -6,7 +6,7 @@
                 <div class="little-dot mr-2" :class="getStatusClass()"/>
                 <img
                     v-if="isRoot"
-                    src="../../svg/home-page.svg"
+                    src="../../../svg/home-page.svg"
                     class="mr-1 h-4 w-4 text-grey-80"
                     alt=""
                 />
@@ -39,7 +39,7 @@
 
                 <div v-if="page.collection" class="ml-2 flex items-center">
                     <img
-                        src="../../svg/content-writing.svg"
+                        src="../../../svg/content-writing.svg"
                         class="w-4 h-4"
                         alt=""
                     />

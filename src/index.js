@@ -1,16 +1,21 @@
 //components
-import {default as Tooltip} from "./components/Tooltip.vue";
-import {default as Btn} from "./components/buttons/Button.vue";
-import {default as BtnGroup} from "./components/buttons/ButtonGroup.vue";
-import {default as DossierTable} from "./components/dossier/DossierTable.vue";
-import {default as DossierSortSelector} from "./components/dossier/SortSelector.vue";
-import {default as DossierSearch} from "./components/dossier/DossierSearch.vue";
-import {default as Modal} from "./components/modal/Modal.vue";
-import {default as BaseIcon} from "./components/BaseIcon.vue";
-import {default as Editor} from "./components/Editor.vue";
-import {default as PublishButton} from "./components/buttons/PublishButton.vue";
-import {default as LoadingGraphic} from "./components/LoadingGraphic.vue";
-import {default as PageTree} from "./components/structures/PageTree.vue";
+import Tooltip from "./components/Tooltip.vue";
+import Btn from "./components/buttons/Button.vue";
+import BtnGroup from "./components/buttons/ButtonGroup.vue";
+import DossierTable from "./components/dossier/DossierTable.vue";
+import DossierSortSelector from "./components/dossier/SortSelector.vue";
+import DossierSearch from "./components/dossier/DossierSearch.vue";
+import Modal from "./components/modal/Modal.vue";
+import BaseIcon from "./components/BaseIcon.vue";
+import Editor from "./components/Editor.vue";
+import PublishButton from "./components/buttons/PublishButton.vue";
+import LoadingGraphic from "./components/LoadingGraphic.vue";
+import PageTree from "./components/structures/PageTree.vue";
+import Cookies from 'js-cookie'
+import SvgIcon from "./components/SvgIcon.vue";
+import './index.css'
+
+
 
 const dev = import.meta.env.DEV;
 window.cloneItem = function (value) {
@@ -19,7 +24,7 @@ window.cloneItem = function (value) {
     return JSON.parse(JSON.stringify(value));
 };
 
-window.Cookies = require('cookies-js');
+window.Cookies = Cookies;
 
 window.dd = function (args) {
     if (dev) console.log(args);
@@ -27,17 +32,19 @@ window.dd = function (args) {
 };
 
 //fieldTypes
-import {default as TextField} from "./components/fieldtypes/TextFieldtype.vue";
-import {default as TextAreaField} from "./components/fieldtypes/TextAreaFieldtype.vue";
-import {default as SelectField} from "./components/fieldtypes/SelectFieldtype.vue";
-import {default as ToggleField} from "./components/fieldtypes/ToggleFieldtype.vue";
-import {default as DateField} from "./components/fieldtypes/DateFieldtype.vue";
+import TextField from "./components/fieldtypes/TextFieldtype.vue";
+import TextAreaField from "./components/fieldtypes/TextAreaFieldtype.vue";
+import SelectField from "./components/fieldtypes/SelectFieldtype.vue";
+import ToggleField from "./components/fieldtypes/ToggleFieldtype.vue";
+import DateField from "./components/fieldtypes/DateFieldtype.vue";
+import AssetsField from "./components/fieldtypes/assets/AssetsFieldtype.vue";
+
 
 //plugins
 import {default as Toaster, createToaster} from "./plugins/toaster";
 import {default as ProgressBar, progress} from "./plugins/progressbar";
-import {default as copy} from "./plugins/copyt-to-clipboard";
-import {default as RouteMiddleware} from "./plugins/route-middleware";
+import copy from "./plugins/copyt-to-clipboard";
+import RouteMiddleware from "./plugins/route-middleware";
 import slugify from "./plugins/slugify";
 import {
     mixin as CAMixin,
@@ -72,14 +79,15 @@ const components = {
     PublishButton,
     LoadingGraphic,
     PageTree,
+    SvgIcon
 };
 
 const GigcodesAdmin = {
-    install(Vue) {
+    install(app) {
         for (const prop in components) {
             if (Object.prototype.hasOwnProperty.call(components, prop)) {
                 const component = components[prop];
-                Vue.component(component.name, component);
+                app.component(component.name, component);
             }
         }
     },
@@ -123,6 +131,6 @@ export {
     ProgressBar,
     progress,
     GigcodesAdmin,
+    AssetsField,
+    GigcodesAdmin as default
 };
-
-export default GigcodesAdmin;

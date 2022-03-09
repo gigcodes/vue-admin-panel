@@ -1,35 +1,44 @@
 <template>
-    <div
-        :class="[
+  <div
+      v-if="type === 'div'"
+      :class="[
             'svg-icon',
             { 'using-div': type === 'div', 'using-svg': type === 'svg' },
         ]"
-        v-html="html"
-    ></div>
+      v-html="image"
+  ></div>
+  <img :src="image" alt="" v-else>
 </template>
 
 <script>
-export default {
-    props: {
-        name: {
-            type: String,
-            default: null
-        },
-        type: {
-            type: String,
-            default: "svg"
-        },
-    },
+import {computed} from "vue";
 
-    computed: {
-        html() {
-            if (this.type === "div") {
-                return `<div style="background-image: url('${
-                    "../svg/" + this.name + ".svg"
-                }')"></div>`;
-            }
-            return require(`!!html-loader!./../svg/${this.name}.svg`);
-        },
+export default {
+  name: "SvgIcon",
+  props: {
+    name: {
+      type: String,
+      default: null
     },
+    type: {
+      type: String,
+      default: "svg"
+    },
+  },
+
+  setup(props) {
+    const useImage = ((url) => {
+      return new URL(`/src/${url}`, import.meta.url).href;
+    });
+    const image = computed(() => {
+      if (props.type === "div") {
+        return `<div style="background-image: url('${"../svg/" + props.name + ".svg"}')"></div>`;
+      }
+      return useImage(`../svg/${props.name}.svg`);
+    })
+    return {
+      image
+    }
+  }
 };
 </script>

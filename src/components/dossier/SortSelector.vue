@@ -39,7 +39,7 @@
 
 <script>
 import _ from "underscore";
-import {BaseIcon} from "../../index";
+import BaseIcon from "../../components/BaseIcon.vue";
 import {Btn} from "../../index";
 import {computed, ref} from "vue";
 

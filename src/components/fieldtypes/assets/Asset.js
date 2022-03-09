@@ -1,4 +1,4 @@
-import Luminous from "luminous-lightbox";
+import {Luminous} from "luminous-lightbox";
 import AssetEditor from "../../assets/Editor/Editor.vue";
 
 export default {

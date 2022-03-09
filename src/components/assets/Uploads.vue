@@ -3,7 +3,7 @@
         <div class="asset-upload-listing-header">
             <h6>Upload</h6>
         </div>
-        <table>
+        <table class="w-full">
             <tbody>
             <Upload
                 v-for="(upload, i) in items"
