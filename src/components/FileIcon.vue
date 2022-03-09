@@ -1,8 +1,9 @@
 <template>
-  <img :src="image" :alt="name" :class="[
+  <img
+      :src="image" :alt="name" :class="[
             'svg-icon',
             { 'using-div': type === 'div', 'using-svg': type === 'svg' },
-        ]">
+        ]"/>
 </template>
 
 <script>
@@ -114,17 +115,14 @@ export default {
       }
     })
 
-    const useImage = ((url) => {
-      return new URL(`/src/${url}`, import.meta.url).href;
-    });
     const image = computed(() => {
       if (props.type === "div") {
-        return `<div style="background-image: url('${"../svg/" + name.value + ".svg"}')"></div>`;
+        return `<div style="background-image: url('${"/svg/" + name.value + ".svg"}')"></div>`;
       }
-      return useImage(`../svg/filetypes/${name.value}.svg`);
+      return `/svg/filetypes/${name.value}.svg`;
     })
     return {
-      image,name
+      image, name
     }
   }
 };

@@ -45,6 +45,7 @@
 
         <div v-if="!readOnly" class="asset-controls">
           <button
+              v-if="canEdit"
               class="btn btn-icon icon icon-pencil"
               @click="edit"
           ></button>

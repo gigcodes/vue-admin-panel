@@ -1,7 +1,6 @@
-import { Events, CAMixin } from "../../../../index";
+import { Events } from "../../../../index";
 
 export default {
-    mixins: [CAMixin],
 
     data() {
         return {

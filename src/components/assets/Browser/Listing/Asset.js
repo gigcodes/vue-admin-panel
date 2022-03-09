@@ -1,8 +1,20 @@
 import _ from "underscore"
 
 export default {
-    props: ["asset", "selectedAssets"],
+    props: {
+        asset: {
+            type: Object,
+            default: () => {
+            }
+        },
+        selectedAssets: {
+            type: Array,
+            default: () => []
+        },
+        canEdit: {type: Boolean, default: false}
+    },
     emits: ["selected", "deselected", "editing", "deleting", "assetdragstart", "doubleclicked"],
+
     computed: {
         /**
          * Determine if an asset should be in the selected state.
@@ -71,11 +83,13 @@ export default {
         doubleClicked() {
             // When in the context of the asset manager, we want to edit the asset. Otherwise, we want to
             // select the asset and close the dialog, which will be handled in the parent components.
-            if (document.location.pathname.split("/")[2] === "assets") {
-                this.editAsset();
-            } else {
-                this.select();
-                this.$emit("doubleclicked", this.asset.id);
+            if (this.canEdit) {
+                if (document.location.pathname.split("/")[2] === "assets") {
+                    this.editAsset();
+                } else {
+                    this.select();
+                    this.$emit("doubleclicked", this.asset.id);
+                }
             }
         },
     },

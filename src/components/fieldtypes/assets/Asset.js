@@ -16,6 +16,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        canEdit: {
+            type: Boolean,
+            default: false,
+        },
         showFilename: {
             type: Boolean,
             default: true,

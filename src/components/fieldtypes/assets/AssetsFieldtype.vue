@@ -67,16 +67,16 @@
 
           <template v-if="expanded && ! soloAsset">
 
-            <div class="asset-grid-listing" v-if="displayMode === 'grid'" ref="assetsGrid">
+            <div class="asset-grid-listing" v-if="displayMode === 'grid'" ref="assetContainer">
               <template v-for="asset in assets" :key="asset.id">
-                <asset-tile :asset="asset" @removed="assetRemoved"/>
+                <asset-tile :asset="asset" @removed="assetRemoved" :data-id="asset.id"/>
               </template>
             </div>
 
             <div class="asset-table-listing" v-if="displayMode === 'list'">
 
               <table>
-                <tbody ref="assetsTable">
+                <tbody ref="assetContainer">
                 <assetRow
                     v-for="(asset,i) in assets"
                     :key="i"
@@ -129,7 +129,8 @@ import Cookies from "js-cookie";
 import LoadingGraphic from "../../LoadingGraphic.vue";
 import {createToaster} from "../../../plugins/toaster";
 import Btn from "../../buttons/Button.vue";
-//import Events from "../../../modules/events";
+import Sortable from 'sortablejs';
+import Events from "../../../modules/events";
 
 export default {
   name: 'AssetsField',
@@ -142,18 +143,17 @@ export default {
     LoadingGraphic,
     Btn,
   },
-  emits: ["focus", "blur", "input", "meta-updated", "replicator-preview-updated", "update:image", "changesMade"],
+  emits: ["focus", "blur", "input", "meta-updated", "replicator-preview-updated", "update:data", "changesMade"],
   props: {
     name: {type: String, default: null},
     data: {
-      type: Object, default: () => {
-      }
+      type: [Object, Array], default: () => []
     },
     config: {
       type: Object, default: () => {
       }
     },
-    handle: {type: String, required: true},
+    handle: {type: String, default: null},
     required: {type: Boolean, required: false},
     meta: {
       type: Object, default: () => {
@@ -165,9 +165,6 @@ export default {
     errorKeyPrefix: {type: String, default: null},
   },
   setup(props, {emit}) {
-
-    //@todo add close selector function  here
-    //Events.$on('close-selector')
     const root = ref(null)
     const assetContainer = ref(null)
     const uploader = ref(null)
@@ -208,9 +205,9 @@ export default {
       handleDrop(event)
     }
 
-    watch(assets.value, (value) => {
-      emit('update:image', value);
-    })
+    watch(assets, (value) => {
+      emit('update:data', value);
+    }, {deep: true})
 
     const handleDrop = (event) => {
       const files = event.dataTransfer.files
@@ -281,7 +278,7 @@ export default {
       // If the value has an :: it's already an ID and we can return as-is.
       // Otherwise, we need to find the ID from the corresponding asset.
       return _(props.data).map((value) => {
-        return (value.includes('::')) ? value : _(assets.value).findWhere({url: value}).id;
+        return (value.id.includes('::')) ? value.id : _(assets.value).findWhere({id: value.id}).id;
       });
     })
 
@@ -313,15 +310,15 @@ export default {
       }
 
       try {
-        getService(assets).then(response => {
-          assets.value = response.data.asset
+        getService({items: d}).then(response => {
+          assets.value = response.data.assets
           loading.value = false
           nextTick(() => {
             // Juggle the data to make parent components notice something changed.
             // This makes nested replicators generate new preview text.
             data.value = [];
             data.value = props.data;
-            this.sortable();
+            sortable();
             bindChangeWatcher();
           })
 
@@ -361,7 +358,7 @@ export default {
      */
     const uploadComplete = (asset) => {
       assets.value.push(asset);
-      //this.sortable();
+      sortable();
     }
 
     onMounted(() => {
@@ -379,74 +376,65 @@ export default {
       changeWatcherIsBound.value = true;
     }
 
-    return {
-      root, assets, loading, uploads, initializing, showSelector, selectorViewMode,
-      draggingFile, innerDragging, displayMode, containerWidth,assetContainer,
-      update, dragOver, dragStop, hasAssets, container, folder, containerSpecified,
-      restrictNavigation, maxFiles, maxFilesReached, soloAsset, selectedAssets, expanded,
-      uploadElement, assetsSelected, uploader, uploadFile, uploadsUpdated, uploadComplete
-    }
-  },
-
-  methods: {
-
     /**
      * Open the asset selector modal
      */
-    openSelector() {
-      this.showSelector = true;
-      this.$root.hideOverflow = true;
+
+    const openSelector = () => {
+      showSelector.value = true;
+      root.value.hideOverflow = true;
     }
-    ,
+
     /**
      * Close the asset selector modal
      */
-    closeSelector() {
-      this.showSelector = false;
-      this.$root.hideOverflow = false;
+    const closeSelector = () => {
+      showSelector.value = false;
+      root.value.hideOverflow = false;
     }
-    ,
+
     /**
      * When an asset remove button was clicked.
      */
-    assetRemoved(asset) {
-      const index = _.findIndex(this.assets, {id: asset.id});
-      this.assets.splice(index, 1);
-      if (this.maxFiles === 1) {
-        this.$refs.uploader.$refs.nativefilefield.value = "";
+    const assetRemoved = (asset) => {
+      const index = _.findIndex(assets.value, {id: asset.id});
+      assets.value.splice(index, 1);
+      if (maxFiles.value === 1) {
+        uploader.value.fileInput.value = "";
       }
     }
-    ,
 
+    const sortable = () => {
+      if (maxFiles.value === 1) return;
+      if(assetContainer.value){
+        new Sortable(assetContainer.value, {
+          preventOnFilter: true,
+          dataIdAttr: 'data-id'
+        })
+      }
+    }
 
-    sortable() {
-      //if (this.maxFiles === 1)
-      // $(this.$refs.assets).sortable({
-      //   items: '> :not(.ghost)',
-      //   start: (e, ui) => {
-      //     ui.item.data('start', ui.item.index());
-      //   },
-      //   update: (e, ui) => {
-      //     const start = ui.item.data('start');
-      //     const end = ui.item.index();
-      //     this.assets.splice(end, 0, this.assets.splice(start, 1)[0]);
-      //   },
-      //   placeholder: {
-      //     element() {
-      //       return $("<div class='ui-sortable-placeholder asset-tile'><div class='faux-thumbnail'></div></div>")[0];
-      //     },
-      //   }
-      // });
-    },
-    getReplicatorPreviewText() {
-      return _.map(this.assets, (asset) => {
+    const getReplicatorPreviewText = () => {
+      return _.map(assets.value, (asset) => {
         return asset.is_image ?
             `<img src="${asset.thumbnail}" width="20" height="20" title="${asset.basename}" />`
             : asset.basename;
       }).join(', ');
     }
+
+
+    Events.$on('close-selector',closeSelector)
+
+    return {
+      root, assets, loading, uploads, initializing, showSelector, selectorViewMode,
+      draggingFile, innerDragging, displayMode, containerWidth, assetContainer,
+      update, dragOver, dragStop, hasAssets, container, folder, containerSpecified,
+      restrictNavigation, maxFiles, maxFilesReached, soloAsset, selectedAssets, expanded,
+      uploadElement, assetsSelected, uploader, uploadFile, uploadsUpdated, uploadComplete,
+      openSelector, closeSelector, assetRemoved, getReplicatorPreviewText
+    }
   }
-};
+}
 </script>
 
 <style lang="scss">

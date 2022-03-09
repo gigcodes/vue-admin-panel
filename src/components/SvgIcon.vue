@@ -27,14 +27,11 @@ export default {
   },
 
   setup(props) {
-    const useImage = ((url) => {
-      return new URL(`/src/${url}`, import.meta.url).href;
-    });
     const image = computed(() => {
       if (props.type === "div") {
-        return `<div style="background-image: url('${"../svg/" + props.name + ".svg"}')"></div>`;
+        return `<div style="background-image: url('${"/svg/" + props.name + ".svg"}')"></div>`;
       }
-      return useImage(`../svg/${props.name}.svg`);
+      return `/svg/${props.name}.svg`;
     })
     return {
       image

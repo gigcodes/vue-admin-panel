@@ -32,9 +32,11 @@
 
 <script>
 import Asset from "./Asset";
+import FileIcon from "../../../FileIcon.vue";
 
 export default {
-    mixins: [Asset],
+  components: {FileIcon},
+  mixins: [Asset],
 
     computed: {
         isImage() {
