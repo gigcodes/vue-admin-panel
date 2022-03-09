@@ -1,6 +1,6 @@
 <template>
   <div
-      class="asset-browser card"
+      class="asset-browser"
       @dragover="dragOver"
       @dragleave="dragStop"
       @drop="dragStop"

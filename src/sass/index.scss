@@ -23,6 +23,9 @@ $color_gray_lighter: $color_gray_input;
 
 $asset_bg: #394045;
 
+@tailwind base;
+@tailwind components;
+
 .little-heading {
   font-size: 11px;
   font-weight: 700;
@@ -45,3 +48,6 @@ $asset_bg: #394045;
 @import "faltpicker";
 @import "assets-fieldtype.scss";
 @import "dossier";
+@import "luminous-lightbox/dist/luminous-basic.css";
+
+@tailwind utilities;

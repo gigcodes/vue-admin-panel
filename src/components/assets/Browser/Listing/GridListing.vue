@@ -68,8 +68,8 @@ export default {
       default: () => ([])
     },
     folder: {
-      type: String,
-      default: null
+      type: Object,
+      default: () => {}
     },
     subfolders: {
       type: Array,
