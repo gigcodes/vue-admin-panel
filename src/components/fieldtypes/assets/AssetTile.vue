@@ -1,94 +1,105 @@
 <template>
-    <div
-        class="asset-tile"
-        :class="{
+  <div
+      ref="el"
+      class="asset-tile"
+      :class="{
             'is-image': isImage && !canShowSvg,
             'is-svg': canShowSvg,
             'is-file': !isImage && !canShowSvg,
         }"
-        :title="asset.filename"
+      :title="asset.filename"
+  >
+    <asset-editor
+        v-if="editing"
+        :id="asset.id"
+        :allow-deleting="false"
+        @closed="closeEditor"
+        @saved="assetSaved"
     >
-        <asset-editor
-            v-if="editing"
-            :id="asset.id"
-            :allow-deleting="false"
-            @closed="closeEditor"
-            @saved="assetSaved"
-        >
-        </asset-editor>
+    </asset-editor>
 
-        <div class="asset-thumb-container">
+    <div class="asset-thumb-container">
+      <div
+          class="asset-thumb"
+          :class="{ 'bg-checkerboard': canBeTransparent }"
+      >
+        <!-- Solo Bard -->
+        <template v-if="isImage && isInBardField && !isInAssetBrowser">
+          <img :src="asset.url" :alt="asset.basename"/>
+        </template>
+
+        <template v-else>
+          <a v-if="isImage" :href="toenail" class="zoom"  :title="label">
+            <img :src="thumbnail" :alt="asset.basename"/>
+          </a>
+
+          <template v-else>
             <div
-                class="asset-thumb"
-                :class="{ 'bg-checkerboard': canBeTransparent }"
-            >
-                <!-- Solo Bard -->
-                <template v-if="isImage && isInBardField && !isInAssetBrowser">
-                    <img :src="asset.url"/>
-                </template>
-
-                <template v-else>
-                    <img v-if="isImage" :src="thumbnail" :title="label"/>
-
-                    <template v-else>
-                        <div
-                            v-if="canShowSvg"
-                            class="svg-img"
-                            :style="'background-image:url(' + thumbnail + ')'"
-                        ></div>
-                        <file-icon
-                            v-else
-                            :extension="asset.extension"
-                            class="p-2 h-40 w-40"
-                        />
-                    </template>
-                </template>
-
-                <div v-if="!readOnly" class="asset-controls">
-                    <button
-                        class="btn btn-icon icon icon-pencil"
-                        :alt="__('Edit')"
-                        @click="edit"
-                    ></button>
-
-                    <button
-                        class="btn btn-icon icon icon-trash"
-                        :alt="__('Remove')"
-                        @click="remove"
-                    ></button>
-                </div>
+                v-if="canShowSvg"
+                class="svg-img"
+                :style="'background-image:url('+asset.url+')'">
             </div>
-        </div>
+            <file-icon v-else type="div" :extension="asset.extension"></file-icon>
+          </template>
+        </template>
 
-        <div v-if="showFilename" class="asset-meta">
-            <div class="asset-filename" :title="label">{{ label }}</div>
+        <div v-if="!readOnly" class="asset-controls">
+          <button
+              class="btn btn-icon icon icon-pencil"
+              @click="edit"
+          ></button>
+
+          <button
+              class="btn btn-icon icon icon-trash"
+              @click="remove"
+          ></button>
         </div>
+      </div>
     </div>
+
+    <div v-if="showFilename" class="asset-meta">
+      <div class="asset-filename" :title="label">{{ label }}</div>
+    </div>
+  </div>
 </template>
 
 <script>
-import Asset from "./Asset";
+import asset from "./Asset";
+import FileIcon from "../../FileIcon.vue";
+import {computed, getCurrentInstance} from "vue";
 
 export default {
-    mixins: [Asset],
+  props: {
+    ...asset.props
+  },
+  components: {
+    FileIcon,
+    ...asset.components
+  },
+  emits: ["removed"],
+  setup(props, app) {
+    const {
+      isImage, label, thumbnail, canBeTransparent, canShowSvg, edit,
+      assetSaved, closeEditor, makeZoomable, remove, editing, el, toenail
+    } = asset.properties(props, app)
+    const instance = getCurrentInstance()
+    const isInAssetBrowser = computed(() => {
+      const parent = instance.parent
+      if (!parent) return false;
+      if (parent.type.name === "AssetBrowser") {
+        return true;
+      }
+      return instance === parent
+    })
 
-    computed: {
-        isInAssetBrowser() {
-            let vm = this;
-            let parent = vm.$parent;
+    const isInBardField = computed(() => {
+      return false
+    })
 
-            if (!parent) return false;
-
-            if (parent.constructor.name === "AssetBrowser") {
-                return true;
-            }
-
-            return vm = parent;
-        },
-
-        isInBardField() {
-            return this.$parent.isInBardField;
-        },
-    },
-};
+    return {
+      isInAssetBrowser, isImage, label, thumbnail, canBeTransparent, canShowSvg, edit,
+      assetSaved, closeEditor, makeZoomable, remove, editing, isInBardField, el, toenail
+    }
+  }
+}
 </script>

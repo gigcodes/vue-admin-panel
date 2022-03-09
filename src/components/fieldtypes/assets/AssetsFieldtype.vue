@@ -67,7 +67,7 @@
 
           <template v-if="expanded && ! soloAsset">
 
-            <div class="asset-grid-listing" v-if="displayMode === 'grid'" ref="assets">
+            <div class="asset-grid-listing" v-if="displayMode === 'grid'" ref="assetsGrid">
               <template v-for="asset in assets" :key="asset.id">
                 <asset-tile :asset="asset" @removed="assetRemoved"/>
               </template>
@@ -76,7 +76,7 @@
             <div class="asset-table-listing" v-if="displayMode === 'list'">
 
               <table>
-                <tbody ref="assets">
+                <tbody ref="assetsTable">
                 <assetRow
                     v-for="(asset,i) in assets"
                     :key="i"
@@ -90,7 +90,7 @@
 
           </template>
 
-          <div class="asset-solo-container" v-if="expanded && soloAsset" ref="assets">
+          <div class="asset-solo-container" v-if="expanded && soloAsset" ref="assetContainer">
             <asset-tile
                 v-for="asset in assets"
                 :key="asset.id"
@@ -169,6 +169,7 @@ export default {
     //@todo add close selector function  here
     //Events.$on('close-selector')
     const root = ref(null)
+    const assetContainer = ref(null)
     const uploader = ref(null)
     const assets = ref([]);
     const uploads = ref([]);
@@ -380,7 +381,7 @@ export default {
 
     return {
       root, assets, loading, uploads, initializing, showSelector, selectorViewMode,
-      draggingFile, innerDragging, displayMode, containerWidth,
+      draggingFile, innerDragging, displayMode, containerWidth,assetContainer,
       update, dragOver, dragStop, hasAssets, container, folder, containerSpecified,
       restrictNavigation, maxFiles, maxFilesReached, soloAsset, selectedAssets, expanded,
       uploadElement, assetsSelected, uploader, uploadFile, uploadsUpdated, uploadComplete

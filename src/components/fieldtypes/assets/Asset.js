@@ -1,5 +1,6 @@
 import {Luminous} from "luminous-lightbox";
 import AssetEditor from "../../assets/Editor/Editor.vue";
+import {computed, onMounted, ref} from "vue";
 
 export default {
     components: {
@@ -7,79 +8,87 @@ export default {
     },
 
     props: {
-        asset: Object,
-        readOnly: Boolean,
+        asset: {
+            type: Object,
+            required: true
+        },
+        readOnly: {
+            type: Boolean,
+            default: false,
+        },
         showFilename: {
             type: Boolean,
             default: true,
         },
     },
 
-    data() {
-        return {
-            editing: false,
-        };
-    },
+    properties(props, {emit}) {
+        const isImage = computed(() => {
+            return props.asset.is_image
+        })
 
-    computed: {
-        isImage() {
-            return this.asset.isImage;
-        },
+        const el = ref(null)
 
-        canShowSvg() {
-            return this.asset.extension === "svg";
-        },
+        const canShowSvg = computed(() => {
+            return props.asset.extension === "svg";
+        })
 
-        canBeTransparent() {
-            return ["png", "svg"].includes(this.asset.extension);
-        },
+        const canBeTransparent = computed(() => {
+            return ["png", "svg"].includes(props.asset.extension);
+        })
 
-        thumbnail() {
-            return this.asset.thumbnail;
-        },
+        const thumbnail = computed(() => {
+            return props.asset.thumbnail;
+        })
 
-        label() {
-            return this.asset.basename;
-        },
-    },
+        const label = computed(() => {
+            return props.asset.basename;
+        })
 
-    methods: {
-        edit() {
-            if (this.readOnly) return;
+        const toenail = computed(() => {
+            return props.asset.toenail;
+        })
 
-            this.editing = true;
-        },
+        const editing = ref(false)
 
-        remove() {
-            if (this.readOnly) return;
+        const edit = () => {
+            if (props.readOnly) return;
+            editing.value = true;
+        }
 
-            this.$emit("removed", this.asset);
-        },
+        const remove = () => {
+            if (props.readOnly) return;
+            emit("removed", props.asset);
 
-        makeZoomable() {
-            //@todo need to convert it to vanilla js
-            //const el = $(this.$el).find("a.zoom")[0];
-            const el = 'asd';
+        }
 
-            if (!el || !this.isImage) return;
-
-            new Luminous(el, {
+        const makeZoomable = () => {
+            const element = el.value.getElementsByClassName("zoom")[0];
+            if (!element || !isImage.value) return;
+            new Luminous(element, {
                 closeOnScroll: true,
                 captionAttribute: "title",
             });
-        },
+        }
 
-        closeEditor() {
-            this.editing = false;
-        },
+        const closeEditor = () => {
+            editing.value = false;
+        }
 
-        assetSaved(asset) {
-            this.$emit("updated", asset);
-            this.closeEditor();
-        },
+        onMounted(() => {
+            makeZoomable()
+        })
+
+
+        const assetSaved = (asset) => {
+            emit("update", asset)
+            closeEditor();
+
+        }
+
+        return {
+            isImage, label, thumbnail, canBeTransparent, canShowSvg, edit,
+            assetSaved, closeEditor, makeZoomable, remove, editing, el, toenail
+        }
     },
-
-    mounted() {
-        this.makeZoomable();
-    },
-};
+}
