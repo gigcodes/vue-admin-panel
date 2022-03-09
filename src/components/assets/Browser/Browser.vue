@@ -209,10 +209,9 @@ import Breadcrumbs from "./Breadcrumbs.vue";
 import Pagination from "../../dossier/pagination/Pagination.vue";
 import {Events} from "../../../index";
 import _ from "underscore";
-import axios from "axios";
 import LoadingGraphic from "../../LoadingGraphic.vue";
 import {Btn} from "../../../index";
-import {inject, ref} from "vue";
+import {computed, inject, ref, watch} from "vue";
 import Cookies from 'cookies-js';
 
 export default {
@@ -258,7 +257,6 @@ export default {
   },
   data() {
     return {
-      path: null,
       displayMode: "table",
       uploads: [],
       draggingFile: false,
@@ -266,10 +264,6 @@ export default {
       showFolderCreator: false,
       editedFolderPath: null,
       editorHasChild: false,
-      sort: "title",
-      sortOrder: "asc",
-      searchTerm: "",
-      assetsSelected: this.selectedAssets,
     };
   },
   computed: {
@@ -310,18 +304,6 @@ export default {
       return this.displayMode === "grid" ? "GridListing" : "TableListing";
     },
 
-    fullPath() {
-      if (!this.container) return;
-
-      let fullPath = this.container.id;
-
-      if (this.path !== "/") {
-        fullPath += "/" + this.path;
-      }
-
-      return fullPath;
-    },
-
     subfolders() {
       if (this.restrictNavigation) return [];
 
@@ -340,9 +322,6 @@ export default {
       return this.editedFolderPath !== null;
     },
 
-    maxFilesReached() {
-      return this.maxFiles && this.selectedAssets.length >= this.maxFiles;
-    },
     /**
      * When the dragover event is triggered.
      *
@@ -366,49 +345,7 @@ export default {
     },
     /*eslint-enable */
   },
-  watch: {
-    /**
-     * Whenever the fullPath computed property is changed, it means
-     * that either the path or the container has been modified,
-     * so then a new set of assets should be displayed.
-     */
-    fullPath() {
-      this.loadAssets();
-    },
-
-    /**
-     * When the selected container prop has changed, the parent component
-     * has indicated that a different set of assets should be shown.
-     */
-    selectedContainer(container) {
-      this.container = this.containers[container];
-    },
-
-    /**
-     * When the selected path prop has changed, the parent component
-     * has indicated that a different set of assets should be shown.
-     */
-    selectedPath(path) {
-      this.path = path;
-    },
-
-    /**
-     * When selected assets are updated/modified, the parent component should be notified.
-     */
-    assetsSelected(selections) {
-      this.$emit("selections-updated", selections);
-    },
-
-    searchTerm(term) {
-      if (term) {
-        this.search();
-      } else {
-        this.loadAssets();
-      }
-    },
-  },
   mounted() {
-    this.path = this.selectedPath;
     // We need all the containers since they'll be displayed in the sidebar. This will also load
     // up the current container object using the initial container id. Setting the container
     // property will trigger loading of assets since there's a watcher reacting to it.
@@ -442,10 +379,12 @@ export default {
     Events.$off("close-editor");
   },
 
-  setup(props) {
+  setup(props, {emit}) {
+    const path = ref(props.selectedPath);
     const browseContainer = inject("containerService")
     const loadFilesService = inject("loadFilesService")
     const moveFilesService = inject("moveFilesService")
+    const searchFilesService = inject("searchFilesService")
     const containers = ref(null)
     const container = ref(null)
     const loadingContainers = ref(true)
@@ -457,6 +396,11 @@ export default {
     const folder = ref({})
     const pagination = ref({})
     const selectedPage = ref(1)
+    const sort = ref("title")
+    const sortOrder = ref("asc")
+    const searchTerm = ref("")
+    const assetsSelected = ref(props.selectedAssets)
+
     /**
      * Load asset container data
      */
@@ -484,11 +428,11 @@ export default {
     const loadAssets = () => {
       loadingAssets.value = true
       loadFilesService({
-        container: this.container.id,
-        path: this.path,
-        page: this.selectedPage,
-        sort: this.sort,
-        dir: this.sortOrder,
+        container: container.value.id,
+        path: path.value,
+        page: selectedPage.value,
+        sort: sort.value,
+        dir: sortOrder.value,
       }).then((response) => {
         assets.value = response.data.assets;
         folders.value = response.data.folders;
@@ -501,11 +445,28 @@ export default {
       });
     }
 
+    const search = () => {
+      loadingAssets.value = true;
+      isSearching.value = true;
+      searchFilesService({
+        term: searchTerm,
+        container: container.value.id,
+        folder: folder.value.path,
+        restrictNavigation: props.restrictNavigation,
+      }).then((response) => {
+        isSearching.value = false;
+        assets.value = response.data.assets;
+        folders.value = [];
+        loadingAssets.value = false;
+        initializedAssets.value = true;
+      });
+    }
+
     const assetsDraggedToFolder = (folder) => {
       const payload = {
-        assets: this.selectedAssets,
+        assets: props.selectedAssets,
         folder: folder,
-        container: this.container.id,
+        container: container.value.id,
       };
 
       moveFilesService(payload).then(() => {
@@ -513,35 +474,77 @@ export default {
         //@todo change needed
         //this.selectedAssets = [];
       });
-
     }
+
+    //computed
+    const fullPath = computed(() => {
+      if (!container.value) return;
+
+      let fullPath = container.value.id;
+
+      if (path.value !== "/") {
+        fullPath += "/" + path.value;
+      }
+
+      return fullPath;
+    })
+
+    const maxFilesReached = computed(() => {
+      return props.maxFiles && props.selectedAssets.length >= props.maxFiles;
+    })
+
+    //watchers
+
+    watch(searchTerm, (term) => {
+      if (term) {
+        search();
+      } else {
+        loadAssets();
+      }
+    })
+    /**
+     * When selected assets are updated/modified, the parent component should be notified.
+     */
+
+    watch(assetsSelected, (selections) => {
+      emit("selections-updated", selections);
+    })
+
+    /**
+     * When the selected path prop has changed, the parent component
+     * has indicated that a different set of assets should be shown.
+     */
+    watch(() => props.selectedPath, (p) => {
+      path.value = p;
+    })
+
+    /**
+     * When the selected container prop has changed, the parent component
+     * has indicated that a different set of assets should be shown.
+     */
+    watch(() => props.selectedContainer, (con) => {
+      container.value = containers.value[con];
+    })
+
+    /**
+     * Whenever the fullPath computed property is changed, it means
+     * that either the path or the container has been modified,
+     * so then a new set of assets should be displayed.
+     */
+    watch(fullPath, () => {
+      loadAssets();
+    })
+
 
     return {
       loadContainers, loadingContainers, container, containers, loadAssets, loadingAssets,
       assets, folders, folder, pagination, selectedPage, initializedAssets, isSearching,
-      assetsDraggedToFolder,
+      assetsDraggedToFolder, path, sort, sortOrder, search, searchTerm, assetsSelected,
+      maxFilesReached
     }
   },
 
   methods: {
-
-    search() {
-      this.loadingAssets = true;
-
-      axios.post("/admin/media/search", {
-        term: this.searchTerm,
-        container: this.container.id,
-        folder: this.folder.path,
-        restrictNavigation: this.restrictNavigation,
-      })
-          .then((response) => {
-            this.isSearching = true;
-            this.assets = response.data.assets;
-            this.folders = [];
-            this.loadingAssets = false;
-            this.initializedAssets = true;
-          });
-    },
 
     /**
      * When a folder was selected from within listing component.
