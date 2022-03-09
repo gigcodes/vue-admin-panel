@@ -22,7 +22,7 @@ export default {
     props: {
         number: {
             type: Number,
-            required: true
+            required: false
         },
         last: {
             type: Boolean,
@@ -30,7 +30,7 @@ export default {
         },
         current: {
             type: Number,
-            required: true
+            required: false
         }
     },
     emits: ["select"],
