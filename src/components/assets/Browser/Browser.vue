@@ -58,7 +58,7 @@
               </div>
               <input
                   type="text" name="search" v-model="searchTerm" id="search"
-                  class="p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-9 sm:text-sm border-gray-300 rounded-md"
+                  class="assets-search"
                   placeholder="Search">
             </div>
           </div>
@@ -790,5 +790,9 @@ export default {
 <style>
 .depressed {
   background: rgba(0, 0, 0, .02);
+}
+
+.assets-search {
+  @apply p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-9 sm:text-sm border-gray-300 rounded-md;
 }
 </style>
