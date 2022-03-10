@@ -15,7 +15,7 @@ import Cookies from 'js-cookie'
 import SvgIcon from "./components/SvgIcon.vue";
 import './index.css'
 import './sass/index.scss'
-
+import "luminous-lightbox/dist/luminous-basic.css";
 
 
 const dev = import.meta.env.DEV;

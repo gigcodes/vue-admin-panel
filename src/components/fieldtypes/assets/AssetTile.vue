@@ -50,10 +50,7 @@
               @click="edit"
           ></button>
 
-          <button
-              class="btn btn-icon icon icon-trash"
-              @click="remove"
-          ></button>
+          <btn size="sm" type="dangerFill" @click="remove"><i class="icon icon-trash"></i></btn>
         </div>
       </div>
     </div>
@@ -68,13 +65,14 @@
 import asset from "./Asset";
 import FileIcon from "../../FileIcon.vue";
 import {computed, getCurrentInstance} from "vue";
-
+import {Btn} from "../../../index";
 export default {
   props: {
     ...asset.props
   },
   components: {
     FileIcon,
+    Btn,
     ...asset.components
   },
   emits: ["removed"],

@@ -64,10 +64,35 @@
           </div>
           <template v-if="assetsSelected.length">
             <div>
-              <btn type="danger" class="mr-0.5" @click="deleteAsset(assetsSelected)">Delete</btn>
+              <btn type="danger" class="mr-0.5" @click="deleteModalMulti = true">Delete</btn>
               <btn type="tertiary" @click="assetsSelected = []">Uncheck All</btn>
             </div>
           </template>
+
+          <modal
+              :open="deleteModalMulti" @cancelled="deleteModalMulti = false"
+              @confirmed="deleteAsset(assetsSelected)">
+            <template #header>
+              Delete {{ assetsSelected.length }}
+              {{ assetsSelected.length === 1 ? "item" : "items" }} ?
+            </template>
+            <template #body>
+              On clicking confirm the selected item will be deleted. If
+              you don't wish to do it then please press cancel.
+            </template>
+          </modal>
+          <modal
+              :open="deleteModal" @cancelled="deleteModal = false"
+              @confirmed="deleteAsset(assetToBeDeleted)">
+            <template #header>
+              Delete {{ assetsSelected.length }}
+              {{ assetsSelected.length === 1 ? "item" : "items" }} ?
+            </template>
+            <template #body>
+              On clicking confirm the selected item will be deleted. If
+              you don't wish to do it then please press cancel.
+            </template>
+          </modal>
 
           <div class="btn-group action mb-3">
             <btn
@@ -134,7 +159,7 @@
             @asset-selected="assetSelected"
             @asset-deselected="assetDeselected"
             @asset-editing="editAsset"
-            @asset-deleting="deleteAsset"
+            @asset-deleting="deleteAssetSingle"
             @assets-dragged-to-folder="assetsDraggedToFolder"
             @asset-doubleclicked="assetDoubleClicked"
             @sorted="sortBy"
@@ -213,11 +238,13 @@ import LoadingGraphic from "../../LoadingGraphic.vue";
 import {Btn} from "../../../index";
 import {computed, inject, ref, watch} from "vue";
 import Cookies from 'cookies-js';
+import Modal from "../../modal/Modal.vue";
 
 export default {
   name: "AssetBrowser",
   emits: ["selections-updated", "asset-doubleclicked", "navigated"],
   components: {
+    Modal,
     LoadingGraphic,
     Pagination,
     GridListing,
@@ -385,11 +412,14 @@ export default {
     const loadFilesService = inject("loadFilesService")
     const moveFilesService = inject("moveFilesService")
     const searchFilesService = inject("searchFilesService")
+    const deleteFilesService = inject("deleteFilesService")
     const containers = ref(null)
     const container = ref(null)
     const loadingContainers = ref(true)
     const loadingAssets = ref(true)
     const initializedAssets = ref(false)
+    const deleteModalMulti = ref(false)
+    const deleteModal = ref(false)
     const isSearching = ref(false)
     const assets = ref([])
     const folders = ref([])
@@ -476,6 +506,35 @@ export default {
       });
     }
 
+    const assetToBeDeleted = ref([]);
+    const deleteAssetSingle = (asset) => {
+      deleteModal.value = true;
+      assetToBeDeleted.value = asset
+    }
+
+    /**
+     * Delete the given asset and refresh the browser.
+     */
+    const deleteAsset = (ids) => {
+      ids = Array.isArray(ids) ? ids : [ids];
+      loadingAssets.value = true
+      try {
+        deleteFilesService({ids})
+            .then(() => {
+              loadAssets();
+              assetsSelected.value = _.difference(
+                  assetsSelected.value, ids
+              );
+            });
+      } catch (e) {
+        console.log(e)
+      }
+      deleteModal.value = false;
+      deleteModalMulti.value = false;
+      assetToBeDeleted.value = [];
+    }
+
+
     //computed
     const fullPath = computed(() => {
       if (!container.value) return;
@@ -540,7 +599,8 @@ export default {
       loadContainers, loadingContainers, container, containers, loadAssets, loadingAssets,
       assets, folders, folder, pagination, selectedPage, initializedAssets, isSearching,
       assetsDraggedToFolder, path, sort, sortOrder, search, searchTerm, assetsSelected,
-      maxFilesReached
+      maxFilesReached, deleteModalMulti, deleteAsset, deleteAssetSingle, deleteModal,
+      assetToBeDeleted
     }
   },
 
@@ -613,43 +673,6 @@ export default {
       if (this.canEdit) {
         this.editedAssetId = id;
       }
-    },
-
-    /**
-     * Delete the given asset and refresh the browser.
-     */
-    deleteAsset(ids) {
-      ids = Array.isArray(ids) ? ids : [ids];
-      let message =
-          ids.length > 1
-              ? "The selected items will be deleted"
-              : "This item will be deleted";
-      console.log(message);
-
-      //@todo add delete modal
-
-      // swal({
-      //     icon: "warning",
-      //     title: "Are you sure",
-      //     text: message,
-      //     buttons: {
-      //         cancel: "Cancel",
-      //         confirm: "Yes I am sure",
-      //     },
-      // }).then((willDelete) => {
-      //     if (willDelete) {
-      //         const url = "/admin/media/delete";
-      //         this.$axios
-      //             .delete(url, {params: {ids: ids}})
-      //             .then((response) => {
-      //                 this.loadAssets();
-      //                 this.assetsSelected = _.difference(
-      //                     this.assetsSelected,
-      //                     ids
-      //                 );
-      //             });
-      //     }
-      // });
     },
 
     /**
