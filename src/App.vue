@@ -24,7 +24,7 @@ export default {
     const containerService = () => axios.get(`http://localhost/api/media/browse`)
     const loadFilesService = (params) => axios.post(`http://localhost/api/media/get-files`, params)
     const deleteFilesService = (params) => axios.delete(`http://localhost/api/media/delete`,{params})
-    const items = ref([5])
+    const items = ref([])
     provide("uploadService", uploadService)
     provide("getService", getService)
     provide("containerService", containerService)
