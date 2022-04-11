@@ -517,7 +517,7 @@ export default {
         };
 
         watch(hasItems, (val) => {
-            emit("update:hasItems", val);
+            emit("update:hasItems", Boolean(val));
         });
 
         watch(columns, (val) => {
