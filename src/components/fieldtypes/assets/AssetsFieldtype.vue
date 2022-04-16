@@ -420,6 +420,7 @@ export default {
           dataIdAttr: 'data-id',
           onEnd: (evt) => {
             assets.value.swap(evt.oldIndex, evt.newIndex);
+            emit('update:data', assets.value);
           }
         })
       }
