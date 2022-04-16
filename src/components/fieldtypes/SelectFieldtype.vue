@@ -58,7 +58,7 @@ export default {
       }
     }
   },
-  emits: ["change", "blur", "keyup"],
+  emits: ["change", "blur", "keyup", "update:modelValue"],
   setup(props, {emit}) {
     const handleChange = (event) => {
       emit("change", event);

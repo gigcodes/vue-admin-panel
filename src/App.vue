@@ -4,7 +4,7 @@
   </h1>
   <assets-field
       v-model:data="items"
-      :config="{container:'main',max_files:1,canEdit:false}"
+      :config="{container:'main',max_files:5,canEdit:false}"
       name="Images"></assets-field>
 </template>
 

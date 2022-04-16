@@ -157,9 +157,7 @@
       </div>
       <div class="p-2 flex justify-center">
         <pagination
-            v-if="
-                        !isSearching && pagination && pagination.totalPages > 1
-                    "
+            v-if="!isSearching && pagination && pagination.totalPages > 1"
             :total="pagination.totalPages"
             :current="pagination.currentPage"
             :segments="pagination.segments"

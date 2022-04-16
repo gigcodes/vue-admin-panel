@@ -132,6 +132,14 @@ import Btn from "../../buttons/Button.vue";
 import Sortable from 'sortablejs';
 import Events from "../../../modules/events";
 
+Array.prototype.swap = function (x,y) {
+  let b = this[x];
+  this[x] = this[y];
+  this[y] = b;
+  return this;
+}
+
+
 export default {
   name: 'AssetsField',
   components: {
@@ -406,10 +414,13 @@ export default {
 
     const sortable = () => {
       if (maxFiles.value === 1) return;
-      if(assetContainer.value){
+      if (assetContainer.value) {
         new Sortable(assetContainer.value, {
           preventOnFilter: true,
-          dataIdAttr: 'data-id'
+          dataIdAttr: 'data-id',
+          onEnd: (evt) => {
+            assets.value.swap(evt.oldIndex, evt.newIndex);
+          }
         })
       }
     }
@@ -423,7 +434,7 @@ export default {
     }
 
 
-    Events.$on('close-selector',closeSelector)
+    Events.$on('close-selector', closeSelector)
 
     return {
       root, assets, loading, uploads, initializing, showSelector, selectorViewMode,
