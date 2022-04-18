@@ -22,7 +22,7 @@
           @keyup="$emit('keyup', $event)"
           @blur="handleBlur"
       >
-        <option v-if="placeholder" selected :value="null">
+        <option v-if="placeholder" selected value="">
           {{ placeholder }}
         </option>
         <option
