@@ -156,14 +156,7 @@
         </btn>
       </div>
       <div class="p-2 flex justify-center">
-        <pagination
-            v-if="!isSearching && pagination && pagination.totalPages > 1"
-            :total="pagination.totalPages"
-            :current="pagination.currentPage"
-            :segments="pagination.segments"
-            @selected="paginationPageSelected"
-        >
-        </pagination>
+        <pagination :data="pagination" :limit="2" @pagination-change-page="paginationPageSelected" />
       </div>
     </div>
   </div>
@@ -172,7 +165,7 @@
 <script>
 import Cell from "./support/Cell.vue";
 import _ from "underscore";
-import Pagination from "./pagination/Pagination.vue";
+import Pagination from "../pagination/Pagination.vue";
 import {Btn, BtnGroup, createToaster, Events} from "../../index";
 import Modal from "../modal/Modal.vue";
 import {computed, inject, onMounted, onUnmounted, ref, watch} from "vue";
@@ -385,8 +378,8 @@ export default {
         if (results) {
           results
               .then((response) => {
-                items.value = response.data.items;
-                columns.value = parseColumns(response.data.columns);
+                items.value = response.data.data.items;
+                columns.value = parseColumns(response.data.data.columns);
                 loading.value = false;
                 emit("update:loading", false);
                 pagination.value = response.data.pagination;
@@ -401,6 +394,7 @@ export default {
         console.error("Get service not registered");
         emit("update:loading", false);
       }
+      return true;
     };
 
     const paginationPageSelected = (page) => {
@@ -491,8 +485,8 @@ export default {
         if (results) {
           results
               .then((response) => {
-                items.value = response.data.items;
-                columns.value = parseColumns(response.data.columns);
+                items.value = response.data.data.items;
+                columns.value = parseColumns(response.data.data.columns);
                 loading.value = false;
                 emit("update:loading", false);
                 pagination.value = response.data.pagination;

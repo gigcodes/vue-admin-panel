@@ -19,11 +19,11 @@ export default {
     AssetsField
   },
   setup() {
-    const uploadService = (data, config) => axios.post("http://localhost/api/media/upload", data, config)
-    const getService = (params) => axios.get("http://localhost/api/media/get-file", {params})
-    const containerService = () => axios.get(`http://localhost/api/media/browse`)
-    const loadFilesService = (params) => axios.post(`http://localhost/api/media/get-files`, params)
-    const deleteFilesService = (params) => axios.delete(`http://localhost/api/media/delete`,{params})
+    const uploadService = (data, config) => axios.post("https://mainwebsite.loc/api/media/upload", data, config)
+    const getService = (params) => axios.get("https://mainwebsite.loc/api/media/get-file", {params})
+    const containerService = () => axios.get(`https://mainwebsite.loc/api/media/browse`)
+    const loadFilesService = (params) => axios.post(`https://mainwebsite.loc/api/media/get-files`, params)
+    const deleteFilesService = (params) => axios.delete(`https://mainwebsite.loc/api/media/delete`,{params})
     const items = ref([])
     provide("uploadService", uploadService)
     provide("getService", getService)

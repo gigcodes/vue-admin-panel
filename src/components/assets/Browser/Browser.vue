@@ -172,14 +172,7 @@
           <h2>No Search Results</h2>
         </div>
 
-        <pagination
-            v-if="pagination.totalPages > 1"
-            :total="pagination.totalPages"
-            :current="pagination.currentPage"
-            :segments="pagination.segments"
-            @selected="paginationPageSelected"
-        >
-        </pagination>
+        <pagination :data="pagination" :limit="2" @pagination-change-page="paginationPageSelected" />
       </div>
 
       <breadcrumbs
@@ -231,7 +224,7 @@ import Uploads from "../Uploads.vue";
 import AssetEditor from "../Editor/Editor.vue";
 import FolderEditor from "./FolderEditor.vue";
 import Breadcrumbs from "./Breadcrumbs.vue";
-import Pagination from "../../dossier/pagination/Pagination.vue";
+import Pagination from "../../pagination/Pagination.vue";
 import {Events} from "../../../index";
 import _ from "underscore";
 import LoadingGraphic from "../../LoadingGraphic.vue";
@@ -464,11 +457,11 @@ export default {
         sort: sort.value,
         dir: sortOrder.value,
       }).then((response) => {
-        assets.value = response.data.assets;
-        folders.value = response.data.folders;
-        folder.value = response.data.folder;
+        assets.value = response.data.data.assets;
+        folders.value = response.data.data.folders;
+        folder.value = response.data.data.folder;
         pagination.value = response.data.pagination;
-        selectedPage.value = response.data.pagination.currentPage;
+        selectedPage.value = response.data.pagination.meta.current_page;
         loadingAssets.value = false;
         initializedAssets.value = true;
         isSearching.value = false;
@@ -728,7 +721,7 @@ export default {
     /**
      * When a page was selected in the pagination.
      */
-    paginationPageSelected(page) {
+    paginationPageSelected(page = 1) {
       this.selectedPage = page;
       this.loadAssets();
     },

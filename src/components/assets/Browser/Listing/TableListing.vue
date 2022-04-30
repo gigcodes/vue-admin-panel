@@ -39,9 +39,9 @@
       </tr>
 
       <folder-row
-          v-for="(f, index) in subfolders"
+          v-for="(folderItem, index) in subfolders"
           :key="index"
-          :folder="f"
+          :folder="folderItem"
           @open-dropdown="closeDropdowns"
           @selected="selectFolder"
           @editing="editFolder"
@@ -233,7 +233,6 @@ export default {
      */
     deleteFolder(path) {
       const url = "/admin/media/folders";
-
       console.log(url, path)
       //@todo add delete modal
       // swal({

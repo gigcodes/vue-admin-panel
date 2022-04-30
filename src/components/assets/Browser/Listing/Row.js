@@ -1,7 +1,6 @@
-import { Events } from "../../../../index";
+import {Events} from "../../../../index";
 
 export default {
-
     data() {
         return {
             showActionsDropdown: false,
@@ -15,6 +14,10 @@ export default {
             }
             this.showActionsDropdown = false;
         });
+    },
+
+    beforeUnmount() {
+        Events.$off("close-dropdown")
     },
 
     methods: {
