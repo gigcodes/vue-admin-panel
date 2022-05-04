@@ -1,6 +1,6 @@
 <template>
   <tr class="cursor-grab bg-white hover:bg-grey-10" ref="el">
-    <td class="flex flex-wrap items-center">
+    <td class="flex flex-wrap items-center" style="width: 100%">
       <div
           v-if="canShowSvg"
           class="img svg-img mr-1 h-7 w-7 bg-no-repeat bg-center bg-cover text-center flex items-center justify-center"
