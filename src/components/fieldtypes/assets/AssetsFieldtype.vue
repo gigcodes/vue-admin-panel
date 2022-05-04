@@ -77,12 +77,12 @@
 
               <table>
                 <tbody ref="assetContainer">
-                <assetRow
+                <asset-row
                     v-for="(asset,i) in assets"
                     :key="i"
                     :asset="asset"
                     @removed="assetRemoved">
-                </assetRow>
+                </asset-row>
                 </tbody>
               </table>
 

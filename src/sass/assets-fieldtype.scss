@@ -333,6 +333,10 @@ $asset_bg: #394045;
 .asset-table-listing {
   position: relative;
 
+  .cursor-grab {
+    cursor: grab !important;
+  }
+
   table {
     @apply select-none;
     margin: 0;
@@ -400,6 +404,10 @@ $asset_bg: #394045;
     width: 100%;
     height: 100%;
   }
+}
+
+.assets-fieldtype .asset-table-listing tr>td:first-child {
+  width: 100%;
 }
 
 .asset-listing .actions {
@@ -589,7 +597,7 @@ $asset_bg: #394045;
   background: $color_gray_lighter;
   padding: 16px;
   position: relative;
-  border: 1px solid  #e0e0e0;
+  border: 1px solid #e0e0e0;
   border-radius: 3px;
 
   p {
@@ -604,7 +612,7 @@ $asset_bg: #394045;
 }
 
 .assets-fieldtype > .asset-grid-listing {
-  border: 1px solid  #e0e0e0;
+  border: 1px solid #e0e0e0;
 
   .ui-sortable-placeholder {
     .faux-thumbnail {
@@ -618,12 +626,11 @@ $asset_bg: #394045;
 }
 
 .assets-fieldtype > .asset-table-listing {
-  border: 1px solid  #e0e0e0;
+  border: 1px solid #e0e0e0;
   border-radius: 0 0 3px 3px;
-  padding: 5px 0;
 
   tr {
-    border-top: 1px solid  #e0e0e0;
+    border-top: 1px solid #e0e0e0;
   }
 
   td {
@@ -639,6 +646,18 @@ $asset_bg: #394045;
     margin: 2px 0 0 5px;
     cursor: pointer;
   }
+}
+
+.asset-table-listing table {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border-width: 1px;
+  width: 100%;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  margin: 0;
 }
 
 .assets-fieldtype .manage-assets ~ .asset-grid-listing {
@@ -822,12 +841,16 @@ $asset_bg: #394045;
   }
 }
 
+.assets-fieldtype>.asset-table-listing td{
+  padding: 10px !important;
+}
+
 .asset-editor-meta-items {
   display: flex;
   flex: 1;
 
   .meta-item {
-    border-left: 1px solid  #e0e0e0;
+    border-left: 1px solid #e0e0e0;
     padding: 10px 30px;
     color: $color_gray_light;
     cursor: text;
@@ -869,7 +892,7 @@ $asset_bg: #394045;
     padding: 0 25px;
 
     &:not(:first-child) {
-      border-left: 1px solid  #e0e0e0;
+      border-left: 1px solid #e0e0e0;
     }
 
     svg {
@@ -1019,46 +1042,6 @@ $asset_bg: #394045;
     padding: 0;
   }
 }
-
-
-/* In a Bard fieldtype
-  ========================================================================== */
-
-.bard-fieldtype .assets-fieldtype {
-  margin-bottom: 0 !important;
-
-  .manage-assets {
-    background: #fff;
-  }
-}
-
-.bard-fieldtype .manage-assets {
-  background: #fff;
-}
-
-.bard-fieldtype .bard-fullscreen .assets-fieldtype .manage-assets {
-  background: $bg;
-}
-
-.bard-set-solo .asset-tile {
-  max-width: none;
-  padding: 0;
-}
-
-.bard-set-solo .assets-fieldtype label {
-  display: none;
-}
-
-// Only show the trash button when its a solo field.
-// Probably better as a template condition but difficult at the moment.
-.assets-fieldtype .delete-bard-set {
-  display: none;
-
-  .bard-set-solo & {
-    display: block;
-  }
-}
-
 
 /* Responsive
   ========================================================================== */

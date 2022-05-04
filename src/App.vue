@@ -4,7 +4,7 @@
   </h1>
   <assets-field
       v-model:data="items"
-      :config="{container:'main',max_files:5,canEdit:false}"
+      :config="{container:'main',max_files:5,canEdit:false,mode:'list'}"
       name="Images"></assets-field>
 </template>
 
@@ -23,8 +23,8 @@ export default {
     const getService = (params) => axios.get("https://mainwebsite.loc/api/media/get-file", {params})
     const containerService = () => axios.get(`https://mainwebsite.loc/api/media/browse`)
     const loadFilesService = (params) => axios.post(`https://mainwebsite.loc/api/media/get-files`, params)
-    const deleteFilesService = (params) => axios.delete(`https://mainwebsite.loc/api/media/delete`,{params})
-    const items = ref([])
+    const deleteFilesService = (params) => axios.delete(`https://mainwebsite.loc/api/media/delete`, {params})
+    const items = ref([1])
     provide("uploadService", uploadService)
     provide("getService", getService)
     provide("containerService", containerService)
