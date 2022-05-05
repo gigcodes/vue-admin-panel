@@ -47,9 +47,10 @@
 <script>
 import Fieldtypes from "./index";
 import Input from "./customInput";
-
+import {Tooltip} from "../../index";
 export default {
   name: "SelectField",
+  components:{Tooltip},
   mixins: [Fieldtypes, Input],
   props: {
     options: {

@@ -99,12 +99,10 @@
 
           <!-- actions -->
           <td v-if="hasActions" class="column-actions">
-            <btn-group type="none" size="none">
-              <actions
-                  :item="item"
-                  :actions="tableOptions.partials.actions"
-              />
-            </btn-group>
+            <actions
+                :item="item"
+                :actions="tableOptions.partials.actions"
+            />
           </td>
         </tr>
         </tbody>
@@ -156,7 +154,7 @@
         </btn>
       </div>
       <div class="p-2 flex justify-center">
-        <pagination :data="pagination" :limit="2" @pagination-change-page="paginationPageSelected" />
+        <pagination :data="pagination" :limit="2" @pagination-change-page="paginationPageSelected"/>
       </div>
     </div>
   </div>
@@ -166,7 +164,7 @@
 import Cell from "./support/Cell.vue";
 import _ from "underscore";
 import Pagination from "../pagination/Pagination.vue";
-import {Btn, BtnGroup, createToaster, Events} from "../../index";
+import {Btn, createToaster, Events} from "../../index";
 import Modal from "../modal/Modal.vue";
 import {computed, inject, onMounted, onUnmounted, ref, watch} from "vue";
 import Actions from "./support/Actions.vue";
@@ -178,7 +176,6 @@ export default {
     Pagination,
     Btn,
     Modal,
-    BtnGroup,
     Actions,
   },
 

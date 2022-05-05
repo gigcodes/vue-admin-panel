@@ -1,53 +1,51 @@
 <template>
-    <ul class="dropdown-menu px-2">
-        <li
-            v-for="(action,index) in actions" :key="index"
-            :class="['mb-1', { warning: action === 'delete' }]"
+  <div class="btn-group action-more">
+    <button
+        type="button"
+        @click.prevent="showActionsDropdown = !showActionsDropdown"
+        class="btn-more dropdown-toggle"
+        :class="{show:showActionsDropdown}"
+        aria-haspopup="true" aria-expanded="false">
+      <i class="icon icon-dots-three-vertical"></i>
+    </button>
+    <ul
+        class="dropdown-menu px-2"
+        :class="{show:showActionsDropdown}"
+    >
+      <li
+          v-for="(action,index) in actions" :key="index"
+          :class="['mb-1', { warning: action === 'delete' }]"
+      >
+        <a
+            v-if="action === 'edit'"
+            class="border-0"
+            href="#"
+            @click.prevent="goTo(item.edit_url)"
+        >Edit</a
         >
-            <a
-                v-if="action === 'edit'"
-                href="#"
-                @click.prevent="goTo(item.edit_url)"
-            >Edit</a
-            >
-            <a
-                v-if="action === 'delete'"
-                href="#"
-                @click.prevent="showDeleteModal"
-            >Delete</a
-            >
-            <a
-                v-if="action === 'update_password'"
-                href="#"
-                @click.prevent="goTo(item.edit_password_url)"
-            >Change password</a
-            >
-            <a
-                v-if="action === 'invoice_download'"
-                href="#"
-                @click.prevent="goTo(item.invoice_pdf)"
-            >Download PDF</a
-            >
-            <a
-                v-if="action === 'join'"
-                href="javascript:void(0)"
-                @click.prevent="copyJoinUrl(item.join_url)"
-            >Copy Join URL</a
-            >
-            <a
-                v-if="action === 'registrants'"
-                href="#"
-                @click.prevent="goTo(item.registrants_url)"
-            >Show Registrants</a
-            >
-            <a
-                v-if="action === 'transactions'"
-                href="#"
-                @click.prevent="goTo(item.transactions_url)"
-            >Show Transactions</a
-            >
-        </li>
+        <a
+            v-if="action === 'delete'"
+            class="border-0"
+            href="#"
+            @click.prevent="showDeleteModal"
+        >Delete</a
+        >
+        <a
+            v-if="action === 'update_password'"
+            class="border-0"
+            href="#"
+            @click.prevent="goTo(item.edit_password_url)"
+        >Change password</a
+        >
+        <a
+            v-if="item.custom_action_text"
+            href="#"
+            @click.prevent="goTo(item.custom_action_link)"
+        >{{ item.custom_action_text }}</a
+        >
+      </li>
     </ul>
+  </div>
 </template>
 
 <script>
@@ -55,39 +53,44 @@ import {createToaster, Events, copy} from "../../../index";
 import {ref} from "vue";
 
 export default {
-    name: "Actions",
-    props: {
-        item: {
-            type:Object,
-            default:() => ({})
-        },
-        actions: {
-            type:Object,
-            default:() => ({})
-        }
+  name: "Actions",
+  props: {
+    item: {
+      type: Object,
+      default: () => ({})
     },
-    setup(props) {
-        const deleteModal = ref(false);
-        const goTo = (url) => {
-            Events.$emit("goTo", url);
-        };
-        const showDeleteModal = () => {
-            Events.$emit("showModal", {
-                type: "delete",
-                item: props.item,
-            });
-        };
-        const copyJoinUrl = (url) => {
-            copy(url);
-            createToaster().success("Url copied to clipboard");
-        };
+    actions: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  setup(props) {
+    const showActionsDropdown = ref(false)
+    const deleteModal = ref(false);
+    const goTo = (url) => {
+      Events.$emit("goTo", url);
+      showActionsDropdown.value = false
+    };
+    const showDeleteModal = () => {
+      Events.$emit("showModal", {
+        type: "delete",
+        item: props.item,
+      });
+      showActionsDropdown.value = false
+    };
+    const copyJoinUrl = (url) => {
+      copy(url);
+      showActionsDropdown.value = false
+      createToaster().success("Url copied to clipboard");
+    };
 
-        return {
-            goTo,
-            showDeleteModal,
-            copyJoinUrl,
-            deleteModal,
-        };
-    },
+    return {
+      goTo,
+      showDeleteModal,
+      copyJoinUrl,
+      deleteModal,
+      showActionsDropdown,
+    };
+  },
 };
 </script>
