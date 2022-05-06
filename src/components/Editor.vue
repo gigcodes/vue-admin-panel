@@ -43,12 +43,16 @@ export default {
             type: String,
             default: null,
         },
+        extensions:{
+            type: Array,
+            default: () => []
+        }
     },
     emits: ["update:modelValue"],
     setup(props, { emit }) {
         const editor = useEditor({
             content: props.modelValue,
-            extensions: [StarterKit],
+            extensions: [StarterKit,...props.extensions],
             editorProps: {
                 attributes: {
                     class: "min-w-full w-full text-gray-500 prose prose-sm lg:prose focus:outline-none",

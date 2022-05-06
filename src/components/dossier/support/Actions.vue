@@ -9,7 +9,7 @@
       <i class="icon icon-dots-three-vertical"></i>
     </button>
     <ul
-        class="dropdown-menu px-2"
+        class="dropdown-menu py-2"
         :class="{show:showActionsDropdown}"
     >
       <li
