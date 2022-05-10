@@ -10,18 +10,39 @@
           <div class="text-sm text-gray-200">{{ tooltip }}</div>
         </tooltip>
       </div>
+      <div>
+        <button
+            @click="changeTab('editor')"
+            class="px-4 py-2 rounded-t-lg text-xs uppercase font-bold tracking-wide"
+            :class="tab === 'editor'? 'bg-black text-white' : 'text-black'">
+          Editor
+        </button>
+        <button
+            @click="changeTab('html')"
+            class="px-4 py-2 rounded-t-lg text-xs uppercase font-bold tracking-wide"
+            :class="tab === 'html'? 'bg-black text-white' : 'text-black'">
+          HTML
+        </button>
+      </div>
       <editor-content
+          v-if="tab==='editor'"
           :id="id"
           :editor="editor"
-          class="form-input w-full"
+          class="bg-white border-3 border-black rounded-b-xl rounded-tr-xl p-2"
       />
+      <textarea
+          class="ProseMirror bg-white border-3 border-black last:rounded-b-xl rounded-t-xl min-w-full w-full text-gray-500"
+          v-if="tab==='html'"
+          v-model="html"
+      ></textarea>
       <button
+          v-if="tab==='editor'"
+          class="mt-2"
           @click="imageSelector = true"
           style="
                     font-size: inherit;
                     font-family: inherit;
                     color: #000;
-                    margin: 0.1rem;
                     border: 1px solid black;
                     border-radius: 0.3rem;
                     padding: 0.1rem 0.4rem;
@@ -83,7 +104,8 @@ export default {
   },
   emits: ["update:modelValue"],
   setup(props, {emit}) {
-
+    const tab = ref('editor');
+    const html = ref(null);
     const imageSelector = ref(false);
     const getService = inject('getMediaService')
     const toaster = createToaster();
@@ -92,7 +114,7 @@ export default {
       extensions: [StarterKit, Image, ...props.extensions],
       editorProps: {
         attributes: {
-          class: "min-w-full w-full text-gray-500 prose sm:prose lg:prose-lg xl:prose-2xl m-5 lg:prose focus:outline-none",
+          class: "min-w-full w-full text-gray-500 prose sm:prose lg:prose-lg xl:prose-2xl lg:prose focus:outline-none",
         },
       },
       onUpdate: (context) => {
@@ -115,6 +137,15 @@ export default {
       closeSelector();
     }
 
+    const changeTab = (tabValue) => {
+      if (tabValue === 'html') {
+        html.value = editor.value.getHTML()
+      } else {
+        editor.value.commands.setContent(html.value);
+      }
+      tab.value = tabValue
+    }
+
     const closeSelector = () => {
       imageSelector.value = false
     }
@@ -129,7 +160,7 @@ export default {
         }
     );
 
-    return {editor, imageSelector, addImage, closeSelector};
+    return {editor, imageSelector, addImage, closeSelector, tab, html, changeTab};
   },
 };
 </script>
@@ -139,8 +170,24 @@ export default {
 .ProseMirror:focus {
   outline: none;
 }
+
 /* set */
 .ProseMirror {
   min-height: 100px;
+}
+
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgba(0, 0, 0, var(--tw-bg-opacity))
+}
+</style>
+
+<style scoped>
+textarea {
+  outline: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  resize: none; /*remove the resize handle on the bottom right*/
 }
 </style>
