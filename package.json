@@ -1,6 +1,6 @@
 {
     "name": "@gigcodes/vue-admin-panel",
-    "version": "1.0.0-beta.55",
+    "version": "1.0.0-beta.56",
     "description": "Reusable SPA Admin Panel for Laravel",
     "main": "./dist/gigcodes-admin.umd.js",
     "module": "./dist/gigcodes-admin.es.js",
@@ -61,6 +61,7 @@
         "@heroicons/vue": "^1.0.6",
         "@shopify/draggable": "^1.0.0-beta.8",
         "@tailwindcss/forms": "^0.4.0",
+        "@tiptap/extension-image": "^2.0.0-beta.27",
         "@tiptap/starter-kit": "^2.0.0-beta.183",
         "@tiptap/vue-3": "^2.0.0-beta.90",
         "@vue/compiler-sfc": "^3.2.29",

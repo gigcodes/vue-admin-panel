@@ -7,7 +7,7 @@
             @navigated="navigate"
             @selections-updated="updateSelections"
         >
-            <template v-if="selectedAssets.length" #contextual-actions>
+            <template v-if="selectedAssets.length">
                 <button
                     class="btn btn-danger ml-16 mr-2 mb-3"
                     @click="deleteSelected"
@@ -38,10 +38,10 @@
 import {Events} from "../../index";
 import Mover from "./Mover.vue";
 import {onBeforeUnmount, onMounted, ref} from "vue";
-
+import AssetBrowser from "./Browser/Browser";
 export default {
     name: "AssetManager",
-    components: {Mover},
+    components: {Mover,AssetBrowser},
     props: {
         container: {
             type: String,

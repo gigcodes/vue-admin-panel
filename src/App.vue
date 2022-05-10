@@ -12,16 +12,19 @@
       title="Categories"
       :search-term="searchTerm"
   />
+
+  <editor></editor>
 </template>
 
 <script>
 import axios from "axios";
 import {provide, ref} from "vue";
-import {DossierTable} from "../dist/gigcodes-admin.es"
+import {DossierTable, Editor} from "../dist/gigcodes-admin.es"
 
 export default {
   name: "App",
   components: {
+    Editor,
     DossierTable
   },
   setup() {
@@ -41,9 +44,20 @@ export default {
 
     const uploadService = (data, config) => axios.post("https://mainwebsite.loc/api/media/upload", data, config)
     const getService = (params) => axios.get("https://mainwebsite.loc/api/category", {params})
+    const getMediaService = (params) => axios.get("https://mainwebsite.loc/api/media/get-file", {params})
+    const containerService = () => axios.get(`https://mainwebsite.loc/api/media/browse`)
+    const loadFilesService = (params) => axios.post(`https://mainwebsite.loc/api/media/get-files`, params)
+    const deleteFilesService = (params) => axios.delete(`https://mainwebsite.loc/api/media/delete`, {params})
     const items = ref([1])
     provide("uploadService", uploadService)
     provide("getService", getService)
+    provide("getMediaService", getMediaService)
+    provide("containerService", containerService)
+    provide("loadFilesService", loadFilesService)
+    provide("searchFilesService", '')
+    provide("moveFilesService", '')
+    provide("deleteFilesService", deleteFilesService)
+
     return {
       items, loading, searching, searchTerm, hasItems, columns, tableOptions
     }

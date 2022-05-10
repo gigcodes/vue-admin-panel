@@ -196,7 +196,7 @@ export default {
      * Injection of axios routes
      */
 
-    const getService = inject('getService')
+    const getService = inject('getMediaService')
 
 
     //end of injections
