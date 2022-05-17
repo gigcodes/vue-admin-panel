@@ -565,9 +565,9 @@ export default {
     /**
      * When a container is selected/clicked in the sidebar
      */
-    const selectContainer = (container) => {
+    const selectContainer = (c) => {
       // Trigger re-loading of assets in the selected container.
-      container.value = containers.value[container];
+      container.value = containers.value[c];
       path.value = "/";
 
       // Trigger an event so the parent can do something.
