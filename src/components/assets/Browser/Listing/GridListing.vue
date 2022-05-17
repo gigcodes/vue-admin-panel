@@ -10,7 +10,7 @@
     <div
         v-if="hasParent && !restrictNavigation"
         class="asset-tile is-folder"
-        @click.prevent="selectFolder(folder.parent_path)"
+        @click.prevent="selectFolder(folder.parent)"
     >
       <div class="asset-thumb-container">
         <file-icon extension="folder"/>
@@ -38,7 +38,7 @@
         @selected="selectAsset"
         @deselected="deselectAsset"
         @editing="editAsset"
-        @doubleclicked="editAsset"
+        @doubleclicked="assetDoubleclicked"
     >
     </asset-tile>
   </div>
@@ -69,7 +69,8 @@ export default {
     },
     folder: {
       type: Object,
-      default: () => {}
+      default: () => {
+      }
     },
     subfolders: {
       type: Array,
@@ -148,8 +149,8 @@ export default {
       this.$emit("asset-deleting", id);
     },
 
-    assetDoubleclicked() {
-      this.$emit("asset-doubleclicked");
+    assetDoubleclicked(asset) {
+      this.$emit("asset-doubleclicked", asset);
     },
 
     /**
@@ -162,9 +163,7 @@ export default {
     /**
      * Delete a folder.
      */
-    deleteFolder(path) {
-      const url = "/admin/media/folders";
-      console.log(url, path)
+    deleteFolder(folder) {
       //@todo add delete modal
       // swal({
       //     icon: "warning",

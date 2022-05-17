@@ -1,7 +1,7 @@
 <template>
   <div
       class="asset-tile is-folder"
-      @click.prevent="selectFolder(folder.path)"
+      @click.prevent="selectFolder(folder)"
   >
     <div class="asset-thumb-container">
       <file-icon extension="folder"></file-icon>

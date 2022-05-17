@@ -1,181 +1,167 @@
 <template>
-    <modal
-        :show="true"
-        class="asset-modal asset-folder-editor"
-        :saving="saving"
-        :loading="loading"
-    >
-        <template #close>
-            <button
-                type="button"
-                tabindex="-1"
-                class="close"
-                aria-label="Close"
-                @click="close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </template>
+  <modal-blank
+      :modal-open="true"
+      class="asset-modal asset-folder-editor"
+      @close-modal="close"
+  >
+    <div class="p-5 space-x-4">
 
-        <template #header>
+      <div>
+        <!-- Modal header -->
+        <div class="mb-2">
+          <div class="text-lg font-semibold text-slate-800">
             <h1 v-if="create">Create Folder</h1>
             <h1 v-if="!create">Edit Folder</h1>
-        </template>
-
-        <template #body>
+          </div>
+        </div>
+        <div class="text-sm mb-10">
+          <div class="space-y-2">
             <div v-if="hasErrors" class="alert alert-danger">
-                <p v-for="(error,i) in errors" :key="i">{{ error }}</p>
+              <p v-for="(error,i) in errors" :key="i">{{ error }}</p>
             </div>
-
-            <div v-if="create" class="form-group">
-                <label class="block">Name</label>
-                <small class="help-block">The filesystem directory name</small>
-                <input
-                    v-model="form.basename"
-                    v-focus="create"
-                    type="text"
-                    class="form-control"
-                    @keyup.esc="close"
-                />
-            </div>
-        </template>
-
-        <template #footer>
-            <button type="button" class="btn" @click="close">Close</button>
-            <button type="button" class="btn btn-primary" @click="save">
-                Save
-            </button>
-        </template>
-    </modal>
+          </div>
+          <div class="flex flex-wrap">
+            <TextField
+                class="w-full"
+                name="Name"
+                @keyup.esc="close"
+                help="The filesystem directory name"
+                v-model="form.basename"></TextField>
+          </div>
+        </div>
+        <!-- Modal footer -->
+        <div class="flex flex-wrap justify-end space-x-2">
+          <button
+              class="btn-sm border-slate-200 hover:border-slate-300 text-slate-600"
+              @click.stop="close"
+          >
+            Cancel
+          </button>
+          <button
+              class="btn-sm bg-rose-500 hover:bg-rose-600 text-white"
+              @click="save"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </modal-blank>
 </template>
 
 <script>
-import axios from "axios";
+import ModalBlank from "../../modal/ModalBlank.vue";
+import TextField from "../../fieldtypes/TextFieldtype.vue";
+import {computed, inject, ref} from "vue";
+import {createToaster} from "../../../plugins/toaster";
 
 export default {
-    emits: ["created", "updated", "closed"],
-    props: {
-        container: {
-            type: String,
-            default: null
-        },
-        path: {
-            type: String,
-            default: null
-        },
-        create: {
-            type: Boolean,
-            default: false
-        },
+  emits: ["created", "updated", "closed"],
+  components: {
+    TextField,
+    ModalBlank
+  },
+  props: {
+    container: {
+      type: Object,
+      default: () => {
+      }
     },
-
-    data: function () {
-        return {
-            form: {},
-            folder: {},
-            loading: true,
-            saving: false,
-            errors: [],
-            basenameModified: false,
-        };
+    path: {
+      type: [String, Object],
+      default: null
     },
-
-    computed: {
-        hasErrors() {
-            return Object.keys(this.errors).length > 0 && !this.saving;
-        },
+    parent_uuid: {
+      type: String,
+      default: null
     },
-
-    mounted: function () {
-        this.getFolder();
+    create: {
+      type: Boolean,
+      default: false
     },
+  },
 
-    methods: {
-        reset: function () {
-            //@todo change needed
-            //this.path = "";
-            this.folder = {};
-            this.form = {};
-            this.loading = true;
-        },
+  setup(props, {emit}) {
+    const form = ref({});
+    const folder = ref({});
+    const loading = ref(true);
+    const saving = ref(false);
+    const errors = ref([]);
+    const basenameModified = ref(false);
+    const folderCreateService = inject('folderCreateService')
+    const folderUpdateService = inject('folderUpdateService')
 
-        getFolder: function () {
-            if (this.create) {
-                this.getBlankFolder();
+    if ((props.path instanceof Object) && !props.create) {
+      form.value.basename = props.path.title
+    }
+    const hasErrors = computed(() => {
+      return Object.keys(errors.value).length > 0 && !saving.value;
+    })
+
+    const reset = () => {
+      folder.value = {};
+      form.value = {};
+      loading.value = true;
+    }
+
+    const save = () => {
+      saving.value = true;
+      if (folderCreateService && folderUpdateService) {
+        if (props.create) {
+          folderCreateService({
+            ...form.value,
+            path: props.path,
+            container: props.container,
+            parent_id: props.parent_uuid
+          }).then(response => {
+            createToaster().success('Folder created successfully');
+            emit('created', response.data)
+          }).catch(err => {
+            if (err.response.status === 422) {
+              createToaster().warning(err.response.data.message);
             } else {
-                this.getExistingFolder();
+              createToaster().error("Unable to create a folder");
             }
-        },
-
-        getBlankFolder: function () {
-            this.folder = {};
-            this.form = {
-                container: this.container,
-                parent: this.path,
-                title: "",
-                basename: "",
-            };
-            this.loading = false;
-        },
-
-        getExistingFolder: function () {
-            let url =
-                "/admin/media/folders/" + this.container + "/" + this.path;
-
-            axios.get(url).then((response) => {
-                this.folder = response.data;
-                this.form = {
-                    title: response.data.title,
-                };
-                this.loading = false;
-            });
-        },
-
-        save: function () {
-            this.saving = true;
-
-            if (this.create) {
-                this.saveNewFolder();
+          })
+        }else{
+          folderUpdateService(props.path.uuid,{
+            ...form.value,
+            path: props.path,
+            container: props.container,
+            parent_id: props.parent_uuid
+          }).then(response => {
+            createToaster().success('Folder updated successfully');
+            emit('updated', response.data)
+          }).catch(err => {
+            if (err.response.status === 422) {
+              createToaster().warning(err.response.data.message);
             } else {
-                this.saveExistingFolder();
+              createToaster().error("Unable to update a folder");
             }
-        },
+          })
+        }
+        close();
+      } else {
+        console.log("folderCreateService or folderUpdateService is not set !")
+      }
+    }
 
-        saveNewFolder: function () {
-            let url = "/admin/media/folder";
+    const close = () => {
+      emit("closed");
+    }
 
-            axios.post(url, {
-                form: this.form,
-                folder: this.folder,
-            })
-                .then((response) => {
-                    this.$emit("created", response.data.folder.path);
-                    this.saving = false;
-                    this.close();
-                })
-                .catch((error) => {
-                    this.errors = error.response.data.errors;
-                    this.saving = false;
-                });
-        },
-
-        saveExistingFolder: function () {
-            let url =
-                "/admin/media/folders/" + this.container + "/" + this.path;
-
-            axios.post(url, {
-                form: this.form,
-                folder: this.folder,
-            })
-                .then(() => {
-                    this.$emit("updated");
-                    this.saving = false;
-                    this.close();
-                });
-        },
-
-        close: function () {
-            this.$emit("closed");
-        },
-    },
+    return {
+      form,
+      folder,
+      loading,
+      saving,
+      errors,
+      basenameModified,
+      hasErrors,
+      reset,
+      close,
+      save
+    }
+  }
 };
 </script>

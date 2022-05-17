@@ -22,5 +22,5 @@ export default defineConfig({
             },
         },
     },
-    plugins: [vue(), eslintPlugin()],
+    plugins: [vue()],
 });

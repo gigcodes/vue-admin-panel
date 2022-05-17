@@ -2,7 +2,6 @@
   <tr
       :class="{ selected: isSelected }"
       @click="toggle"
-      @dblclick="doubleClicked"
   >
     <td class="thumbnail-col" @dragstart="assetDragStart">
       <div

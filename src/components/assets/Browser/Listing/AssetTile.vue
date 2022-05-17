@@ -44,7 +44,7 @@ export default {
         },
 
         icon() {
-            return `/img/filetypes/${this.asset.extension}png`;
+            return `/img/filetypes/${this.asset.extension}.png`;
         },
 
         label() {

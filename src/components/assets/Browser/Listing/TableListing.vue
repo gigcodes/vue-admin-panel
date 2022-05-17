@@ -7,11 +7,7 @@
         <th
             v-for="(column, index) in columns"
             :key="index"
-            :class="{
-                            'extra-col': column.extra,
-                            active: isColumnActive(column),
-                            'column-sortable': !isSearching,
-                        }"
+            :class="{'extra-col': column.extra,active: isColumnActive(column),'column-sortable': !isSearching}"
             @click="$emit('sorted', column.field)"
         >
           {{ column.label }}
@@ -22,18 +18,17 @@
         <th class="column-actions"></th>
       </tr>
       </thead>
-
       <tbody>
       <tr v-if="hasParent && !restrictNavigation">
-        <td>
+        <td @click.prevent="selectFolder(folder.parent)">
           <div class="img">
-            <a @click.prevent="selectFolder(folder.parent_path)">
+            <a>
               <file-icon extension="folder"/>
             </a>
           </div>
         </td>
         <td>
-          <a href="" @click.prevent="selectFolder(folder.parent_path)">..</a>
+          <a href="" @click.prevent="selectFolder(folder.parent)">..</a>
         </td>
         <td colspan="3">..</td>
       </tr>
@@ -60,18 +55,34 @@
           @editing="editAsset"
           @deleting="deleteAsset"
           @assetdragstart="assetDragStart"
-          @doubleclicked="editAsset"
+          @doubleclicked="assetDoubleclicked"
           :can-edit="canEdit"
       ></asset-row>
       </tbody>
     </table>
   </div>
+  <modal
+      :open="deleteModal"
+      @cancelled="deleteFolderItem(false)"
+      @confirmed="deleteFolderItem(true)"
+  >
+    <template #header>
+      Delete the folder selected ?
+    </template>
+    <template #body>
+      On clicking confirm the selected item will be deleted. If
+      you don't wish to do it then please press cancel.
+    </template>
+  </modal>
 </template>
 
 <script>
 import AssetRow from "./AssetRow.vue";
 import FolderRow from "./FolderRow.vue";
 import FileIcon from "../../../FileIcon.vue";
+import Modal from "../../../modal/Modal.vue";
+import {createToaster} from "../../../../index"
+import {inject, ref} from "vue";
 
 export default {
   emits: ["sorted", "folder-deleted", "asset-deleting",
@@ -81,6 +92,7 @@ export default {
     FileIcon,
     AssetRow,
     FolderRow,
+    Modal,
   },
   props: {
     container: {
@@ -121,7 +133,37 @@ export default {
     }
 
   },
+  setup(_,{emit}) {
+    const toast = createToaster()
+    const deleteModal = ref(false);
+    const deleteFolderSelected = ref(null);
+    const deleteFolderService = inject("deleteFolderService")
+    const deleteFolderItem = (type) => {
+      if (type) {
+        try {
+          deleteFolderService(deleteFolderSelected.value.uuid).then(() => {
+            toast.success('Folder deleted successfully');
+            emit('folder-deleted')
+            deleteModal.value = false;
+          }).catch(() => {
+            toast.error("Unable to delete the folder")
+            deleteModal.value = false;
+          })
+        } catch (e) {
+          toast.error("Unable to delete the folder")
+          deleteModal.value = false;
+          console.log("deleteFolderService is not registered")
+        }
+      } else {
+        deleteModal.value = false;
+        toast.info("Folder delete cancelled")
+      }
+    }
 
+    return {
+      deleteFolderItem, deleteModal, deleteFolderSelected
+    }
+  },
   data() {
     return {
       columns: [
@@ -165,27 +207,25 @@ export default {
 
     },
 
+
     droppedOnFolder(folder, e) {
       const asset = e.dataTransfer.getData("asset");
       e.dataTransfer.clearData("asset");
-
       // discard any drops that weren't started on an asset
       if (asset === "") return;
-
       this.$emit("assets-dragged-to-folder", folder);
     },
 
     isColumnActive(col) {
       if (this.isSearching) return false;
-
       return col.field === this.$parent.sort;
     },
 
     /**
      * Select a folder to navigate to.
      */
-    selectFolder(path) {
-      this.$emit("folder-selected", path);
+    selectFolder(folder) {
+      this.$emit("folder-selected", folder);
     },
 
     /**
@@ -217,8 +257,8 @@ export default {
       this.$emit("asset-deleting", id);
     },
 
-    assetDoubleclicked() {
-      this.$emit("asset-doubleclicked");
+    assetDoubleclicked(asset) {
+      this.$emit("asset-doubleclicked", asset);
     },
 
     /**
@@ -231,36 +271,9 @@ export default {
     /**
      * Delete a folder.
      */
-    deleteFolder(path) {
-      const url = "/admin/media/folders";
-      console.log(url, path)
-      //@todo add delete modal
-      // swal({
-      //     icon: "warning",
-      //     title: "Are you sure",
-      //     text: "Confirm delete folder",
-      //     confirmButtonText: "Yes I am sure",
-      //     cancelButtonText: "Cancel",
-      //     buttons: true,
-      //     dangerMode: true,
-      // }).then((willDelete) => {
-      //     if (willDelete) {
-      //         this.$axios
-      //             .delete(url, {
-      //                 params: {
-      //                     container: this.container,
-      //                     folders: path,
-      //                 },
-      //             })
-      //             .then((response) => {
-      //                 this.$emit("folder-deleted", path);
-      //                 this.saving = false;
-      //                 this.$toast.success("Folder Deleted Successfully");
-      //             });
-      //     } else {
-      //         this.$toast.default("Delete Cancelled");
-      //     }
-      // });
+    deleteFolder(folder) {
+      this.deleteFolderSelected = folder;
+      this.deleteModal = true;
     },
 
     assetDragStart(id) {

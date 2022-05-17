@@ -38,7 +38,7 @@
 import {Events} from "../../index";
 import Mover from "./Mover.vue";
 import {onBeforeUnmount, onMounted, ref} from "vue";
-import AssetBrowser from "./Browser/Browser";
+import AssetBrowser from "./Browser/Browser.vue";
 export default {
     name: "AssetManager",
     components: {Mover,AssetBrowser},
@@ -50,7 +50,7 @@ export default {
         path: {
             type: String,
             default: null
-        }
+        },
     },
 
     setup(props) {

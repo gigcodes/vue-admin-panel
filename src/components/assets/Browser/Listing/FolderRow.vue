@@ -1,20 +1,20 @@
 <template>
   <tr @drop="drop">
-    <td>
+    <td @click.prevent="selectFolder(folder)">
       <div class="img">
-        <a href="" @click.prevent="selectFolder(folder.path)">
+        <a href="">
           <file-icon extension="folder"></file-icon>
         </a>
       </div>
     </td>
 
-    <td>
-      <a @click="selectFolder(folder.path)">
+    <td @click.prevent="selectFolder(folder)">
+      <a>
         {{ folder.title }}
       </a>
     </td>
 
-    <td colspan="2" class="extra-col"></td>
+    <td colspan="2" class="extra-col" @click.prevent="selectFolder(folder)"></td>
 
     <td class="column-actions">
       <div
@@ -34,13 +34,13 @@
 
         <ul class="dropdown-menu" :class="{ show: showActionsDropdown }">
           <li>
-            <a class="dropdown-item" href="" @click.prevent="editFolder"> Edit </a>
+            <a class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 block px-4 py-1 text-sm" href="" @click.prevent="editFolder"> Edit </a>
           </li>
 
           <li class="divider"></li>
 
           <li class="warning">
-            <a class="dropdown-item" href="#" @click.prevent="deleteFolder"> Delete </a>
+            <a class="text-gray-700 hover:bg-rose-600 hover:text-white block px-4 py-1 text-sm" href="#" @click.prevent="deleteFolder"> Delete </a>
           </li>
         </ul>
       </div>

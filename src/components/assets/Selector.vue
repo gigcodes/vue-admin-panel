@@ -2,6 +2,7 @@
   <div class="asset-selector-modal">
     <div class="asset-selector shadow rounded-lg">
       <asset-browser
+          ref="assetBrowser"
           :selected-container="container"
           :selected-path="folder"
           :selected-assets="browserSelections"

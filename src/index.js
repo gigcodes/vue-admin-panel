@@ -13,6 +13,7 @@ import LoadingGraphic from "./components/LoadingGraphic.vue";
 import PageTree from "./components/structures/PageTree.vue";
 import Cookies from 'js-cookie'
 import SvgIcon from "./components/SvgIcon.vue";
+import MediaSelector from "./components/assets/MediaSelector.vue";
 import './index.css'
 import './sass/index.scss'
 import "luminous-lightbox/dist/luminous-basic.css";
@@ -115,6 +116,7 @@ export {
     SelectField,
     ToggleField,
     DateField,
+    MediaSelector,
     Toaster,
     createToaster,
     copy,

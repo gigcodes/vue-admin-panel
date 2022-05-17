@@ -43,23 +43,16 @@
         </h1>
 
         <div class="asset-browser-actions flex flex-wrap">
-          <div v-if="!assetsSelected.length" class="px-3">
+          <div class="px-3" v-if="!assetsSelected.length">
             <label for="search" class="sr-only">Search</label>
             <div class="relative rounded-md shadow-sm">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
-                <svg
-                    class="mr-3 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                    fill="currentColor" aria-hidden="true">
-                  <path
-                      fill-rule="evenodd"
-                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                      clip-rule="evenodd"/>
+                <!-- Heroicon name: solid/search -->
+                <svg class="mr-3 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                 </svg>
               </div>
-              <input
-                  type="text" name="search" v-model="searchTerm" id="search"
-                  class="assets-search"
-                  placeholder="Search">
+              <input type="text" v-model="searchTerm" name="search" id="search" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-9 sm:text-sm border-gray-300 rounded-md" placeholder="Search">
             </div>
           </div>
           <template v-if="assetsSelected.length">
@@ -171,13 +164,14 @@
           <!--                    <svg-icon name="folder-search-empty" class="h-16 w-16 mx-auto"/>-->
           <h2>No Search Results</h2>
         </div>
-
-        <pagination :data="pagination" :limit="2" @pagination-change-page="paginationPageSelected" />
       </div>
 
+      <pagination :data="pagination" :limit="2" @pagination-change-page="paginationPageSelected"/>
       <breadcrumbs
           v-if="!restrictNavigation && !isSearching"
           :path="path"
+          :folder="folder"
+          :folders="folders"
           @navigated="folderSelected"
       >
       </breadcrumbs>
@@ -196,8 +190,9 @@
       <folder-editor
           v-if="showFolderCreator"
           :create="true"
-          :container="container.id"
+          :container="container"
           :path="path"
+          :parent_uuid="folder?.uuid"
           @closed="folderCreatorClosed"
           @created="folderCreated"
       >
@@ -206,8 +201,9 @@
       <folder-editor
           v-if="showFolderEditor"
           :create="false"
-          :container="container.id"
+          :container="container"
           :path="editedFolderPath"
+          :parent_uuid="folder?.uuid"
           @closed="folderEditorClosed"
           @updated="loadAssets"
       >
@@ -229,7 +225,7 @@ import {Events} from "../../../index";
 import _ from "underscore";
 import LoadingGraphic from "../../LoadingGraphic.vue";
 import {Btn} from "../../../index";
-import {computed, inject, ref, watch} from "vue";
+import {computed, inject, onMounted, ref, watch} from "vue";
 import Cookies from 'cookies-js';
 import Modal from "../../modal/Modal.vue";
 
@@ -258,6 +254,10 @@ export default {
       type: String,
       default: null
     },
+    selectedPathUuid: { // The path to display, determined by a parent component.
+      type: String,
+      default: null
+    },
     restrictNavigation: {
       type: Boolean,
       default: false
@@ -277,7 +277,6 @@ export default {
   },
   data() {
     return {
-      displayMode: "table",
       uploads: [],
       draggingFile: false,
       editedAssetId: null,
@@ -365,13 +364,6 @@ export default {
     },
     /*eslint-enable */
   },
-  mounted() {
-    // We need all the containers since they'll be displayed in the sidebar. This will also load
-    // up the current container object using the initial container id. Setting the container
-    // property will trigger loading of assets since there's a watcher reacting to it.
-    this.loadContainers();
-    this.displayMode = "table";
-  },
   created() {
     Events.$on("close-editor", () => {
       if (this.editorHasChild) {
@@ -401,12 +393,14 @@ export default {
 
   setup(props, {emit}) {
     const path = ref(props.selectedPath);
+    const path_uuid = ref(props.selectedPathUuid);
     const browseContainer = inject("containerService")
     const loadFilesService = inject("loadFilesService")
     const moveFilesService = inject("moveFilesService")
     const searchFilesService = inject("searchFilesService")
     const deleteFilesService = inject("deleteFilesService")
     const containers = ref(null)
+    const displayMode = ref("table")
     const container = ref(null)
     const loadingContainers = ref(true)
     const loadingAssets = ref(true)
@@ -423,6 +417,8 @@ export default {
     const sortOrder = ref("asc")
     const searchTerm = ref("")
     const assetsSelected = ref(props.selectedAssets)
+    const asset = ref(null);
+    const assetToBeDeleted = ref([]);
 
     /**
      * Load asset container data
@@ -434,11 +430,10 @@ export default {
         // ID to make retrieving container values simpler down the road.
         containers.value = _.chain(response.data.items)
             .map((container) => {
-              return _.pick(container, "id", "title");
+              return _.pick(container, "id", "title", "uuid", "item_id");
             })
             .indexBy("id")
             .value();
-
         // We need the container property to be the retrieved data object.
         container.value = containers.value[props.selectedContainer];
         loadingContainers.value = false;
@@ -456,6 +451,7 @@ export default {
         page: selectedPage.value,
         sort: sort.value,
         dir: sortOrder.value,
+        path_uuid: path_uuid.value
       }).then((response) => {
         assets.value = response.data.data.assets;
         folders.value = response.data.data.folders;
@@ -499,10 +495,9 @@ export default {
       });
     }
 
-    const assetToBeDeleted = ref([]);
     const deleteAssetSingle = (asset) => {
       deleteModal.value = true;
-      assetToBeDeleted.value = asset
+      assetToBeDeleted.value = asset.id
     }
 
     /**
@@ -527,7 +522,6 @@ export default {
       assetToBeDeleted.value = [];
     }
 
-
     //computed
     const fullPath = computed(() => {
       if (!container.value) return;
@@ -545,10 +539,54 @@ export default {
       return props.maxFiles && props.selectedAssets.length >= props.maxFiles;
     })
 
+    /**
+     * When a folder was selected from within listing component.
+     */
+    const folderSelected = (folder) => {
+      // Trigger re-loading of assets in the selected folder.
+      path.value = folder.path;
+      path_uuid.value = folder.uuid;
+      selectedPage.value = 1;
+
+      // Trigger an event so the parent can do something.
+      // eg. The asset manager would want to change the browser URL.
+      // emit("navigated", container.value.id, path.value);
+    }
+
+
+    /**
+     * Set the display mode and remember it in a cookie
+     */
+    const setDisplayMode = (mode) => {
+      displayMode.value = mode;
+      Cookies.set('gigcodes.assets.listing_view_mode', mode);
+    }
+
+    /**
+     * When a container is selected/clicked in the sidebar
+     */
+    const selectContainer = (container) => {
+      // Trigger re-loading of assets in the selected container.
+      container.value = containers.value[container];
+      path.value = "/";
+
+      // Trigger an event so the parent can do something.
+      // eg. The asset manager would want to change the browser URL.
+      emit("navigated", container.value.id, path.value);
+    }
+
+    /**
+     * When an asset has been deselected.
+     */
+    const assetDeselected = (asset) => {
+      assetsSelected.value = _.without(assetsSelected.value, asset.id);
+    }
+
+
     //watchers
 
     watch(searchTerm, (term) => {
-      if (term) {
+      if (term.length >= 3) {
         search();
       } else {
         loadAssets();
@@ -587,51 +625,30 @@ export default {
       loadAssets();
     })
 
+    onMounted(() => {
+      loadContainers();
+    })
 
     return {
       loadContainers, loadingContainers, container, containers, loadAssets, loadingAssets,
       assets, folders, folder, pagination, selectedPage, initializedAssets, isSearching,
       assetsDraggedToFolder, path, sort, sortOrder, search, searchTerm, assetsSelected,
       maxFilesReached, deleteModalMulti, deleteAsset, deleteAssetSingle, deleteModal,
-      assetToBeDeleted
+      assetToBeDeleted, asset, fullPath, folderSelected, displayMode, setDisplayMode,
+      selectContainer, assetDeselected
     }
   },
 
   methods: {
 
     /**
-     * When a folder was selected from within listing component.
-     */
-    folderSelected(path) {
-      // Trigger re-loading of assets in the selected folder.
-      this.path = path;
-      this.selectedPage = 1;
-
-      // Trigger an event so the parent can do something.
-      // eg. The asset manager would want to change the browser URL.
-      this.$emit("navigated", this.container.id, this.path);
-    },
-
-    /**
-     * When a container is selected/clicked in the sidebar
-     */
-    selectContainer(container) {
-      // Trigger re-loading of assets in the selected container.
-      this.container = this.containers[container];
-      this.path = "/";
-
-      // Trigger an event so the parent can do something.
-      // eg. The asset manager would want to change the browser URL.
-      this.$emit("navigated", this.container.id, this.path);
-    },
-
-    /**
      * When an asset has been selected.
      */
-    assetSelected(id) {
+    assetSelected(asset) {
+      this.asset = asset.asset;
       // For single asset selections, clicking a different asset will replace the selection.
       if (this.maxFiles === 1 && this.maxFilesReached) {
-        this.assetsSelected = [id];
+        this.assetsSelected = [asset.id];
       }
 
       // Completely prevent additional selections when the limit has been hit.
@@ -640,11 +657,11 @@ export default {
       }
 
       // Don't add the same asset twice.
-      if (_.contains(this.assetsSelected, id)) {
+      if (_.contains(this.assetsSelected, asset.id)) {
         return;
       }
 
-      this.assetsSelected.push(id);
+      this.assetsSelected.push(asset.id);
 
       // For some reason, Vue wasn't reacting to new item.
       // It would show up in the data, but wouldn't adjust the view.
@@ -652,19 +669,13 @@ export default {
       this.assetsSelected = _.map(this.assetsSelected, (val) => val);
     },
 
-    /**
-     * When an asset has been deselected.
-     */
-    assetDeselected(id) {
-      this.assetsSelected = _.without(this.assetsSelected, id);
-    },
 
     /**
      * When an asset has been chosen for editing.
      */
-    editAsset(id) {
+    editAsset(asset) {
       if (this.canEdit) {
-        this.editedAssetId = id;
+        this.editedAssetId = asset.id;
       }
     },
 
@@ -706,9 +717,10 @@ export default {
      * fieldtype. When used in the "Assets" section, the double click would be handled
      * from within the asset component and caused the edit dialog to be opened.
      */
-    assetDoubleClicked(id) {
-      this.assetSelected(id);
-      Events.$emit("asset-doubleclicked");
+    assetDoubleClicked(asset) {
+      this.assetSelected(asset.id);
+      console.log('double clicked in browser')
+      this.$emit("asset-doubleclicked", asset);
     },
 
     /**
@@ -734,8 +746,8 @@ export default {
       this.showFolderCreator = false;
     },
 
-    folderCreated(path) {
-      this.folderSelected(path);
+    folderCreated(folder) {
+      this.folderSelected(folder);
     },
 
     editFolder(folder) {
@@ -752,14 +764,6 @@ export default {
 
     uploadsUpdated(uploads) {
       this.uploads = uploads;
-    },
-
-    /**
-     * Set the display mode and remember it in a cookie
-     */
-    setDisplayMode(mode) {
-      this.displayMode = mode;
-      Cookies.set('gigcodes.assets.listing_view_mode', mode);
     },
 
     sortBy(sort) {

@@ -262,7 +262,7 @@ export default {
               toast.error(error.response.data.message);
             });
       } catch (e) {
-        console.log("Delete service is not setup");
+        console.log("deleteMultiService is not setup");
       }
       deleteModalMulti.value = false;
     };

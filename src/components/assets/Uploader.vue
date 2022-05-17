@@ -55,8 +55,10 @@ export default {
       })
       const files = new FormData
       files.append('file', file)
-      files.append('container', props.container)
-      files.append('folder', props.path)
+      files.append('collection_name', props.container)
+      files.append('path', props.path)
+      files.append('filename', file.name)
+      files.append('extension', file.name.split('.').pop())
 
       const config = {
         onUploadProgress(progressEvent) {
@@ -68,7 +70,7 @@ export default {
       }
 
       uploadService(files, config).then(response => {
-        if (response.status === 200) {
+        if (response.status === 201) {
           if (response.data.success) {
             emit('upload-complete', response.data.asset, uploads.value);
             let index = _(uploads.value).findIndex({id: uuid});

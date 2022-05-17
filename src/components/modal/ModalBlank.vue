@@ -48,7 +48,7 @@ import {ref} from "vue";
 import {mixin as clickaway} from "../../plugins/click-away";
 
 export default {
-    name: "ModalEmpty",
+    name: "ModalBlank",
     mixins: [clickaway],
     props: {
         id: {type: String, default: null},
