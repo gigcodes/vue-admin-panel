@@ -2,10 +2,11 @@
   <h1 class="text-3xl font-bold underline">
     Hello world!
   </h1>
-  <assets-field
-      v-model:data="items"
-      :config="{container:'main',max_files:5,canEdit:false}"
-      name="Images"></assets-field>
+  <text-field name="hello" tooltip="hi" has-error="e" class="w-1/6"></text-field>
+<!--  <assets-field-->
+<!--      v-model:data="items"-->
+<!--      :config="{container:'main',max_files:5,canEdit:false}"-->
+<!--      name="Images"></assets-field>-->
   <!--  <dossier-table-->
   <!--      v-model:loading="loading"-->
   <!--      v-model:columns="columns"-->
@@ -16,7 +17,7 @@
   <!--      :search-term="searchTerm"-->
   <!--  />-->
 
-  <editor></editor>
+<!--  <editor></editor>-->
   <MediaSelector container="main" :open="showMedia" @selected="selected" @closed="showMedia = false"></MediaSelector>
   <btn @click="showMedia = true">Open Media Selector</btn>
 </template>
