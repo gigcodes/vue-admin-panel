@@ -1,6 +1,6 @@
 {
     "name": "@gigcodes/vue-admin-panel",
-    "version": "2.0.0-beta.03",
+    "version": "2.0.0-beta.04",
     "description": "Reusable SPA Admin Panel for Laravel",
     "main": "./dist/gigcodes-admin.umd.js",
     "module": "./dist/gigcodes-admin.es.js",

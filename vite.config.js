@@ -21,6 +21,13 @@ export default defineConfig({
                 },
             },
         },
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    additionalData: `@import "@/sass/index.scss";`
+                }
+            }
+        },
     },
     plugins: [vue()],
     resolve: {
