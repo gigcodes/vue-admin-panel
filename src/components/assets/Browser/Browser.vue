@@ -6,7 +6,7 @@
         @dragleave="dragStop"
         @drop="dragStop"
     >
-        <div class="align-middle w-full align-middle" v-if="!initialized">
+        <div class="align-middle w-full" v-if="!initialized">
             <loading-graphic />
         </div>
 
