@@ -500,7 +500,7 @@ export default {
       }
       isSearching.value = false;
       emit("update:searching", false);
-      this.deleteModal = false;
+      deleteModal.value = false;
     };
 
     watch(hasItems, (val) => {
