@@ -25,6 +25,7 @@
                 class="w-full"
                 name="Name"
                 @keyup.esc="close"
+                @keyup.enter="save"
                 help="The filesystem directory name"
                 v-model="form.basename"></TextField>
           </div>

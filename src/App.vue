@@ -18,7 +18,7 @@
   <!--  />-->
 
 <!--  <editor></editor>-->
-  <MediaSelector container="main" :open="showMedia" @selected="selected" @closed="showMedia = false"></MediaSelector>
+  <MediaSelector container="main" :open="showMedia" @selected="selected" @closed="showMedia = false" can-edit></MediaSelector>
   <btn @click="showMedia = true">Open Media Selector</btn>
 </template>
 
@@ -55,14 +55,14 @@ export default {
       console.log(asset);
     }
 
-    const uploadService = (data, config) => axios.post("https://laravelmedia.loc/api/media/upload", data, config)
+    const uploadService = (data, config) => axios.post("http://127.0.0.1:8000/api/media/upload", data, config)
     const getService = (params) => axios.get("https://mainwebsite.loc/api/category", {params})
-    const getMediaService = (params) => axios.get("https://laravelmedia.loc/api/media/get-file", {params})
-    const containerService = () => axios.get(`https://laravelmedia.loc/api/media/browse`)
-    const loadFilesService = (params) => axios.get(`https://laravelmedia.loc/api/media/get-files`, {params})
-    const deleteFilesService = (params) => axios.delete(`https://laravelmedia.loc/api/media/delete`, {params})
-    const folderCreateService = (data) => axios.post(`https://laravelmedia.loc/api/media/folder`, data)
-    const folderUpdateService = (uuid, data) => axios.patch(`https://laravelmedia.loc/api/media/folder/${uuid}/edit`, data)
+    const getMediaService = (params) => axios.get("http://127.0.0.1:8000/api/media/get-file", {params})
+    const containerService = () => axios.get(`http://127.0.0.1:8000/api/media/browse`)
+    const loadFilesService = (params) => axios.get(`http://127.0.0.1:8000/api/media/get-files`, {params})
+    const deleteFilesService = (params) => axios.delete(`http://127.0.0.1:8000/api/media/delete`, {params})
+    const folderCreateService = (data) => axios.post(`http://127.0.0.1:8000/api/media/folder`, data)
+    const folderUpdateService = (uuid, data) => axios.patch(`http://127.0.0.1:8000/api/media/folder/${uuid}/edit`, data)
     const deleteFolderService = (uuid) => axios.delete(`https://laravelmedia.loc/api/media/folder/${uuid}`)
     const items = ref([])
     provide("uploadService", uploadService)
