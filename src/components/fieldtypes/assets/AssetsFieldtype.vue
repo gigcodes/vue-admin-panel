@@ -20,7 +20,12 @@
 
         <div
           class="drag-notification"
-          v-if="containerSpecified && draggingFile && !showSelector"
+          v-if="
+            containerSpecified &&
+            !innerDragging &&
+            draggingFile &&
+            !showSelector
+          "
         >
           <i class="icon icon-download" />
           <h3>Drop to upload</h3>
@@ -125,6 +130,7 @@
           :max-files="maxFiles"
           @selected="assetsSelected"
           @closed="closeSelector"
+          :can-edit="config.canEdit ?? false"
         >
         </selector>
       </div>
@@ -235,8 +241,10 @@ watch(
 );
 
 const handleDrop = (event) => {
-  const files = event.dataTransfer.files;
-  if (files.length > 0) uploaderEl.value.uploadFile(event.dataTransfer.files);
+  if (uploaderEl.value) {
+    const files = event.dataTransfer.files;
+    if (files.length > 0) uploaderEl.value.uploadFile(event.dataTransfer.files);
+  }
 };
 
 const update = (value) => emit("input", value);
@@ -436,9 +444,13 @@ const sortable = () => {
     new Sortable(assetContainer.value, {
       preventOnFilter: true,
       dataIdAttr: "data-id",
+      onStart: () => {
+        innerDragging.value = true;
+      },
       onEnd: (evt) => {
         assets.value.swap(evt.oldIndex, evt.newIndex);
         emit("update:data", assets.value);
+        innerDragging.value = false;
       },
     });
   }

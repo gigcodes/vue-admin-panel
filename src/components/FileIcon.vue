@@ -1,13 +1,24 @@
 <template>
   <img
-      :src="image" :alt="name" :class="[
-            'svg-icon',
-            { 'using-div': type === 'div', 'using-svg': type === 'svg' },
-        ]"/>
+    v-if="type !== 'div'"
+    :src="image"
+    :alt="name"
+    :class="[
+      'svg-icon',
+      { 'using-div': type === 'div', 'using-svg': type === 'svg' },
+    ]"
+  />
+
+  <template v-if="type == 'div'">
+    <div
+      class="circular"
+      :style="{ backgroundImage: 'url(/svg/' + name + '.svg)' }"
+    ></div>
+  </template>
 </template>
 
 <script>
-import {computed} from "vue";
+import { computed } from "vue";
 
 export default {
   name: "FileIcon",
@@ -113,17 +124,15 @@ export default {
         default:
           return "generic";
       }
-    })
+    });
 
     const image = computed(() => {
-      if (props.type === "div") {
-        return `<div style="background-image: url('${"/svg/" + name.value + ".svg"}')"></div>`;
-      }
       return `/svg/filetypes/${name.value}.svg`;
-    })
+    });
     return {
-      image, name
-    }
-  }
+      image,
+      name,
+    };
+  },
 };
 </script>

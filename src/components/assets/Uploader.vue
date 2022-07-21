@@ -78,7 +78,7 @@ export default {
         .then((response) => {
           if (response.status === 201) {
             if (response.data.success) {
-              emit("upload-complete", response.data.asset, uploads.value);
+              emit("upload-complete", response.data.item, uploads.value);
               let index = _(uploads.value).findIndex({ id: uuid });
               uploads.value.splice(index, 1);
             } else {
