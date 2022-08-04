@@ -14,32 +14,32 @@
       <h2 class="font-semibold text-slate-800">
         {{ title }}
         <span class="text-slate-400 font-medium float-end">{{
-          pagination.totalItems
-        }}</span>
+            pagination.totalItems
+          }}</span>
       </h2>
     </header>
     <div class="p-3">
       <table :class="[{ 'has-checkboxes': hasCheckboxes }]">
         <thead v-if="hasHeaders">
-          <tr>
-            <th v-if="hasCheckboxes" class="checkbox-col">
-              <div class="flex items-center">
-                <label class="inline-flex">
-                  <span class="sr-only">Select all</span>
-                  <input
-                    class="form-checkbox"
-                    type="checkbox"
-                    :checked="allItemsChecked"
-                    @click="checkAllItems"
-                  />
-                </label>
-              </div>
-            </th>
+        <tr>
+          <th v-if="hasCheckboxes" class="checkbox-col">
+            <div class="flex items-center">
+              <label class="inline-flex">
+                <span class="sr-only">Select all</span>
+                <input
+                  class="form-checkbox"
+                  type="checkbox"
+                  :checked="allItemsChecked"
+                  @click="checkAllItems"
+                />
+              </label>
+            </div>
+          </th>
 
-            <th
-              v-for="(column, index) in columns"
-              :key="index"
-              :class="[
+          <th
+            v-for="(column, index) in columns"
+            :key="index"
+            :class="[
                 'column-' + column.value,
                 {
                   active: isColumnActive(column),
@@ -47,42 +47,42 @@
                   'extra-col': column.extra,
                 },
               ]"
-              :style="{ width: tableColWidth(column.width) }"
-              @click="sortBy(column)"
-            >
-              {{ column.header }}
-              <i
-                v-if="isColumnActive(column)"
-                :class="
-                  tableOptions.sortOrder === 'asc'
+            :style="{ width: tableColWidth(column.width) }"
+            @click="sortBy(column)"
+          >
+            {{ column.header }}
+            <i
+              v-if="isColumnActive(column)"
+              :class="
+                  sortOrder() === 'asc'
                     ? 'icon icon-chevron-up'
                     : 'icon icon-chevron-down'
                 "
-              />
-            </th>
-            <th v-if="hasActions" class="column-actions" />
-          </tr>
+            />
+          </th>
+          <th v-if="hasActions" class="column-actions" />
+        </tr>
         </thead>
         <tbody ref="tbody">
-          <tr v-for="(item, index) in items" :key="index">
-            <td v-if="hasCheckboxes && !reordering" class="checkbox-col">
-              <div class="flex items-center">
-                <label class="inline-flex" :for="'checkbox-' + index">
-                  <span class="sr-only">Select</span>
-                  <input
-                    :id="'checkbox-' + index"
-                    class="form-checkbox"
-                    type="checkbox"
-                    :checked="item.checked"
-                    @change="toggle(item)"
-                  />
-                </label>
-              </div>
-            </td>
-            <td
-              v-for="(column, i) in columns"
-              :key="i"
-              :class="[
+        <tr v-for="(item, index) in items" :key="index">
+          <td v-if="hasCheckboxes && !reordering" class="checkbox-col">
+            <div class="flex items-center">
+              <label class="inline-flex" :for="'checkbox-' + index">
+                <span class="sr-only">Select</span>
+                <input
+                  :id="'checkbox-' + index"
+                  class="form-checkbox"
+                  type="checkbox"
+                  :checked="item.checked"
+                  @change="toggle(item)"
+                />
+              </label>
+            </div>
+          </td>
+          <td
+            v-for="(column, i) in columns"
+            :key="i"
+            :class="[
                 `cell-${column.value}`,
                 {
                   'extra-col': column.extra,
@@ -90,27 +90,27 @@
                   'first-cell': i === 0,
                 },
               ]"
-            >
-              <span class="sr-only">{{ column.header }}</span>
-              <cell
-                :index="i"
-                :item="item"
-                :value="formatValue(item[column.value])"
-                :column="column"
-              />
-            </td>
+          >
+            <span class="sr-only">{{ column.header }}</span>
+            <cell
+              :index="i"
+              :item="item"
+              :value="formatValue(item[column.value])"
+              :column="column"
+            />
+          </td>
 
-            <!-- actions -->
-            <td v-if="hasActions" class="column-actions">
-              <actions :item="item" :actions="tableOptions.partials.actions" />
-            </td>
-          </tr>
+          <!-- actions -->
+          <td v-if="hasActions" class="column-actions">
+            <actions :item="item" :actions="tableOptions.partials.actions" />
+          </td>
+        </tr>
         </tbody>
       </table>
       <modal
         :open="deleteModal"
         @cancelled="deleteModal = false"
-        @confirmed="deleteItem()"
+        @confirmed="deleteItem"
       >
         <template #header> Delete item ?</template>
         <template #body>
@@ -141,9 +141,9 @@
           { 'bulk-actions': true, 'no-checkboxes': !hasCheckboxes },
         ]"
       >
-        <btn type="dangerFill" @clicked="uncheckAllItems">Uncheck All </btn>
+        <btn type="dangerFill" @clicked="uncheckAllItems">Uncheck All</btn>
         <btn type="danger" extra-class="ml-2" @clicked="deleteModalMulti = true"
-          >Delete {{ checkedItems.length }}
+        >Delete {{ checkedItems.length }}
           {{ checkedItems.length === 1 ? "item" : "items" }}
         </btn>
       </div>
@@ -175,30 +175,30 @@ export default {
     Pagination,
     Btn,
     Modal,
-    Actions,
+    Actions
   },
 
   props: {
     hasItems: {
       type: Boolean,
-      default: false,
+      default: false
     },
     title: {
       type: String,
-      default: null,
+      default: null
     },
     tableOptions: {
       type: Object,
-      default: () => ({}),
+      default: () => ({})
     },
     searchTerm: {
       type: String,
-      default: null,
+      default: null
     },
     collection: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: [
     "update:loading",
@@ -206,7 +206,7 @@ export default {
     "update:tableOptions",
     "update:columns",
     "update:searching",
-    "update:selectedPage",
+    "update:selectedPage"
   ],
 
   setup(props, { emit }) {
@@ -311,10 +311,10 @@ export default {
 
     const checkedItems = computed(() => {
       return items.value
-        .filter(function (item) {
+        .filter(function(item) {
           return item.checked;
         })
-        .map(function (item) {
+        .map(function(item) {
           return item.id;
         });
     });
@@ -352,31 +352,15 @@ export default {
     });
 
     const getParameters = computed(() => {
-      let sortOrder,sort;
-      if (Cookies.get(`gigcodes.table.${props.collection}.sortOrder`)) {
-        sortOrder = Cookies.get(`gigcodes.table.${props.collection}.sortOrder`);
-        sort = Cookies.get(`gigcodes.table.${props.collection}.sort`);
-        return {
-          sort:
-            sortOrder === "asc"
-              ? sort
-              : `-${sort}`,
-          page: selectedPage.value,
-        };
-      } else {
-        return {
-          sort:
-            props.tableOptions.sortOrder === "asc"
-              ? props.tableOptions.sort
-              : `-${props.tableOptions.sort}`,
-          page: selectedPage.value,
-        };
-      }
+      return {
+        sort: sortOrder() === "asc" ? sort() : `-${sort()}`,
+        page: Cookies.get(`gigcodes.table.${props.collection}.page`) ?? selectedPage.value
+      };
     });
 
     const isColumnActive = (col) => {
       if (isSearching.value) return false;
-      return col.value === props.tableOptions.sort;
+      return col.value === sort();
     };
 
     const removeItemFromList = (id) => {
@@ -389,6 +373,8 @@ export default {
       loading.value = true;
       emit("update:loading", true);
       try {
+        console.log(sort(), sortOrder());
+        console.log(getParameters.value);
         const results = getService(getParameters.value);
         if (results) {
           results
@@ -424,14 +410,14 @@ export default {
     };
 
     const uncheckAllItems = () => {
-      _.each(items.value, function (item) {
+      _.each(items.value, function(item) {
         item.checked = false;
       });
     };
 
     const checkAllItems = () => {
       const status = !allItemsChecked.value;
-      _.each(items.value, function (item) {
+      _.each(items.value, function(item) {
         item.checked = status;
       });
     };
@@ -441,7 +427,7 @@ export default {
       const linkColumnUndefined =
         _.findWhere(columns, { link: true }) === undefined;
 
-      return _.map(columns, function (column, i) {
+      return _.map(columns, function(column, i) {
         if (typeof column === "string") {
           column = { value: column };
         }
@@ -463,31 +449,38 @@ export default {
           width: column.width,
           sort: sort,
           link: column.link || (linkColumnUndefined && i === 0),
-          custom_link: custom_link,
+          custom_link: custom_link
         };
       });
     };
 
-    const sortBy = (col) => {
+    const sortOrder = () => {
+      return Cookies.get(`gigcodes.table.${props.collection}.sortOrder`) !== undefined ? Cookies.get(`gigcodes.table.${props.collection}.sortOrder`) : props.tableOptions.sortOrder;
+    };
+
+    const sort = () => {
+      return Cookies.get(`gigcodes.table.${props.collection}.sort`) !== undefined ? Cookies.get(`gigcodes.table.${props.collection}.sort`) : props.tableOptions.sort;
+    };
+
+    const sortBy = async (col) => {
       if (!sortable.value) return;
       if (isSearching.value) return;
       if (!col.sort) return;
-      let sort = col.value;
-      let sortOrder = "desc";
-
+      let s = col.value;
+      let order = "desc";
       // If the current sort order was clicked again, change the direction.
-      if (props.tableOptions.sort === sort) {
-        sortOrder = props.tableOptions.sortOrder === "asc" ? "desc" : "asc";
+      if (sort() === s) {
+        order = sortOrder() === "asc" ? "desc" : "asc";
       }
-      parentSortBy(sort, sortOrder);
+      await Cookies.set(`gigcodes.table.${props.collection}.sort`, s);
+      await Cookies.set(`gigcodes.table.${props.collection}.sortOrder`, order);
+      parentSortBy(s, order);
     };
 
     const parentSortBy = (sort, sortOrder) => {
       let options = props.tableOptions;
       options["sort"] = sort;
       options["sortOrder"] = sortOrder;
-      Cookies.set(`gigcodes.table.${props.collection}.sort`, sort);
-      Cookies.set(`gigcodes.table.${props.collection}.sortOrder`, sortOrder);
       emit("update:tableOptions", options);
       getItems();
     };
@@ -579,7 +572,9 @@ export default {
       sortBy,
       deleteModalMulti,
       getItems,
+      sortOrder,
+      sort
     };
-  },
+  }
 };
 </script>
