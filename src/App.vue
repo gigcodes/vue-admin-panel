@@ -7,15 +7,16 @@
  v-model:data="items"
     :config="{container:'main',max_files:5,canEdit:true}"
      name="Images"></assets-field>
-  <!--  <dossier-table-->
-  <!--      v-model:loading="loading"-->
-  <!--      v-model:columns="columns"-->
-  <!--      v-model:tableOptions="tableOptions"-->
-  <!--      v-model:searching="searching"-->
-  <!--      v-model:hasItems="hasItems"-->
-  <!--      title="Categories"-->
-  <!--      :search-term="searchTerm"-->
-  <!--  />-->
+   <dossier-table
+       v-model:loading="loading"
+        v-model:columns="columns"
+        v-model:tableOptions="tableOptions"
+        v-model:searching="searching"
+        v-model:hasItems="hasItems"
+        title="Categories"
+        :search-term="searchTerm"
+        collection="category"
+   />
 
 <!--  <editor></editor> -->
   <MediaSelector container="main" :open="showMedia" @selected="selected" @closed="showMedia = false" can-edit></MediaSelector>
@@ -25,14 +26,13 @@
 <script>
 import axios from "axios";
 import {provide, ref} from "vue";
-import {Editor, AssetsField, MediaSelector, Btn} from "../dist/gigcodes-admin.es"
+import {AssetsField, MediaSelector, Btn} from "../dist/gigcodes-admin.es"
 
 export default {
   name: "App",
   components: {
     MediaSelector,
     Btn,
-    Editor,
     AssetsField
   },
   setup() {
@@ -56,7 +56,7 @@ export default {
     }
 
     const uploadService = (data, config) => axios.post("http://127.0.0.1:8000/api/media/upload", data, config)
-    const getService = (params) => axios.get("https://mainwebsite.loc/api/category", {params})
+    const getService = (params) => axios.get("http://127.0.0.1:8000/api/category", {params})
     const getMediaService = (params) => axios.get("http://127.0.0.1:8000/api/media/get-file", {params})
     const containerService = () => axios.get(`http://127.0.0.1:8000/api/media/browse`)
     const loadFilesService = (params) => axios.get(`http://127.0.0.1:8000/api/media/get-files`, {params})

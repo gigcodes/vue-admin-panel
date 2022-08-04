@@ -7,7 +7,6 @@ import DossierSortSelector from "./components/dossier/SortSelector.vue";
 import DossierSearch from "./components/dossier/DossierSearch.vue";
 import Modal from "./components/modal/Modal.vue";
 import BaseIcon from "./components/BaseIcon.vue";
-import Editor from "./components/Editor.vue";
 import PublishButton from "./components/buttons/PublishButton.vue";
 import LoadingGraphic from "./components/LoadingGraphic.vue";
 import PageTree from "./components/structures/PageTree.vue";
@@ -126,7 +125,6 @@ export {
     Events,
     Validators,
     formValidators,
-    Editor,
     hasErrorMixin,
     mousetrap,
     slugify,

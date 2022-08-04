@@ -456,13 +456,6 @@ const sortable = () => {
   }
 };
 
-const getReplicatorPreviewText = () => {
-  return _.map(assets.value, (asset) => {
-    return asset.is_image
-      ? `<img src="${asset.thumbnail}" width="20" height="20" title="${asset.basename}" />`
-      : asset.basename;
-  }).join(", ");
-};
 
 Events.$on("close-selector", closeSelector);
 </script>
